@@ -44,6 +44,23 @@ public class ACUserManager
         }
     }
     
+    public bool TryGetFirstPlayerWebSocketID(out string firstWebSocketID)
+    {
+        lock (lockObject)
+        {
+            if (webSocketIDs.Count > 0)
+            {
+                firstWebSocketID = webSocketIDs[0];
+                return true;
+            }
+            else
+            {
+                firstWebSocketID = null;
+                return false;
+            }
+        }
+    }
+    
     public bool TryGetPlayerWebSocket(string webSocketID, out WebSocketSharp.WebSocket webSocket)
     {
         lock (lockObject)

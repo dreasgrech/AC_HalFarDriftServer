@@ -59,6 +59,14 @@ public class Program
                     wssv.Stop();
                     goto afterInputLoop;
                 }
+                case "intro":
+                {
+                    if (ACUserManager.Instance.TryGetFirstPlayerWebSocketID(out var firstWebSocketID))
+                    {
+                        ServerCommandsManager.Instance.SendAsyncCommandToClient(firstWebSocketID, new ShowWelcomeMessageServerCommand("HALLO"));
+                    }
+                }
+                    break;
                 default:
                 {
                     // ServerCommandsManager.Instance.HandleConsoleCommand(input);
