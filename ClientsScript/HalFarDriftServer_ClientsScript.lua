@@ -3,31 +3,89 @@
 local SERVER_COMMAND_TYPE = {
   None = 0,
   ShowWelcomeMessage = 1,
+  StartCountdownTimer = 2
 }
 
 
-local drawTimer = function ()
-  ui.drawText('From script', vec2(400, 400), rgbm(1, 0, 0, 1))
-  ui.dwriteDrawText('from script dwrite', 30, vec2(400, 450), rgbm(0, 1, 0, 1))
+-- local drawTimer = function ()
+  -- ui.drawText('From script', vec2(400, 400), rgbm(1, 0, 0, 1))
+  -- ui.dwriteDrawText('from script dwrite', 30, vec2(400, 450), rgbm(0, 1, 0, 1))
 
-  -- ui.toolWindow('timer', vec2(300, 300), vec2(500, 500), function()
+  -- ui.transparentWindow('timer', vec2(600, 300), vec2(500, 500), function()
     -- ui.text('Timer from script')
     -- if ui.modernButton('Close', vec2(120, 40)) then
       -- ac.log('Closing timer window')
     -- end
-  -- end)
-  -- ac.log('Drawing timer window')
-end
+  -- end
+-- )
+  -- -- ui.toolWindow('timer', vec2(300, 300), vec2(500, 500), function()
+    -- -- ui.text('Timer from script')
+    -- -- if ui.modernButton('Close', vec2(120, 40)) then
+      -- -- ac.log('Closing timer window')
+    -- -- end
+  -- -- end)
+  -- -- ac.log('Drawing timer window')
+-- end
 
-function script.update()
+local COUNTDOWN_TIMER_STATE = {
+  Inactive = 0,
+  Red = 1,
+  Yellow = 2,
+  Green = 3
+}
+
+local COUNTDOWN_TIMER_GAP_BETWEEN_STATES_SECONDS = 2.0
+local countdownTimerState = COUNTDOWN_TIMER_STATE.Inactive
+local countdownTimerStartTime = 0.0
+local countdownTimerCurrentStateEnterTimeSeconds = 0.0
+
+local countdownTimerStateMachine = {
+  [COUNTDOWN_TIMER_STATE.Red] = function(currentTimeSeconds)
+    if currentTimeSeconds - countdownTimerCurrentStateEnterTimeSeconds >= COUNTDOWN_TIMER_GAP_BETWEEN_STATES_SECONDS then
+      ac.log(string.format('Countdown Timer State changing to Yellow. currentTimeSeconds: %f, stateEnterTime: %f', currentTimeSeconds, countdownTimerCurrentStateEnterTimeSeconds))
+      countdownTimerState = COUNTDOWN_TIMER_STATE.Yellow
+      countdownTimerCurrentStateEnterTimeSeconds = currentTimeSeconds
+    end
+  end,
+  [COUNTDOWN_TIMER_STATE.Yellow] = function(currentTimeSeconds)
+    if currentTimeSeconds - countdownTimerCurrentStateEnterTimeSeconds >= COUNTDOWN_TIMER_GAP_BETWEEN_STATES_SECONDS then
+      ac.log(string.format('Countdown Timer State changing to Green. currentTimeSeconds: %f, stateEnterTime: %f', currentTimeSeconds, countdownTimerCurrentStateEnterTimeSeconds))
+      countdownTimerState = COUNTDOWN_TIMER_STATE.Green
+      countdownTimerCurrentStateEnterTimeSeconds = currentTimeSeconds
+    end
+  end,
+  [COUNTDOWN_TIMER_STATE.Green] = function(currentTimeSeconds)
+    if currentTimeSeconds - countdownTimerCurrentStateEnterTimeSeconds >= COUNTDOWN_TIMER_GAP_BETWEEN_STATES_SECONDS then
+      ac.log(string.format('Countdown Timer State changing to Inactive. currentTimeSeconds: %f, stateEnterTime: %f', currentTimeSeconds, countdownTimerCurrentStateEnterTimeSeconds))
+      countdownTimerState = COUNTDOWN_TIMER_STATE.Inactive
+      countdownTimerCurrentStateEnterTimeSeconds = currentTimeSeconds
+    end
+  end
+}
+
+local countdownTimerStateMachine_UI = {
+  [COUNTDOWN_TIMER_STATE.Red] = function()
+    local windowSize = ui.windowSize()
+    ui.drawCircleFilled(vec2(windowSize.x*0.5, windowSize.y*0.25), 100, rgbm(1, 0, 0, 1), 24)
+  end,
+  [COUNTDOWN_TIMER_STATE.Yellow] = function()
+    local windowSize = ui.windowSize()
+    ui.drawCircleFilled(vec2(windowSize.x*0.5, windowSize.y*0.5), 100, rgbm(1, 1, 0, 1), 24)
+  end,
+  [COUNTDOWN_TIMER_STATE.Green] = function()
+    local windowSize = ui.windowSize()
+    ui.drawCircleFilled(vec2(windowSize.x*0.5, windowSize.y*0.75), 100, rgbm(0, 1, 0, 1), 24)
+  end
+}
+
+function script.update(dt)
     -- ac.log('From script')
-    -- drawTimer()
+  if countdownTimerState ~= COUNTDOWN_TIMER_STATE.Inactive then 
+    local currentTimeSeconds = ac.getSim().time * 0.001
+    local stateMachineFunction = countdownTimerStateMachine[countdownTimerState]
+    stateMachineFunction(currentTimeSeconds)
+  end
 end
-
--- ui.onUIFinale(function()
-  -- ac.log('UI finalie')
-  -- drawTimer()
--- end)
 
 local showIntro = function()
 	ui.modalDialog('From online script!', function()
@@ -45,17 +103,44 @@ local showIntro = function()
   end, true)
 end
 
--- showIntro()
+local startCountdownTimer = function()
+  countdownTimerState = COUNTDOWN_TIMER_STATE.Red
+  local currentTimeSeconds = ac.getSim().time * 0.001
+
+  ac.log(string.format('Starting Countdown Timer at time: %f seconds', currentTimeSeconds))
+  countdownTimerCurrentStateEnterTimeSeconds = currentTimeSeconds
+  countdownTimerStartTime = currentTimeSeconds
+end
+
+local drawDreasTimer = function()
+  -- local windowSize = ui.windowSize()
+  -- ui.drawCircleFilled(vec2(windowSize.x*0.5, windowSize.y*0.25), 100, rgbm(1, 0, 0, 1), 24)
+  -- ui.drawCircleFilled(vec2(windowSize.x*0.5, windowSize.y*0.5), 100, rgbm(1, 1, 0, 1), 24)
+  -- ui.drawCircleFilled(vec2(windowSize.x*0.5, windowSize.y*0.75), 100, rgbm(0, 1, 0, 1), 24)
+
+    local stateMachineFunction_UI = countdownTimerStateMachine_UI[countdownTimerState]
+    if stateMachineFunction_UI then
+      stateMachineFunction_UI()
+    end
+end
 
 script.drawUI = function()
-  drawTimer()
+  -- drawTimer()
+  drawDreasTimer()
 end
+
+-- startCountdownTimer()
 
 local messageHandlers = {
   [SERVER_COMMAND_TYPE.ShowWelcomeMessage] = function(messageObject)
     ac.log(string.format('Handling ShowWelcomeMessage command from server: %s', tostring(messageObject.M)))
 
     showIntro()
+  end,
+  [SERVER_COMMAND_TYPE.StartCountdownTimer] = function(messageObject)
+    ac.log(string.format('Handling StartCountdownTimer command from server'))
+
+    startCountdownTimer()
   end
 }
 

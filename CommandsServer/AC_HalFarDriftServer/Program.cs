@@ -65,8 +65,14 @@ public class Program
                     {
                         ServerCommandsManager.Instance.SendAsyncCommandToClient(firstWebSocketID, new ShowWelcomeMessageServerCommand("HALLO"));
                     }
-                }
-                    break;
+                } break;
+                case "start":
+                {
+                    if (ACUserManager.Instance.TryGetFirstPlayerWebSocketID(out var firstWebSocketID))
+                    {
+                        ServerCommandsManager.Instance.SendAsyncCommandToClient(firstWebSocketID, new StartCountdownTimerServerCommand());
+                    }
+                } break;
                 default:
                 {
                     // ServerCommandsManager.Instance.HandleConsoleCommand(input);

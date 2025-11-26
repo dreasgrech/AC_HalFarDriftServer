@@ -4,8 +4,9 @@ namespace AC_HalFarDriftServer;
 
 public enum ServerCommandType
 {
-    None,
-    ShowWelcomeMessage
+    None = 0,
+    ShowWelcomeMessage = 1,
+    StartCountdownTimer = 2
 }
 
 public class ServerCommandsManager
