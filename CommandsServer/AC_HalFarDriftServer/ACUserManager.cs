@@ -3,35 +3,59 @@
 public class ACUserManager
 {
     public static ACUserManager Instance { get; set; }
+
+    private readonly List<string> webSocketIDs;
     
-    private List<string> playersNames;
-    private List<int> playersSessionID;
-    private List<string> playersCarID;
-    
-    private int nextACUserManagerPlayerId = 0;
+    private readonly Dictionary<string, string> playersNames;
+    private readonly Dictionary<string, int> playersSessionID;
+    private readonly Dictionary<string, string> playersCarName;
     
     private readonly object lockObject = new object();
     
-    public ACUserManager(int initialCapacity)
+    public ACUserManager()
     {
-        playersSessionID = new List<int>(initialCapacity);
-        playersNames = new List<string>(initialCapacity);
-        playersCarID = new List<string>(initialCapacity);
+        webSocketIDs = new List<string>();
+        
+        playersSessionID = new Dictionary<string, int>();
+        playersNames = new Dictionary<string, string>();
+        playersCarName = new Dictionary<string, string>();
     }
 
-    public int AddPlayer(int acSessionID, string acPlayerName, string acPlayerCarID)
+    public void AddPlayer(string webSocketID, int acSessionCarID, string acPlayerName, string acPlayerCarName)
     {
         lock (lockObject)
         {
-            var acUserManagerPlayerId = nextACUserManagerPlayerId++;
-        
-            playersSessionID.Add(acSessionID);
-            playersNames.Add(acPlayerName);
-            playersCarID.Add(acPlayerCarID);
+            if (webSocketIDs.Contains(webSocketID))
+            {
+                Console.WriteLine($"Attempted to add player with WebSocketID: {webSocketID}, but it already exists.");
+                return;
+            }
             
-            Console.WriteLine($"Added player: ACUserManagerID = {acUserManagerPlayerId}, Name = {acPlayerName}");
-        
-            return acUserManagerPlayerId;
+            webSocketIDs.Add(webSocketID);
+            
+            playersSessionID[webSocketID] = acSessionCarID;
+            playersNames[webSocketID] = acPlayerName;
+            playersCarName[webSocketID] = acPlayerCarName;
+            
+            Console.WriteLine($"Added player.  WebSocketID: {webSocketID}, SessionCarID: {acSessionCarID}, PlayerName: {acPlayerName}, PlayerCarName: {acPlayerCarName}");
+        }
+    }
+    
+    public void RemovePlayer(string webSocketID)
+    {
+        lock (lockObject)
+        {
+            if (!webSocketIDs.Remove(webSocketID))
+            {
+                Console.WriteLine($"Attempted to remove player with WebSocketID: {webSocketID}, but it was not found.");
+                return;
+            }
+            
+            playersSessionID.Remove(webSocketID);
+            playersNames.Remove(webSocketID);
+            playersCarName.Remove(webSocketID);
+            
+            Console.WriteLine($"Removed player.  WebSocketID: {webSocketID}");
         }
     }
 }

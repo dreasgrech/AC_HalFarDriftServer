@@ -71,14 +71,15 @@ public class DriftServerEndpoint : WebSocketBehavior
         var playerCarID = currentQueryStringKeyValueCollection["CarID"];
         
         var acUserManager = ACUserManager.Instance;
-        var acUserManagerPlayerID = acUserManager.AddPlayer(sessionID, playerName, playerCarID);
+        var webSocketID = this.ID;
+        acUserManager.AddPlayer(webSocketID, sessionID, playerName, playerCarID);
         
-        SendAsync($"ACUserManagerPlayerID={acUserManagerPlayerID}", b =>
-        {
-            Console.WriteLine($"Sent async message, success: {b}");
-        });
+        // SendAsync($"ACUserManagerPlayerID={acUserManagerPlayerID}", b =>
+        // {
+        //     Console.WriteLine($"Sent async message, success: {b}");
+        // });
         
-        Console.WriteLine($"(OnOpen) WebSocket Session ID: {this.ID}");
+        Console.WriteLine($"(OnOpen) WebSocket Session ID: {webSocketID}");
     }
 
     protected override void OnClose(CloseEventArgs e)
@@ -87,7 +88,10 @@ public class DriftServerEndpoint : WebSocketBehavior
         var reason = e.Reason;
         var wasClean = e.WasClean;
       
-        Console.WriteLine($"OnClose called: ID = {this.ID} Code = {code}, Reason = {reason}, WasClean = {wasClean}");
+        var webSocketID = this.ID;
+        Console.WriteLine($"(OnClose) ID = {webSocketID} Code = {code}, Reason = {reason}, WasClean = {wasClean}");
+        
+        ACUserManager.Instance.RemovePlayer(webSocketID);
     }
 
     protected override void OnError(ErrorEventArgs e)
@@ -95,6 +99,9 @@ public class DriftServerEndpoint : WebSocketBehavior
         var exception = e.Exception;
         var message = e.Message;
       
-        Console.WriteLine($"OnError called: ID = {this.ID}, Message = {message}, Exception = {exception}");
+        var webSocketID = this.ID;
+        Console.WriteLine($"(OnError) ID = {webSocketID}, Message = {message}, Exception = {exception}");
+        
+        ACUserManager.Instance.RemovePlayer(webSocketID);
     }
 }
