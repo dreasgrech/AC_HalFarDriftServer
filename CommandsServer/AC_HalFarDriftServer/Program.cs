@@ -2,6 +2,7 @@
 using System.Text;
 using WebSocketSharp;
 using WebSocketSharp.Server;
+using ErrorEventArgs = WebSocketSharp.ErrorEventArgs;
 
 namespace AC_HalFarDriftServer
 {
@@ -29,7 +30,6 @@ namespace AC_HalFarDriftServer
         Console.WriteLine($"Sent async message, success: {b}");
       });
       
-      // QueryString[]
       var currentWebSocketContext = Context;
       var currentQueryStringKeyValueCollection = currentWebSocketContext.QueryString;
       var allKeys = currentQueryStringKeyValueCollection.AllKeys;
@@ -56,6 +56,23 @@ namespace AC_HalFarDriftServer
         
         Console.WriteLine($"Session Info: ID = {id}, Protocol = {protocol}, StartTime = {startTime}, State = {state}");
       }
+    }
+
+    protected override void OnClose(CloseEventArgs e)
+    {
+      var code = e.Code;
+      var reason = e.Reason;
+      var wasClean = e.WasClean;
+      
+      Console.WriteLine($"OnClose called: Code = {code}, Reason = {reason}, WasClean = {wasClean}");
+    }
+
+    protected override void OnError(ErrorEventArgs e)
+    {
+      var exception = e.Exception;
+      var message = e.Message;
+      
+      Console.WriteLine($"OnError called: Message = {message}, Exception = {exception}");
     }
   }
 
