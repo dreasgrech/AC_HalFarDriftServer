@@ -16,8 +16,15 @@ public class DriftServerEndpoint : WebSocketBehavior
         var isPing = e.IsPing;
         var isText = e.IsText;
         var rawData = e.RawData;
+
+        var currentWebSocketContext = Context;
+        //currentWebSocketContext.WebSocket.
+        var currentWebSocketContextUser = currentWebSocketContext.User;
+        //currentWebSocketContextUser.
+        var userEndPoint = currentWebSocketContext.UserEndPoint;
+        var ipAddress = userEndPoint.Address.ToString();
       
-        Console.WriteLine($"Message received: Data = {dataString}, Data Length = {dataString.Length}, IsBinary = {isBinary}, IsPing = {isPing}, IsText = {isText}, RawData Length = {rawData.Length}");
+        Console.WriteLine($"Message received: ID = {this.ID}, IP = {ipAddress}, Data = {dataString}, Data Length = {dataString.Length}, IsBinary = {isBinary}, IsPing = {isPing}, IsText = {isText}, RawData Length = {rawData.Length}");
 
         Send ("Message received, thank you!");
     }
@@ -38,6 +45,7 @@ public class DriftServerEndpoint : WebSocketBehavior
         foreach (var queryStringKey in allKeys)
         {
             var queryStringValue = currentQueryStringKeyValueCollection[queryStringKey];
+            queryStringValue = Uri.UnescapeDataString(queryStringValue);
             queryStringBuilder.Append($"{queryStringKey}={queryStringValue}&");
         }
       
@@ -57,6 +65,20 @@ public class DriftServerEndpoint : WebSocketBehavior
         
             Console.WriteLine($"Session Info: ID = {id}, Protocol = {protocol}, StartTime = {startTime}, State = {state}");
         }
+
+        var sessionID = Convert.ToInt16(currentQueryStringKeyValueCollection["SessionID"]);
+        var playerName = currentQueryStringKeyValueCollection["DriverName"];
+        var playerCarID = currentQueryStringKeyValueCollection["CarID"];
+        
+        var acUserManager = ACUserManager.Instance;
+        var acUserManagerPlayerID = acUserManager.AddPlayer(sessionID, playerName, playerCarID);
+        
+        SendAsync($"ACUserManagerPlayerID={acUserManagerPlayerID}", b =>
+        {
+            Console.WriteLine($"Sent async message, success: {b}");
+        });
+        
+        Console.WriteLine($"(OnOpen) WebSocket Session ID: {this.ID}");
     }
 
     protected override void OnClose(CloseEventArgs e)
@@ -65,7 +87,7 @@ public class DriftServerEndpoint : WebSocketBehavior
         var reason = e.Reason;
         var wasClean = e.WasClean;
       
-        Console.WriteLine($"OnClose called: Code = {code}, Reason = {reason}, WasClean = {wasClean}");
+        Console.WriteLine($"OnClose called: ID = {this.ID} Code = {code}, Reason = {reason}, WasClean = {wasClean}");
     }
 
     protected override void OnError(ErrorEventArgs e)
@@ -73,6 +95,6 @@ public class DriftServerEndpoint : WebSocketBehavior
         var exception = e.Exception;
         var message = e.Message;
       
-        Console.WriteLine($"OnError called: Message = {message}, Exception = {exception}");
+        Console.WriteLine($"OnError called: ID = {this.ID}, Message = {message}, Exception = {exception}");
     }
 }

@@ -16,6 +16,10 @@ namespace AC_HalFarDriftServer
       var baseServerAddress = $"{serverProtocol}://{serverAddress}";
       var fullServerAddress = $"{baseServerAddress}/{serverEndpoint}";
       Console.WriteLine($"Starting WebSocket server at {fullServerAddress}");
+      
+      var acUserManagerInitialCapacity = 100;
+      var acUserManager = new ACUserManager (acUserManagerInitialCapacity);
+      ACUserManager.Instance = acUserManager;
 
       var wssv = new WebSocketServer(baseServerAddress);
       wssv.Log.Level = LogLevel.Trace;
