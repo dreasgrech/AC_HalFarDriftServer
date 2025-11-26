@@ -10,30 +10,7 @@ public class DriftServerEndpoint : WebSocketBehavior
     public static string EndpointName => "DriftServer";
     
     private static readonly object LockObject = new object();
-
-    protected override void OnMessage (MessageEventArgs e)
-    {
-        lock (LockObject)
-        {
-            var dataString = e.Data;
-            var isBinary = e.IsBinary;
-            var isPing = e.IsPing;
-            var isText = e.IsText;
-            var rawData = e.RawData;
-
-            var currentWebSocketContext = Context;
-            //currentWebSocketContext.WebSocket.
-            var currentWebSocketContextUser = currentWebSocketContext.User;
-            //currentWebSocketContextUser.
-            var userEndPoint = currentWebSocketContext.UserEndPoint;
-            var ipAddress = userEndPoint.Address.ToString();
-
-            Console.WriteLine($"Message received: ID = {this.ID}, IP = {ipAddress}, Data = {dataString}, Data Length = {dataString.Length}, IsBinary = {isBinary}, IsPing = {isPing}, IsText = {isText}, RawData Length = {rawData.Length}");
-
-            Send("Message received, thank you!");
-        }
-    }
-
+    
     protected override void OnOpen()
     {
         lock (LockObject)
@@ -86,6 +63,30 @@ public class DriftServerEndpoint : WebSocketBehavior
             // });
 
             Console.WriteLine($"(OnOpen) WebSocket Session ID: {webSocketID}");
+        }
+    }
+
+
+    protected override void OnMessage (MessageEventArgs e)
+    {
+        lock (LockObject)
+        {
+            var dataString = e.Data;
+            var isBinary = e.IsBinary;
+            var isPing = e.IsPing;
+            var isText = e.IsText;
+            var rawData = e.RawData;
+
+            var currentWebSocketContext = Context;
+            //currentWebSocketContext.WebSocket.
+            var currentWebSocketContextUser = currentWebSocketContext.User;
+            //currentWebSocketContextUser.
+            var userEndPoint = currentWebSocketContext.UserEndPoint;
+            var ipAddress = userEndPoint.Address.ToString();
+
+            Console.WriteLine($"Message received: ID = {this.ID}, IP = {ipAddress}, Data = {dataString}, Data Length = {dataString.Length}, IsBinary = {isBinary}, IsPing = {isPing}, IsText = {isText}, RawData Length = {rawData.Length}");
+
+            Send("Message received, thank you!");
         }
     }
 
