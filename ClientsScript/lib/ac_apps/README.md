@@ -1,6 +1,6 @@
-# Library ac_apps
+# Library ac_online_script
 
-Documentation for ac_apps. Please note: documentation generator is in development and needs more work, so some information might be missing and other bits might not be fully accurate.
+Documentation for ac_online_script. Please note: documentation generator is in development and needs more work, so some information might be missing and other bits might not be fully accurate.
 
 # Module common/common.lua
 
@@ -2282,36 +2282,6 @@ but this callback will only be called once when collision starts (or when index 
   Returns:
 
   - `ac.Disposable`
-## Function ac.onFileChanged(filename, callback)
-Sets a callback which will be called when a file changes.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `filename`: `path` Full path to a file to monitor.
-
-  2. `callback`: `fun()` Callback function.
-
-  Returns:
-
-  - `ac.Disposable`
-## Function ac.onFolderChanged(folder, filter, recursive, callback)
-Sets a callback which will be called when folder contents change.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `folder`: `path` Full path to a directory to monitor.
-
-  2. `filter`: `string?` CSP filter (? for any number of any symbols, regex if “`” quotes are used, or a complex query) applied to full file path, or `nil`.
-
-  3. `recursive`: `boolean?` If `true`, changes in subfolders are also detected. Default value: `false`.
-
-  4. `callback`: `fun(files: string[])`
-
-  Returns:
-
-  - `ac.Disposable`
 ## Function ac.onCSPConfigChanged(cspModuleID, callback)
 Sets a callback which will be called when config for certain CSP module has changed.
 
@@ -2406,13 +2376,6 @@ Removes `ac.debug()` entries matching filter.
   Parameters:
 
   1. `filter`: `string?` Default value: `?`.
-## Function io.scanDrives()
-Returns list of logical drives, each drive in “A:“ format.
-Not available to scripts without I/O access.
-
-  Returns:
-
-  - `string`
 ## Function io.getAttributes(filename)
 Gets file attributes.
 
@@ -2435,13 +2398,6 @@ Sets file attributes. Returns `false` if failed.
   Returns:
 
   - `boolean`
-## Function io.getMainExecutable()
-Gets full filename of the main AC executable (“…/acs.exe” for most cases).
-Not available to scripts without I/O access.
-
-  Returns:
-
-  - `path`
 ## Function io.getExecutableAttributes(filename)
 Gets extra attributes associated with EXE or DLL files.
 
@@ -2468,34 +2424,6 @@ Reads file content into a string, if such file exists, otherwise returns fallbac
   1. `filename`: `path`
 
   2. `callback`: `fun(err: string?, response: string?)`
-## Function io.save(filename, data, ensure)
-Writes data into a file, returns `true` if operation was successful. Data string can contain zero bytes.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `filename`: `path`
-
-  2. `data`: `binary?`
-
-  3. `ensure`: `boolean?` If set to `true`, file will be saved with a temporary postfix and then moved to target destination, thus ensuring content is stored as-is, without ending up damaged in case there is a sudden power loss or something like that. Default value: `false`.
-
-  Returns:
-
-  - `boolean` Returns `false` if failed to write a file.
-## Function io.saveAsync(filename, data, callback, ensure)
-Writes data into a file from a different thread, returns `true` via callback if operation was successful. Data string can contain zero bytes.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `filename`: `path`
-
-  2. `data`: `binary?`
-
-  3. `callback`: `fun(err: string?)`
-
-  4. `ensure`: `boolean?` If set to `true`, file will be saved with a temporary postfix and then moved to target destination, thus ensuring content is stored as-is, without ending up damaged in case there is a sudden power loss or something like that. Default value: `false`.
 ## Function io.exists(filename)
 Checks if file or directory exists. If you need to know specifically if a file or directory exists, use `io.dirExists(filename)` or `io.fileExists(filename)`.
 
@@ -2576,28 +2504,6 @@ Returns last write time as number of seconds since 1970, or -1 if there was an e
   Returns:
 
   - `integer`
-## Function io.createDir(filename)
-Creates new directory, returns `true` if directory was created. If parent directories are missing, they’ll be created as well.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `filename`: `path`
-
-  Returns:
-
-  - `boolean`
-## Function io.createFileDir(filename)
-Creates new directory for given filename (as in, take parent path and create directory with it). Returns `true` if directory was created.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `filename`: `path`
-
-  Returns:
-
-  - `boolean`
 ## Function io.getParentPath(filename, level)
 Returns parent path for given filename.
 
@@ -2654,21 +2560,6 @@ Checks if full file name is acceptable, returns `true` if there are no prohibite
   Returns:
 
   - `boolean`
-## Function io.move(existingFilename, newFilename, replaceExisting)
-Moves a file or a directory with all of its contents to a new place, returns `true` if moved successfully. Can be used for moving or renaming things.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `existingFilename`: `path`
-
-  2. `newFilename`: `path`
-
-  3. `replaceExisting`: `boolean?` Default value: `false`.
-
-  Returns:
-
-  - `boolean`
 ## Function io.findFile(filename)
 Given an absolute or a relative path, find an actual absolute path. If script doesn’t have I/O access to such file, returns `nil`.
 
@@ -2679,92 +2570,6 @@ Given an absolute or a relative path, find an actual absolute path. If script do
   Returns:
 
   - `string|nil`
-## Function io.copyFile(existingFilename, newFilename, failIfExists, attemptHardlink)
-Copies a file to a new place, returns `true` if copied successfully.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `existingFilename`: `path`
-
-  2. `newFilename`: `path`
-
-  3. `failIfExists`: `boolean?` Set to `false` to silently overwrite existing files. Default value: `true`.
-
-  4. `attemptHardlink`: `boolean?` If `true` and source and destination share the same drive, try to use hardlink first. Default value: `false`.
-
-  Returns:
-
-  - `boolean`
-## Function io.replaceFile(destination, source)
-Replaces one file with another file. The replacement file assumes the name of the replaced file and its identity. Good if you want to implement
-secure saving (save a file with a new name and then use this function to replace main file with this one: great way to update crucial files
-without risking data corruption in a case of power loss and such). Note: `io.save()` and `io.saveAsync()` already use this safe mechanism if you’re
-setting `ensure` to `true`.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `destination`: `path`
-
-  2. `source`: `path`
-
-  Returns:
-
-  - `boolean`
-## Function io.deleteFile(filename)
-Deletes a file, returns `true` if file was deleted successfully. To delete empty directory, use `io.deleteDir()`. If you’re operating around important
-files, consider using `io.recycle()` instead.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `filename`: `path`
-
-  Returns:
-
-  - `boolean`
-## Function io.deleteDir(filename)
-Deletes an empty directory, returns `true` if directory was deleted successfully. To delete a file, use `io.deleteFile()`.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `filename`: `path`
-
-  Returns:
-
-  - `boolean`
-## Function io.recycle(filename)
-Moves file to Windows Recycle Bin, returns `true` if file was moved successfully. Note: this operation is much slower than removing a file with `io.deleteFile()`
-or removing an empty directory with `io.deleteDir()`.
-
- Note: before 0.3.0, doesn’t use recycle bin and just deletes any file or a folder passed to it.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `filename`: `path`
-
-  Returns:
-
-  - `boolean`
-## Function io.saveToZip(zipFilename, entryFilename, data)
-Adds a new entry to a ZIP file. If there is no such ZIP file, new one will be created. If the ZIP file already has an entry with
-the same name, does nothing and returns `false`. Note: for adding multiple or large files use `io.createZipAsync()` instead.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `zipFilename`: `path`
-
-  2. `entryFilename`: `string`
-
-  3. `data`: `binary?`
-
-  Returns:
-
-  - `boolean`
 ## Function io.loadFromZip(zipFilename, entryFilename)
 Loads file from an archive as a string. Archive would remain open for some time to speed up consequent reads. If failed, returns `nil`. Alternatively,
 you can pass ZIP data instead.
@@ -2778,19 +2583,6 @@ you can pass ZIP data instead.
   Returns:
 
   - `string`
-## Function io.extractFromZipAsync(zipFilename, destination, filter, callback)
-Extract files from a ZIP file into a given directory. Creates directory if it’s missing.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `zipFilename`: `binary?`
-
-  2. `destination`: `path` Full path to target directory.
-
-  3. `filter`: `nil|string|{filter: string?, crucial: string?}` Optional filter for full entry paths. Since 0.2.10, you can pass a table with a `crucial` param for an entry path of a crucial file: it’ll be extracted last with a temporary name, and renamed after everything is finished. You can later check the existence of this file to ensure ZIP has been unpacked entirely without any interruptions. If `crucial` param has been passed, but file wasn’t found, callback will report an error.
-
-  4. `callback`: `fun(err: string?)`
 ## Function io.checksumSHA256(filename, callback)
 Computes SHA-256 checksum of a given file, returns result in a callback.
 
@@ -2809,16 +2601,6 @@ Returns list of entry names from a ZIP-file.
   Returns:
 
   - `string`
-## Function io.createZipAsync(filename, entries, callback)
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `filename`: `path?` Pass `nil` to instead get the binary data in the callback.
-
-  2. `entries`: `table<string, io.ZipEntry>` Keys store entry names (use “/” as separator for creating sub-folders), and values store either binary data or tables in `io.ZipEntry` format.
-
-  3. `callback`: `fun(err: string?, response: binary?)` Callback will contain reference to binary data if `filename` is `nil`.
 ## Function os.preciseClock()
 Returns time in seconds from script start (with high precision).
 
@@ -2839,22 +2621,6 @@ Sets a callback which will be called when CSP itself or a CSP Lua script tries t
   Returns:
 
   - `ac.Disposable`
-## Function os.execute(cmd, timeoutMs, windowless)
-Altered version of regular `os.execute()`: allows to specify timeout and doesn’t show a new window.
- Note: please consider using `os.runConsoleProcess()` instead: it’s a lot more robust, asynchronous and tweak-able.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `cmd`: `string`
-
-  2. `timeoutMs`: `integer?` Default value: -1.
-
-  3. `windowless`: `boolean?` Default value: `true`.
-
-  Returns:
-
-  - `integer`
 ## Function os.setCurrentFolder(filename)
 Changes current directory. Any argument `path`, when parsed and found not to be absolute, will be resolved against current directory.
 By default, uses AC root folder. Any change only applies to the current script only. Current path resets when script is reloaded.
@@ -2885,14 +2651,6 @@ Returns formatted date. Same as `os.date()`, but returned value does not include
   Returns:
 
   - `string`
-## Function os.addDLLDirectory(filename)
-Adds new directory to look for DLL files in. Warning: do not use this thing unless you really need to, and try to avoid adding LuaJIT extensions:
-LuaJIT build might change in the future breaking ABI compatibility.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `filename`: `string` If not absolute, considered to be relative to script root folder.
 ## Function os.showMessage(msg, type)
 Show a popup message using good old MessageBox. Please do not use it for debugging, instead consider using `ac.log()` and `ac.debug('key', 'value')`
 with in-game Lua Debug App.
@@ -2907,41 +2665,6 @@ Note: do not rely on this function, most likely it might be removed in the futur
   Returns:
 
   - `integer`
-## Function os.showInExplorer(filename)
-Shows file in Windows Explorer (opens folder with it and selects the file).
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `filename`: `path`
-## Function os.openInExplorer(directory)
-Opens file or directory in Windows Explorer. If it’s a file, associated program will be launched instead.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `directory`: `path`
-## Function os.findAssociatedExecutable(filename)
-Tries to find a program associated with a filename. Returns path to it, or `nil` if nothing was found.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `filename`: `path`
-
-  Returns:
-
-  - `path`
-## Function os.openTextFile(filename, line)
-Opens text file at given line in a default text editor. Supports VS Code, Notepad++, Sublime Text and Atom (they all use different
-arguments for line number.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `filename`: `path`
-
-  2. `line`: `integer`
 ## Function os.openURL(url, invokeListeners)
 Opens URL in default system browser.
 
@@ -12711,6 +12434,218 @@ intersecting or touching holes.
   Returns:
 
     - `self`
+## Function ac.getAppWindows()
+Collect information about available windows.
+## Function ac.accessAppWindow(windowName)
+Looks for a certain window of either an original AC app, a Python or a Lua app. Use `ac.getAppWindows()` to get a list of available apps.
+If found, this wrapper can be used to move or hide an app, or switch it to a different render layer.
+
+  Parameters:
+
+  1. `windowName`: `string`
+
+  Returns:
+
+  - `ac.AppWindowAccessor`
+## Class ac.AppWindowAccessor
+Wrapper for interacting with any AC app. Might not work as intended with some apps not expecting such intrusion though.
+
+- `ac.AppWindowAccessor:valid()`
+
+  Window reference is valid (some references might become invalid if the window is deleted).
+
+  Returns:
+
+    - `boolean`
+
+- `ac.AppWindowAccessor:visible()`
+
+  Checks if window is visible.
+
+  Returns:
+
+    - `boolean`
+
+- `ac.AppWindowAccessor:setVisible(value)`
+
+  Changes visible state of the window.
+
+  Parameters:
+
+    1. `value`: `boolean?` Default value: `true`.
+
+  Returns:
+
+    - `ac.AppWindowAccessor`
+
+- `ac.AppWindowAccessor:pinned()`
+
+  Checks if window is pinned.
+
+  Returns:
+
+    - `boolean`
+
+- `ac.AppWindowAccessor:setPinned(value)`
+
+  Changes pinned state of the window. Works with IMGUI apps with CSP v0.2.3-preview62 or newer.
+
+  Parameters:
+
+    1. `value`: `boolean?` Default value: `true`.
+
+  Returns:
+
+    - `ac.AppWindowAccessor`
+
+- `ac.AppWindowAccessor:position()`
+
+  Returns window position.
+
+  Returns:
+
+    - `vec2`
+
+- `ac.AppWindowAccessor:size()`
+
+  Returns window size (Python apps might draw things to extends exceeding this size).
+
+  Returns:
+
+    - `vec2`
+
+- `ac.AppWindowAccessor:move(value)`
+
+  Moves window to a different position. Works with IMGUI apps with CSP v0.2.3-preview62 or newer.
+
+  Parameters:
+
+    1. `value`: `vec2`
+
+  Returns:
+
+    - `ac.AppWindowAccessor`
+
+- `ac.AppWindowAccessor:resize(value)`
+
+  Resizes a window. Works with IMGUI apps only.
+
+  Parameters:
+
+    1. `value`: `vec2`
+
+  Returns:
+
+    - `ac.AppWindowAccessor`
+
+- `ac.AppWindowAccessor:redirectLayer()`
+
+  Returns redirect layer, or 0 if redirect is disabled. Redirected apps can be accessed via `dynamic::hud::redirected::N` textures.
+
+  Returns:
+
+    - `integer` 0 if redirect is disabled.
+
+- `ac.AppWindowAccessor:setRedirectLayer(layer, duplicate)`
+
+  Moves window to a different render layer, or back to existance with `0` passed as `layer`. Windows in separate layers don’t get mouse
+commands (but this wrapper can be used to send fake commands instead).
+
+  Parameters:
+
+    1. `layer`: `integer?` Default value: `0`.
+
+    2. `duplicate`: `boolean?` Set to `true` to clone a window to a different layer instead of moving it there. Be careful: this might break some Python apps. Default value: `false`.
+
+  Returns:
+
+    - `ac.AppWindowAccessor`
+
+- `ac.AppWindowAccessor:onMouseMove(position)`
+
+  Sends a fake mouse event to a window. Does not work with IMGUI apps or from online scripts.
+
+  Parameters:
+
+    1. `position`: `vec2`
+
+  Returns:
+
+    - `ac.AppWindowAccessor`
+
+- `ac.AppWindowAccessor:onMouseDown(position, button)`
+
+  Sends a fake mouse event to a window. Does not work with IMGUI apps or from online scripts.
+
+  Parameters:
+
+    1. `position`: `vec2`
+
+    2. `button`: `ui.MouseButton?` Default value: `ui.MouseButton.Left`.
+
+  Returns:
+
+    - `ac.AppWindowAccessor`
+
+- `ac.AppWindowAccessor:onMouseUp(position, button)`
+
+  Sends a fake mouse event to a window. Does not work with IMGUI apps or from online scripts.
+
+  Parameters:
+
+    1. `position`: `vec2`
+
+    2. `button`: `ui.MouseButton?` Default value: `ui.MouseButton.Left`.
+
+  Returns:
+
+    - `ac.AppWindowAccessor`
+## Function ac.writeReplayBlob(key, data)
+Writes additional data to replay. Use `ac.readReplayBlob()` to extract data later in replay mode. Data written this way is not tied to frames.
+Don’t bother compressing data too much: when writing, data will be compressed automatically.
+
+  Parameters:
+
+  1. `key`: `string` Existing data with the same key will be overwritten.
+
+  2. `data`: `binary?`
+## Function ac.readReplayBlob(key)
+Reads additional data from replay if recorded with `ac.writeReplayBlob()`.
+
+  Parameters:
+
+  1. `key`: `string`
+
+  Returns:
+
+  - `binary`
+## Function ac.ReplayStream(layout, callback, frameDivisor)
+Create a new stream for recording data to replays. Write data in returned structure if not in replay mode, read data if in replay mode (use `sim.isReplayActive` to check if you need to write or read the data).
+Few important points:
+ - Each frame should not exceed 256 bytes to keep replay size appropriate. Limit for car scripts is lower, only 32 bytes.
+ - While data will be interpolated between frames during reading, directional vectors won’t be re-normalized.
+ - If two different apps would open a stream with the same layout, they’ll share a replay entry. Since 0.2.8, they’ll also share memory block, making `ac.ReplayStream()` act similar to `ac.connect()`.
+ - Each opened replay stream will persist through the entire AC session to be saved at the end. Currently, the limit is 320 streams per session (before 0.2.8, the limit was 128).
+ - Default values for unitialized frames are zeroes.
+ - Before 0.2.8, if game is launched in replay mode and there is no such data in replay, `ac.ReplayStream()` could return `nil`. Now, it’ll return the data, but it’ll be empty.
+ - Car scripts (both visual and physics) automatically add car ID and index to the key, ensuring uniqueness. Visual scripts can’t create new streams, but can access streams created by physics scripts, making it an effective way to pass data from physics to render, automatically being recorded in replays.
+
+  Parameters:
+
+  1. `layout`: `T` A table containing fields of structure and their types. Use `ac.StructItem` methods to select types. Unlike other similar functions, here you shouldn’t use string, otherwise data blending won’t work.
+
+  2. `callback`: `fun()?` Callback that will be called when replay stops. Use this callback to re-apply data from structure: at the moment of the call it will contain stuff from last recorded frame allowing you to restore the state of a simulation to when replay mode was activated.
+
+  3. `frameDivisor`: `integer?` Set to 2 to skip one out of two frames when recording, or 3 to skip two out of three frames. Default value: `1` (no skipping). Reduces replay size.
+
+  Returns:
+
+  - `T` Might return `nil` if there is game is launched in replay mode and there is no such data stored in the replay.
+
+# Module lib_carcameradef.lua
+
+## Class ac.CarCameraParams
+Stores parameters for a car camera (enabled with F6).
 
 # Module lib_physics.lua
 
@@ -13021,229 +12956,65 @@ Create a new track physics mesh (could be a wall or a road). Requires AC to use 
   Returns:
 
   - `ac.Disposable`
-## Function ac.getAppWindows()
-Collect information about available windows.
-## Function ac.accessAppWindow(windowName)
-Looks for a certain window of either an original AC app, a Python or a Lua app. Use `ac.getAppWindows()` to get a list of available apps.
-If found, this wrapper can be used to move or hide an app, or switch it to a different render layer.
+## Function ui.registerOnlineExtra(iconID, title, availableCallback, uiCallback, closeCallback, flags, toolFlags, toolSize)
+Adds an extra online feature. Features can be access via dropdown list in the new chat app, the one with lightbuilb
+icon. Such features can be used for things like teleporting around, changing skins and more.
+
+Each feature is defined by three functions. First checks if feature is available. For example, if you’re adding a skin
+change option, you might want to set it so it would only be available for stationary cars in pits. So if car is not
+in pits or moving, return `false` from the first callback.
+
+Second callback is UI-building function which will be called when user selects a feature. Use it for adding options to
+your feature. Or, pass `nil` (more on that later). If second callback returns `true`, popup closes without calling third
+callback (use it in case, for example, car leaves pits when picking a new skin). Note: due to some UI limitations,
+not all controls work well here, especially controls creating popups.
+
+Third callback will be called when user is done choosing their options and presses either OK or Cancel buttons. If OK
+button was pressed, third callback will receive `true`, otherwise it will be `false`. Proceed with applying options user
+chose only if it’s `true`. If third callback is `nil`, there will be no OK or Cancel buttons (to close popup, return `true`
+from UI callback).
+
+If second callback is `nil`, feature would become UI-less: third callback would be triggered with `true` argument each time
+user selects a feature from the list.
 
   Parameters:
 
-  1. `windowName`: `string`
+  1. `iconID`: `ui.Icons` ID of an icon for the feature.
+
+  2. `title`: `string` Feature title.
+
+  3. `availableCallback`: `nil|fun(): boolean`
+
+  4. `uiCallback`: `nil|fun(): boolean`
+
+  5. `closeCallback`: `nil|fun(okClicked: boolean)`
+
+  6. `flags`: `ui.OnlineExtraFlags` Flags for specialized behaviour.
+
+  7. `toolFlags`: `ui.WindowFlags?` Tool window flags (only with tool mode). Default value: `ui.WindowFlags.None`.
+
+  8. `toolSize`: `number|vec2?` Default tool size (only with tool mode). Default value: `vec2(320, 400)`.
 
   Returns:
 
-  - `ac.AppWindowAccessor`
-## Class ac.AppWindowAccessor
-Wrapper for interacting with any AC app. Might not work as intended with some apps not expecting such intrusion though.
-
-- `ac.AppWindowAccessor:valid()`
-
-  Window reference is valid (some references might become invalid if the window is deleted).
+  - `ac.Disposable`
+## Function ac.getUserSteamID()
+Returns Steam ID of current player. This function is available only to online scripts.
 
   Returns:
 
-    - `boolean`
+  - `string`
+## Function ac.signBlob(data, callback)
+Signs blob using RSA to safely exchange data with a remote server. Final message to sign is:
+`sha256(data)..sha256(serverIP..';'..serverTCPPort..';'..userSteamID)..tostring(userSlotIndex)..tostring(serverSeed)`
 
-- `ac.AppWindowAccessor:visible()`
-
-  Checks if window is visible.
-
-  Returns:
-
-    - `boolean`
-
-- `ac.AppWindowAccessor:setVisible(value)`
-
-  Changes visible state of the window.
+Returns 384 bytes which might contain zero bytes.
 
   Parameters:
 
-    1. `value`: `boolean?` Default value: `true`.
+  1. `data`: `binary`
 
-  Returns:
-
-    - `ac.AppWindowAccessor`
-
-- `ac.AppWindowAccessor:pinned()`
-
-  Checks if window is pinned.
-
-  Returns:
-
-    - `boolean`
-
-- `ac.AppWindowAccessor:setPinned(value)`
-
-  Changes pinned state of the window. Works with IMGUI apps with CSP v0.2.3-preview62 or newer.
-
-  Parameters:
-
-    1. `value`: `boolean?` Default value: `true`.
-
-  Returns:
-
-    - `ac.AppWindowAccessor`
-
-- `ac.AppWindowAccessor:position()`
-
-  Returns window position.
-
-  Returns:
-
-    - `vec2`
-
-- `ac.AppWindowAccessor:size()`
-
-  Returns window size (Python apps might draw things to extends exceeding this size).
-
-  Returns:
-
-    - `vec2`
-
-- `ac.AppWindowAccessor:move(value)`
-
-  Moves window to a different position. Works with IMGUI apps with CSP v0.2.3-preview62 or newer.
-
-  Parameters:
-
-    1. `value`: `vec2`
-
-  Returns:
-
-    - `ac.AppWindowAccessor`
-
-- `ac.AppWindowAccessor:resize(value)`
-
-  Resizes a window. Works with IMGUI apps only.
-
-  Parameters:
-
-    1. `value`: `vec2`
-
-  Returns:
-
-    - `ac.AppWindowAccessor`
-
-- `ac.AppWindowAccessor:redirectLayer()`
-
-  Returns redirect layer, or 0 if redirect is disabled. Redirected apps can be accessed via `dynamic::hud::redirected::N` textures.
-
-  Returns:
-
-    - `integer` 0 if redirect is disabled.
-
-- `ac.AppWindowAccessor:setRedirectLayer(layer, duplicate)`
-
-  Moves window to a different render layer, or back to existance with `0` passed as `layer`. Windows in separate layers don’t get mouse
-commands (but this wrapper can be used to send fake commands instead).
-
-  Parameters:
-
-    1. `layer`: `integer?` Default value: `0`.
-
-    2. `duplicate`: `boolean?` Set to `true` to clone a window to a different layer instead of moving it there. Be careful: this might break some Python apps. Default value: `false`.
-
-  Returns:
-
-    - `ac.AppWindowAccessor`
-
-- `ac.AppWindowAccessor:onMouseMove(position)`
-
-  Sends a fake mouse event to a window. Does not work with IMGUI apps or from online scripts.
-
-  Parameters:
-
-    1. `position`: `vec2`
-
-  Returns:
-
-    - `ac.AppWindowAccessor`
-
-- `ac.AppWindowAccessor:onMouseDown(position, button)`
-
-  Sends a fake mouse event to a window. Does not work with IMGUI apps or from online scripts.
-
-  Parameters:
-
-    1. `position`: `vec2`
-
-    2. `button`: `ui.MouseButton?` Default value: `ui.MouseButton.Left`.
-
-  Returns:
-
-    - `ac.AppWindowAccessor`
-
-- `ac.AppWindowAccessor:onMouseUp(position, button)`
-
-  Sends a fake mouse event to a window. Does not work with IMGUI apps or from online scripts.
-
-  Parameters:
-
-    1. `position`: `vec2`
-
-    2. `button`: `ui.MouseButton?` Default value: `ui.MouseButton.Left`.
-
-  Returns:
-
-    - `ac.AppWindowAccessor`
-## Function ac.writeReplayBlob(key, data)
-Writes additional data to replay. Use `ac.readReplayBlob()` to extract data later in replay mode. Data written this way is not tied to frames.
-Don’t bother compressing data too much: when writing, data will be compressed automatically.
-
-  Parameters:
-
-  1. `key`: `string` Existing data with the same key will be overwritten.
-
-  2. `data`: `binary?`
-## Function ac.readReplayBlob(key)
-Reads additional data from replay if recorded with `ac.writeReplayBlob()`.
-
-  Parameters:
-
-  1. `key`: `string`
-
-  Returns:
-
-  - `binary`
-## Function ac.ReplayStream(layout, callback, frameDivisor)
-Create a new stream for recording data to replays. Write data in returned structure if not in replay mode, read data if in replay mode (use `sim.isReplayActive` to check if you need to write or read the data).
-Few important points:
- - Each frame should not exceed 256 bytes to keep replay size appropriate. Limit for car scripts is lower, only 32 bytes.
- - While data will be interpolated between frames during reading, directional vectors won’t be re-normalized.
- - If two different apps would open a stream with the same layout, they’ll share a replay entry. Since 0.2.8, they’ll also share memory block, making `ac.ReplayStream()` act similar to `ac.connect()`.
- - Each opened replay stream will persist through the entire AC session to be saved at the end. Currently, the limit is 320 streams per session (before 0.2.8, the limit was 128).
- - Default values for unitialized frames are zeroes.
- - Before 0.2.8, if game is launched in replay mode and there is no such data in replay, `ac.ReplayStream()` could return `nil`. Now, it’ll return the data, but it’ll be empty.
- - Car scripts (both visual and physics) automatically add car ID and index to the key, ensuring uniqueness. Visual scripts can’t create new streams, but can access streams created by physics scripts, making it an effective way to pass data from physics to render, automatically being recorded in replays.
-
-  Parameters:
-
-  1. `layout`: `T` A table containing fields of structure and their types. Use `ac.StructItem` methods to select types. Unlike other similar functions, here you shouldn’t use string, otherwise data blending won’t work.
-
-  2. `callback`: `fun()?` Callback that will be called when replay stops. Use this callback to re-apply data from structure: at the moment of the call it will contain stuff from last recorded frame allowing you to restore the state of a simulation to when replay mode was activated.
-
-  3. `frameDivisor`: `integer?` Set to 2 to skip one out of two frames when recording, or 3 to skip two out of three frames. Default value: `1` (no skipping). Reduces replay size.
-
-  Returns:
-
-  - `T` Might return `nil` if there is game is launched in replay mode and there is no such data stored in the replay.
-
-# Module lib_carcameradef.lua
-
-## Class ac.CarCameraParams
-Stores parameters for a car camera (enabled with F6).
-## Function ac.getFFBTweaksReport()
-FFB (phase 1), FFB (phase 2), damper.
-
-  Returns:
-
-  - `boolean`
-## Function ac.setNeutralSunTrajectoryTimestamp(value)
-
-  Parameters:
-
-  1. `value`: `number` Local timestamp, doesn’t have to point to 00:00 time.
+  2. `callback`: `fun(data: binary)`
 ## Function render.isVisible(center, radius, gSpace, includeFarPlane)
 Can be called only within render context (otherwise returns `false`). Checks if given point is within current camera frustum. For checking if something
 is within the main camera instead, try `ac.isVisibleInMainCamera()`.
@@ -16285,6 +16056,662 @@ Adds a listener that will be called once a car touches an track physics object f
   Returns:
 
   - `ac.Disposable`
+## Function ac.currentDisplayPosition()
+Returns position of current display in texture, in pixels.
+
+  Returns:
+
+  - `vec2`
+## Function ac.currentDisplaySize()
+Returns size of current display in texture, in pixels.
+
+  Returns:
+
+  - `vec2`
+## Function ac.currentDisplayTextureResolution()
+Returns resolution of current display texture, in pixels.
+
+  Returns:
+
+  - `vec2`
+## Function ac.checkAdminPrivileges()
+Refreshes `ac.SimState.isAdmin` flag. Returns `false` if another check is already in progress.
+
+  Returns:
+
+  - `boolean`
+## Function ac.checkIfServerRequiresPasswordAsync(callback)
+Checks if server requires a password to join. Asyncronous version. Returns error (via `err` callback parameter) if this is not an online race.
+
+  Parameters:
+
+  1. `callback`: `fun(err: string, data: boolean)`
+## Function ac.setDriverChatNameColor(carIndex, color)
+Sets or resets custom driver color for CSP chat app.
+
+  Parameters:
+
+  1. `carIndex`: `integer` 0-based car index.
+
+  2. `color`: `rgbm|nil` Pass `nil` to reset the color. Default value: `nil`.
+## Function ac.hideCarLabels(carIndex, hide)
+Toggles visibility of car labels.
+
+  Parameters:
+
+  1. `carIndex`: `integer`
+
+  2. `hide`: `boolean?` Default value: `true`.
+## Function ac.setDriverVisible(carIndex, isVisible)
+Toggles visibility of driver model. Meant to be used for debugging, but could also be used for screenshots, for example.
+
+  Parameters:
+
+  1. `carIndex`: `integer`
+
+  2. `isVisible`: `boolean|`true`|`false``
+## Function ac.setDriverMouthOpened(carIndex, amount)
+Sets how much driver mouth is opened. Requires properly configured human surface shader to have an effect.
+
+  Parameters:
+
+  1. `carIndex`: `integer`
+
+  2. `amount`: `number` Value from 0 to 1.
+## Function ac.setDriverDoorOpen(carIndex, isOpen, instant)
+Toggles driver door animation.
+
+  Parameters:
+
+  1. `carIndex`: `integer`
+
+  2. `isOpen`: `boolean|`true`|`false``
+
+  3. `instant`: `boolean|`true`|`false``
+## Function ac.disableCarRecovery(disable)
+Disables car recovery (happens if car is flipped or falling through ground, use if for your mode or logic car might purposely
+end up in strange places and you don’t need that auto-restart).
+
+  Parameters:
+
+  1. `disable`: `boolean?` Default value: `true`.
+## Function ac.disableQuickMenuPitstop(disable)
+Disables quick pitstop menu.
+
+  Parameters:
+
+  1. `disable`: `boolean?` Default value: `true`.
+## Function ac.disableVirtualMirror(disable)
+Disables drawing of virtual mirror entirely.
+
+  Parameters:
+
+  1. `disable`: `boolean?` Default value: `true`.
+## Function ac.disableExtraHUDElements(idsMask, disable)
+Disables other HUD elements.
+Not available to scripts without I/O access.
+
+  Parameters:
+
+  1. `idsMask`: `'sessionTime'|'fuel'|'proximity'|'virtualMirror'|'quickPitsMenu'|'leaderboard'|'startingLights'|'wrongWay'|'ping'|'damage'|string[].` ID or list of IDs.
+
+  2. `disable`: `boolean?` Default value: `true`.
+## Function ac.disableNeckFXDriverModelMovement(disable)
+Disables Neck FX altering driver model.
+
+  Parameters:
+
+  1. `disable`: `boolean?` Default value: `true`.
+## Function ac.setCurrentCamera(mode)
+Sets current camera mode.
+
+  Parameters:
+
+  1. `mode`: `ac.CameraMode`
+## Function ac.setCurrentDrivableCamera(mode)
+Sets current drivable camera mode.
+
+  Parameters:
+
+  1. `mode`: `ac.DrivableCamera`
+## Function ac.setCurrentCarCamera(mode)
+Sets current car camera index.
+
+  Parameters:
+
+  1. `mode`: `integer` 0-based index of car camera.
+## Function ac.setCurrentTrackCamera(set)
+Sets current track cameras set.
+
+  Parameters:
+
+  1. `set`: `integer` 0-based index of track cameras set (sim state has upper bound).
+## Function ac.recenterVR()
+
+  Returns:
+
+  - `boolean`
+## Function ac.focusCar(index)
+Focus on a certain car.
+
+  Parameters:
+
+  1. `index`: `integer` 0-based car index.
+## Function ac.restartAssettoCorsa(raceIni)
+Restart Assetto Corsa (shut it down, but before that, add a flag to “race.ini” telling launcher to restart simulation).
+
+  Parameters:
+
+  1. `raceIni`: `string|nil` Optional INI data to merge with race.ini. Default value: `nil`.
+## Function ac.shutdownAssettoCorsa()
+Shutdown Assetto Corsa.
+Not available to scripts without I/O access.
+function ac.shutdownAssettoCorsa() end
+## Function ac.setRaceScore(carIndex, score)
+Override race score used for leaderboard sorting.
+
+  Parameters:
+
+  1. `carIndex`: `integer`
+
+  2. `score`: `number` Pass `math.nan` or `math.huge` to reset to default scoring system.
+## Function ac.setBodyDirt(carIndex, dirt)
+
+  Parameters:
+
+  1. `carIndex`: `integer`
+
+  2. `dirt`: `number` Value from 0 (clean) to 1 (dirty).
+## Function ac.sendChatMessage(command)
+Sends a new chat message.
+Not available to scripts without I/O access.
+
+  Parameters:
+
+  1. `command`: `string?`
+
+  Returns:
+
+  - `boolean` Returns `false` if message couldn’t be sent (trying to send too often, or not online).
+## Function ac.onChatMessage(callback)
+Sets a callback which will be called each time a new chat message arrives. Return `true` from callback to handle chat message
+and stop it from showing in chat apps.
+
+Second argument in callback stores car ID of a car that sent the message, or -1 if message comes from server.
+Not available to scripts without I/O access.
+
+  Parameters:
+
+  1. `callback`: `fun(message: string, senderCarIndex: integer, senderSessionID: integer): boolean` Callback which will be called each time new message arrives.
+
+  Returns:
+
+  - `ac.Disposable`
+## Function ac.onOutgoingChatMessage(callback)
+Sets a callback which will be called when user tries to send a message. Return `true` from callback to handle chat message
+and stop it from actually being sent (it’ll disappear from the chat as if sent).
+Not available to scripts without I/O access.
+
+  Parameters:
+
+  1. `callback`: `fun(message: string, senderCarIndex: integer, senderSessionID: integer): boolean` Callback which will be called each time new message is being sent.
+
+  Returns:
+
+  - `ac.Disposable`
+## Function ac.setReverbValue(reverbValue)
+
+  Parameters:
+
+  1. `reverbValue`: `number`
+## Function ac.setExtraTrackLODMultiplier(multiplier)
+Might be helpful if you’re moving camera really far away and not grabbing it for some reason. Nice Screenshots module sets it to 10
+when starting to make a screenshot.
+
+  Parameters:
+
+  1. `multiplier`: `number`
+## Function ac.setCameraPosition(pos)
+Moves free camera to a certain position. Note: if you want to control camera fully, consider grabbing camera instead.
+
+  Parameters:
+
+  1. `pos`: `vec3`
+## Function ac.setCameraDirection(look, up)
+Orients free camera. Note: if you want to control camera fully, consider grabbing camera instead.
+
+  Parameters:
+
+  1. `look`: `vec3`
+
+  2. `up`: `vec3?` Default value: `vec3(0, 1, 0)`.
+## Function ac.setCameraFOV(fov)
+Sets FOV of a free camera. Note: if you want to control camera fully, consider grabbing camera instead.
+
+  Parameters:
+
+  1. `fov`: `number` Value in degrees.
+## Function ac.setCameraExposure(exposure)
+Sets exposure of a free camera. Note: if you want to control camera fully, consider grabbing camera instead.
+
+  Parameters:
+
+  1. `exposure`: `number`
+## Function ac.setCameraDOF(distance)
+Sets DOF distance of a free camera. Note: if you want to control camera fully, consider grabbing camera instead.
+
+  Parameters:
+
+  1. `distance`: `number` Value in meters, or 0 to disable DOF.
+## Function ac.hideMouseCursor(restorePosition)
+Hide mouse for a very short period of time. Call each frame if you want for it to stay hidden. Works similar to `ui.setMouseCursor(ui.MouseCursor.None)`,
+but this one can be called from `script.update()` and has an option to restore cursor position.
+
+  Parameters:
+
+  1. `restorePosition`: `boolean?` Set to `true` if you want for mouse to restore position when reappearing. Default value: `false`.
+## Function ac.accessMouseDelta(rawInput, restorePosition, force)
+Returns mouse delta since the last call in pixels, but also, hides mouse and fixes it in place, allowing to drag things around endlessly. Good for
+implementing first person cameras, or something like custom mouse steering, so that mouse is no longer bound by window or screen size. Mouse will be
+released and reappear shortly after this function has stopped being called. If delta is not available (for example, if `force` is not set to `true`,
+and mouse currently is hovering some UI element), returns `vec2(0, 0)`.
+
+  Parameters:
+
+  1. `rawInput`: `nil|boolean|'camera'` Set to `true` to use raw input, or to `'camera'` to use raw input only if that’s user’s preference for cameras.
+
+  2. `restorePosition`: `boolean?` Set to `true` to restore mouse position when mouse is released. Default value: `true`.
+
+  3. `force`: `boolean?` Set to `true` to force access even if mouse is currently busy interacting with UI or something like that. Default value: `false`.
+
+  Returns:
+
+  - `vec2`
+## Function ui.onDriverContextMenu(callback)
+Sets a callback which will be called when drawing driver context menu. Within, `ui.` functions can be used to add additional information.
+
+  Parameters:
+
+  1. `callback`: `fun(carIndex: integer)`
+
+  Returns:
+
+  - `ac.Disposable`
+## Function ac.isCarResetAllowed()
+Returns `true` if resetting car is allowed in current session, invalidates lap.
+
+  Returns:
+
+  - `boolean`
+## Function ac.resetCar()
+Resets car back to the track. Available in few basic modes in offline only (such as practice with a single car), invalidates lap.
+
+  Returns:
+
+  - `boolean` Return value added in 0.3.0.
+## Function ac.takeAStepBack(offset)
+Resets car back to the track and moves it a bit back. Available in few basic modes in offline only (such as practice with a single car), invalidates lap.
+
+  Parameters:
+
+  1. `offset`: `number?` Distance in meters. Default value: `nil`.
+## Function ac.saveCarStateAsync(callback)
+Save car state. Saves a lot of stuff, including velocities, momentum, engine and gearbox state, damage levels. Because of that save from one car
+can’t be applied to a different car.
+
+ Library `shared/sim/cars` has few helper methods allowing to deal with saved states.
+
+  Parameters:
+
+  1. `callback`: `fun(err: string, data: string)`
+## Function ac.loadCarState(data, dataNext, blend, iterations)
+Load car state. Available in few basic modes in offline only (such as practice with a single car), invalidates lap.
+
+  Parameters:
+
+  1. `data`: `binary`
+
+  2. `dataNext`: `binary|nil` Default value: `nil`.
+
+  3. `blend`: `number?` Default value: 0.
+
+  4. `iterations`: `integer?` Default value: 5.
+
+  Returns:
+
+  - `boolean` Returns false if the feature is not available in the current mode.
+## Function ac.markLapAsSpoiled(silent)
+Marks current lap done by player as spoiled. Works only during the race
+
+  Parameters:
+
+  1. `silent`: `boolean?` Do not show lap invalidation message. Default value: `false`.
+## Function ac.setAppsHidden(hidden)
+Hides or shows any apps.
+
+  Parameters:
+
+  1. `hidden`: `boolean?` Default value: `true`.
+## Function ac.tryToStart(instant)
+Tries to start the race (pretty much, just to press Start button in pits menu).
+
+  Parameters:
+
+  1. `instant`: `boolean?` Skip fade-in transition. Default value: `false`.
+
+  Returns:
+
+  - `boolean` Returns `true` if started successfully.
+## Function ac.tryToPause(active)
+Pauses or unpauses simulation (if possible; for example, it wouldn’t be paused online with moving car or when displaying results).
+
+  Parameters:
+
+  1. `active`: `boolean|`true`|`false``
+
+  Returns:
+
+  - `boolean` Returns `true` if paused successfully.
+## Function ac.tryToRestartSession()
+Attempts to restart current session (for offline racing only).
+
+  Returns:
+
+  - `boolean` Returns `true` if restarted successfully.
+## Function ac.tryToSkipSession()
+Attempts to restart current session (for offline racing only).
+
+  Returns:
+
+  - `boolean` Returns `true` if restarted successfully.
+## Function ac.tryToOpenRaceMenu(tab)
+Attempts to open race menu (only available if car is in pits).
+
+  Parameters:
+
+  1. `tab`: `nil|'info'|'setup'|'telemetry'|'time'|nil` Default value: `nil`.
+
+  Returns:
+
+  - `boolean` Returns `true` if restarted successfully.
+## Function ac.tryToTeleportToPits()
+Teleports car to pits.
+
+  Returns:
+
+  - `boolean` Returns `true` if teleported successfully.
+## Function ac.setOrbitOnboardCamera(orbit)
+
+  Parameters:
+
+  1. `orbit`: `boolean|`true`|`false``
+## Function ac.highlightCar(carIndex, highlightColor)
+Add fake light to a car (not realistic at all, can be used for something like bringing an attention to a recently
+teleported car with its collisions disabled).
+
+ When script reloads, colors reset if the last cars set for the car were from the script.
+
+  Parameters:
+
+  1. `carIndex`: `integer` 0-based car index.
+
+  2. `highlightColor`: `rgb|nil` Pass `nil` to cancel out the highlight. Or, pass a color in 0…1 range. Default value: `nil`.
+## Function ac.trySimKeyPressCommand(command, shift)
+Runs a sim command usually associated with AC hotkeys, such as “Ideal Line”. Original hotkey logic is applied: for example,
+most commands won’t work if the race is not started. Returns `false` if there is no such command.
+
+  Parameters:
+
+  1. `command`: `string`
+
+  2. `shift`: `boolean?` Some commands perform opposite action if shift is held down. Default value: `false`.
+
+  Returns:
+
+  - `boolean`
+## Function ac.setCarActive(carIndex, active)
+Toggles car visibility.
+
+  Parameters:
+
+  1. `carIndex`: `integer`
+
+  2. `active`: `boolean|`true`|`false``
+## Function ac.blockEscapeButton()
+Block Escape button from pausing AC for a few frames.
+function ac.blockEscapeButton() end
+## Function ac.applyContentConfig(targetIndex, data, flags)
+Similar to `ac.ext_applyTrackConfig()` from CSP Python API, reload a track config live. Works even if live updates are disabled. Use carefully,
+might cause a freeze or crash the game.
+Not available to scripts without I/O access.
+
+  Parameters:
+
+  1. `targetIndex`: `integer` Set to -1 to apply track config, or to car index to apply a car config.
+
+  2. `data`: `string` INI config data.
+
+  3. `flags`: `integer?` Bit flags. 1: restore the state of track conditions, set by default. 2: partial mode (do not discard existing config loaded from INI file on a disk), set by default. 4: reload 3D-trees as well, set by default. 8: apply shader replacements from the config to the entire model, not just to meshes loaded from KN5. Use `bit.bor()` to combine flags. Default value: 7.
+## Function ac.getAppWindows()
+Collect information about available windows.
+## Function ac.setHeatShimmerIntensity(key, intensity)
+Sets intensity of a heat shimmer zone with a given key. Returns `false` if there is no zone with such key.
+
+  Parameters:
+
+  1. `key`: `integer`
+
+  2. `intensity`: `number`
+
+  Returns:
+
+  - `boolean`
+## Function ac.setScriptFlamesIntensity(intensity)
+Sets intensity of script flames. See docs for exhaust flames configuration on how to set them up.
+
+  Parameters:
+
+  1. `intensity`: `number`
+## Function ac.getExtraSwitchName(index)
+Returns name of a switch, or `nil` if switch name is not available or not named.
+
+  Parameters:
+
+  1. `index`: `integer` 0-based index.
+
+  Returns:
+
+  - `string`
+## Function ac.setExteriorAudioMix(value)
+Mix exterior audio for interior views. If your car has something like rolling down windows, might be a good idea to set it to 1 then.
+
+  Parameters:
+
+  1. `value`: `number` Value from 0 to 1.
+## Function ac.setTurboWastegate(wastegate, turboIndex)
+Set a custom value for turbo wastegate. Accessible only if turbo is adjustable.
+
+  Parameters:
+
+  1. `wastegate`: `number`
+
+  2. `turboIndex`: `integer?` Default value: -1.
+## Function ac.getRealMirrorCount()
+Get number of Real Mirror mirrors in a car (for car scripts, associated car, for apps and tools — player’s car). If Real
+Mirrors are disabled or not active for that car, returns -1.
+
+  Returns:
+
+  - `integer`
+## Function ac.getRealMirrorAABB(mirrorIndex, min, max)
+
+  Parameters:
+
+  1. `mirrorIndex`: `integer` 0-based mirror index (leftmost mirror is 0, the first one to right of it is 1 and so on).
+
+  2. `min`: `vec3`
+
+  3. `max`: `vec3`
+
+  Returns:
+
+  - `boolean`
+## Function ac.setRealMirrorParams(mirrorIndex, params, userDriven)
+Updates mirror settings for a given Real Mirror mirror (for car scripts, associated car, for apps and tools — player’s car). Easiest way is to use
+it in combination with `ac.getRealMirrorParams()`:
+ ```lua
+ local params = ac.getRealMirrorParams()
+ params.fov = params.fov + 1
+ ac.setRealMirrorParams(params.fov)
+ ```
+
+ Updated settings will be written onto disk a few seconds after updated values have applied (if they’re different from current values).
+
+ If called before with `userDriven` set to `false`, any subsequent calls with `userDriven` set to `true` will be ignored.
+
+  Parameters:
+
+  1. `mirrorIndex`: `integer` 0-based mirror index (leftmost mirror is 0, the first one to right of it is 1 and so on).
+
+  2. `params`: `ac.RealMirrorParams` New params to apply.
+
+  3. `userDriven`: `boolean?` Set to `false` to not write settings to a disk and instead stop user-driven changes for current session. Default value: `true`.
+## Function ac.overrideTyreSmoke(tyreIndex, intensity, thickness, surfaceHeat)
+Changes behaviour of smoke going off a tyre (won’t affect dust or water splashes). Actual movement of smoke might change with CSP updates.
+
+  Parameters:
+
+  1. `tyreIndex`: `integer`
+
+  2. `intensity`: `number` Use `math.nan` to restore original behaviour, or a value from 0 to 1.
+
+  3. `thickness`: `number` A value from 0 to 1.
+
+  4. `surfaceHeat`: `number?` Values above 0 will get entire surface to emit smoke as well. Default value: 0.
+## Function ac.setGearLabel(c)
+Changes label used to display current gear. Label can be up to four symbols long. If label is 2 characters or less, it’ll be stored in a replay as well
+(do any gearboxes have labels longer than that?) Can be useful for creating automatic gearboxes and such: AC widgets will use this label, and other apps can access the label
+using `ac.getCar().gearLabel`.
+
+  Parameters:
+
+  1. `c`: `string|nil` If empty or `nil`, resets label to default gear label. Default value: `nil`.
+## Function ac.setABS(mode)
+
+  Parameters:
+
+  1. `mode`: `integer`
+## Function ac.setTC(mode)
+
+  Parameters:
+
+  1. `mode`: `integer`
+## Function ac.isTurboWastegateAdjustable(turboIndex)
+
+  Parameters:
+
+  1. `turboIndex`: `integer`
+
+  Returns:
+
+  - `boolean`
+## Function ac.setBrakeBias(balance)
+
+  Parameters:
+
+  1. `balance`: `number`
+## Function ac.setEngineBrakeSetting(settingIndex)
+
+  Parameters:
+
+  1. `settingIndex`: `integer`
+## Function ac.setDRS(state)
+
+  Parameters:
+
+  1. `state`: `boolean|`true`|`false``
+## Function ac.setKERS(state)
+
+  Parameters:
+
+  1. `state`: `boolean|`true`|`false``
+## Function ac.setMGUHCharging(charging)
+
+  Parameters:
+
+  1. `charging`: `boolean|`true`|`false``
+## Function ac.setMGUKDelivery(level)
+
+  Parameters:
+
+  1. `level`: `integer`
+## Function ac.setMGUKRecovery(level)
+
+  Parameters:
+
+  1. `level`: `integer`
+## Function ac.setHeadlights(active)
+
+  Parameters:
+
+  1. `active`: `boolean|`true`|`false``
+## Function ac.flashLights()
+Activates flashing lights for a bit.
+function ac.flashLights() end
+## Function ac.setWiperMode(wiperMode)
+Sets index of current wiper speed. To get current speed or number of available speeds, check `ac.StateCar`.
+
+  Parameters:
+
+  1. `wiperMode`: `integer` Wiper mode index from 0 (disabled) to `ac.StateCar.wiperModes` (excluding).
+## Function ac.setHighBeams(active)
+Toggles high beams on and off. Note: the way lights work, this only changes if high beams are working with low beams or if low beams are alone (and,
+in reality, they actually switch a low-beam flag used to switch headlights into low-beam mode). To flash high beams without low beams,
+use `ac.flashLights()`.
+
+  Parameters:
+
+  1. `active`: `boolean|`true`|`false``
+## Function ac.setDaytimeLights(active)
+
+  Parameters:
+
+  1. `active`: `boolean|`true`|`false``
+## Function ac.setBrakingLightsThreshold(threshold)
+
+  Parameters:
+
+  1. `threshold`: `number?` Default value: 0.01.
+## Function ac.setTurningLights(mode)
+
+  Parameters:
+
+  1. `mode`: `ac.TurningLights`
+## Function ac.setExtraSwitch(index, value)
+Changes the state of an extra switch. Note: if switch is in hold mode, it’ll reset to its disabled state after a few frames.
+ This function ignores availability checks (but wouldn’t work if the switch has been disabled from car custom physics script).
+
+  Parameters:
+
+  1. `index`: `integer` 0-based index.
+
+  2. `value`: `boolean|`true`|`false``
+
+  Returns:
+
+  - `boolean`
+## Function ac.isExtraSwitchAvailable(index, availableToCarControl)
+Checks if an extra switch is available.
+
+  Parameters:
+
+  1. `index`: `integer` 0-based index.
+
+  2. `availableToCarControl`: `boolean?` Car control scripts can toggle a switch even if it’s not available to user with switch flags unless switch has been disabled by car physics script. Set this parameter to `false` to check if user can toggle the state with a hotkey, or leave it as `true` if you need to verify if the switch hasn’t been disabled by physics. Default value: `true`.
+
+  Returns:
+
+  - `boolean`
 ## Function physics.teleportCarTo(carIndex, spawnSet)
 Teleports car to certain spawn point, invalidates current lap.
 
@@ -17043,1564 +17470,257 @@ Hint AIs to put rain tyres on or off, overrides default behaviour.
   1. `carIndex`: `integer` 0-based car index.
 
   2. `useRainTyres`: `boolean|`true`|`false``
-## Function ac.checkAdminPrivileges()
-Refreshes `ac.SimState.isAdmin` flag. Returns `false` if another check is already in progress.
+## Function ac.reconnectTo(params)
+Reconnect to a different server (or, if `params` is not set or empty, same server).
+If any values in table are missing, current values will be used.
 
-  Returns:
-
-  - `boolean`
-## Function ac.checkIfServerRequiresPasswordAsync(callback)
-Checks if server requires a password to join. Asyncronous version. Returns error (via `err` callback parameter) if this is not an online race.
-
-  Parameters:
-
-  1. `callback`: `fun(err: string, data: boolean)`
-## Function ac.setDriverChatNameColor(carIndex, color)
-Sets or resets custom driver color for CSP chat app.
-
-  Parameters:
-
-  1. `carIndex`: `integer` 0-based car index.
-
-  2. `color`: `rgbm|nil` Pass `nil` to reset the color. Default value: `nil`.
-## Function ac.hideCarLabels(carIndex, hide)
-Toggles visibility of car labels.
-
-  Parameters:
-
-  1. `carIndex`: `integer`
-
-  2. `hide`: `boolean?` Default value: `true`.
-## Function ac.setDriverVisible(carIndex, isVisible)
-Toggles visibility of driver model. Meant to be used for debugging, but could also be used for screenshots, for example.
-
-  Parameters:
-
-  1. `carIndex`: `integer`
-
-  2. `isVisible`: `boolean|`true`|`false``
-## Function ac.setDriverMouthOpened(carIndex, amount)
-Sets how much driver mouth is opened. Requires properly configured human surface shader to have an effect.
-
-  Parameters:
-
-  1. `carIndex`: `integer`
-
-  2. `amount`: `number` Value from 0 to 1.
-## Function ac.setDriverDoorOpen(carIndex, isOpen, instant)
-Toggles driver door animation.
-
-  Parameters:
-
-  1. `carIndex`: `integer`
-
-  2. `isOpen`: `boolean|`true`|`false``
-
-  3. `instant`: `boolean|`true`|`false``
-## Function ac.disableCarRecovery(disable)
-Disables car recovery (happens if car is flipped or falling through ground, use if for your mode or logic car might purposely
-end up in strange places and you don’t need that auto-restart).
-
-  Parameters:
-
-  1. `disable`: `boolean?` Default value: `true`.
-## Function ac.disableQuickMenuPitstop(disable)
-Disables quick pitstop menu.
-
-  Parameters:
-
-  1. `disable`: `boolean?` Default value: `true`.
-## Function ac.disableVirtualMirror(disable)
-Disables drawing of virtual mirror entirely.
-
-  Parameters:
-
-  1. `disable`: `boolean?` Default value: `true`.
-## Function ac.disableExtraHUDElements(idsMask, disable)
-Disables other HUD elements.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `idsMask`: `'sessionTime'|'fuel'|'proximity'|'virtualMirror'|'quickPitsMenu'|'leaderboard'|'startingLights'|'wrongWay'|'ping'|'damage'|string[].` ID or list of IDs.
-
-  2. `disable`: `boolean?` Default value: `true`.
-## Function ac.disableNeckFXDriverModelMovement(disable)
-Disables Neck FX altering driver model.
-
-  Parameters:
-
-  1. `disable`: `boolean?` Default value: `true`.
-## Function ac.setCurrentCamera(mode)
-Sets current camera mode.
-
-  Parameters:
-
-  1. `mode`: `ac.CameraMode`
-## Function ac.setCurrentDrivableCamera(mode)
-Sets current drivable camera mode.
-
-  Parameters:
-
-  1. `mode`: `ac.DrivableCamera`
-## Function ac.setCurrentCarCamera(mode)
-Sets current car camera index.
-
-  Parameters:
-
-  1. `mode`: `integer` 0-based index of car camera.
-## Function ac.setCurrentTrackCamera(set)
-Sets current track cameras set.
-
-  Parameters:
-
-  1. `set`: `integer` 0-based index of track cameras set (sim state has upper bound).
-## Function ac.recenterVR()
-
-  Returns:
-
-  - `boolean`
-## Function ac.focusCar(index)
-Focus on a certain car.
-
-  Parameters:
-
-  1. `index`: `integer` 0-based car index.
-## Function ac.restartAssettoCorsa(raceIni)
-Restart Assetto Corsa (shut it down, but before that, add a flag to “race.ini” telling launcher to restart simulation).
-
-  Parameters:
-
-  1. `raceIni`: `string|nil` Optional INI data to merge with race.ini. Default value: `nil`.
-## Function ac.shutdownAssettoCorsa()
-Shutdown Assetto Corsa.
-Not available to scripts without I/O access.
-function ac.shutdownAssettoCorsa() end
-## Function ac.setRaceScore(carIndex, score)
-Override race score used for leaderboard sorting.
-
-  Parameters:
-
-  1. `carIndex`: `integer`
-
-  2. `score`: `number` Pass `math.nan` or `math.huge` to reset to default scoring system.
-## Function ac.setBodyDirt(carIndex, dirt)
-
-  Parameters:
-
-  1. `carIndex`: `integer`
-
-  2. `dirt`: `number` Value from 0 (clean) to 1 (dirty).
-## Function ac.sendChatMessage(command)
-Sends a new chat message.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `command`: `string?`
-
-  Returns:
-
-  - `boolean` Returns `false` if message couldn’t be sent (trying to send too often, or not online).
-## Function ac.onChatMessage(callback)
-Sets a callback which will be called each time a new chat message arrives. Return `true` from callback to handle chat message
-and stop it from showing in chat apps.
-
-Second argument in callback stores car ID of a car that sent the message, or -1 if message comes from server.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `callback`: `fun(message: string, senderCarIndex: integer, senderSessionID: integer): boolean` Callback which will be called each time new message arrives.
-
-  Returns:
-
-  - `ac.Disposable`
-## Function ac.onOutgoingChatMessage(callback)
-Sets a callback which will be called when user tries to send a message. Return `true` from callback to handle chat message
-and stop it from actually being sent (it’ll disappear from the chat as if sent).
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `callback`: `fun(message: string, senderCarIndex: integer, senderSessionID: integer): boolean` Callback which will be called each time new message is being sent.
-
-  Returns:
-
-  - `ac.Disposable`
-## Function ac.setReverbValue(reverbValue)
-
-  Parameters:
-
-  1. `reverbValue`: `number`
-## Function ac.setExtraTrackLODMultiplier(multiplier)
-Might be helpful if you’re moving camera really far away and not grabbing it for some reason. Nice Screenshots module sets it to 10
-when starting to make a screenshot.
-
-  Parameters:
-
-  1. `multiplier`: `number`
-## Function ac.setCameraPosition(pos)
-Moves free camera to a certain position. Note: if you want to control camera fully, consider grabbing camera instead.
-
-  Parameters:
-
-  1. `pos`: `vec3`
-## Function ac.setCameraDirection(look, up)
-Orients free camera. Note: if you want to control camera fully, consider grabbing camera instead.
-
-  Parameters:
-
-  1. `look`: `vec3`
-
-  2. `up`: `vec3?` Default value: `vec3(0, 1, 0)`.
-## Function ac.setCameraFOV(fov)
-Sets FOV of a free camera. Note: if you want to control camera fully, consider grabbing camera instead.
-
-  Parameters:
-
-  1. `fov`: `number` Value in degrees.
-## Function ac.setCameraExposure(exposure)
-Sets exposure of a free camera. Note: if you want to control camera fully, consider grabbing camera instead.
-
-  Parameters:
-
-  1. `exposure`: `number`
-## Function ac.setCameraDOF(distance)
-Sets DOF distance of a free camera. Note: if you want to control camera fully, consider grabbing camera instead.
-
-  Parameters:
-
-  1. `distance`: `number` Value in meters, or 0 to disable DOF.
-## Function ac.hideMouseCursor(restorePosition)
-Hide mouse for a very short period of time. Call each frame if you want for it to stay hidden. Works similar to `ui.setMouseCursor(ui.MouseCursor.None)`,
-but this one can be called from `script.update()` and has an option to restore cursor position.
-
-  Parameters:
-
-  1. `restorePosition`: `boolean?` Set to `true` if you want for mouse to restore position when reappearing. Default value: `false`.
-## Function ac.accessMouseDelta(rawInput, restorePosition, force)
-Returns mouse delta since the last call in pixels, but also, hides mouse and fixes it in place, allowing to drag things around endlessly. Good for
-implementing first person cameras, or something like custom mouse steering, so that mouse is no longer bound by window or screen size. Mouse will be
-released and reappear shortly after this function has stopped being called. If delta is not available (for example, if `force` is not set to `true`,
-and mouse currently is hovering some UI element), returns `vec2(0, 0)`.
-
-  Parameters:
-
-  1. `rawInput`: `nil|boolean|'camera'` Set to `true` to use raw input, or to `'camera'` to use raw input only if that’s user’s preference for cameras.
-
-  2. `restorePosition`: `boolean?` Set to `true` to restore mouse position when mouse is released. Default value: `true`.
-
-  3. `force`: `boolean?` Set to `true` to force access even if mouse is currently busy interacting with UI or something like that. Default value: `false`.
-
-  Returns:
-
-  - `vec2`
-## Function ui.onDriverContextMenu(callback)
-Sets a callback which will be called when drawing driver context menu. Within, `ui.` functions can be used to add additional information.
-
-  Parameters:
-
-  1. `callback`: `fun(carIndex: integer)`
-
-  Returns:
-
-  - `ac.Disposable`
-## Function ac.isCarResetAllowed()
-Returns `true` if resetting car is allowed in current session, invalidates lap.
-
-  Returns:
-
-  - `boolean`
-## Function ac.resetCar()
-Resets car back to the track. Available in few basic modes in offline only (such as practice with a single car), invalidates lap.
-
-  Returns:
-
-  - `boolean` Return value added in 0.3.0.
-## Function ac.takeAStepBack(offset)
-Resets car back to the track and moves it a bit back. Available in few basic modes in offline only (such as practice with a single car), invalidates lap.
-
-  Parameters:
-
-  1. `offset`: `number?` Distance in meters. Default value: `nil`.
-## Function ac.saveCarStateAsync(callback)
-Save car state. Saves a lot of stuff, including velocities, momentum, engine and gearbox state, damage levels. Because of that save from one car
-can’t be applied to a different car.
-
- Library `shared/sim/cars` has few helper methods allowing to deal with saved states.
-
-  Parameters:
-
-  1. `callback`: `fun(err: string, data: string)`
-## Function ac.loadCarState(data, dataNext, blend, iterations)
-Load car state. Available in few basic modes in offline only (such as practice with a single car), invalidates lap.
-
-  Parameters:
-
-  1. `data`: `binary`
-
-  2. `dataNext`: `binary|nil` Default value: `nil`.
-
-  3. `blend`: `number?` Default value: 0.
-
-  4. `iterations`: `integer?` Default value: 5.
-
-  Returns:
-
-  - `boolean` Returns false if the feature is not available in the current mode.
-## Function ac.markLapAsSpoiled(silent)
-Marks current lap done by player as spoiled. Works only during the race
-
-  Parameters:
-
-  1. `silent`: `boolean?` Do not show lap invalidation message. Default value: `false`.
-## Function ac.setAppsHidden(hidden)
-Hides or shows any apps.
-
-  Parameters:
-
-  1. `hidden`: `boolean?` Default value: `true`.
-## Function ac.tryToStart(instant)
-Tries to start the race (pretty much, just to press Start button in pits menu).
-
-  Parameters:
-
-  1. `instant`: `boolean?` Skip fade-in transition. Default value: `false`.
-
-  Returns:
-
-  - `boolean` Returns `true` if started successfully.
-## Function ac.tryToPause(active)
-Pauses or unpauses simulation (if possible; for example, it wouldn’t be paused online with moving car or when displaying results).
-
-  Parameters:
-
-  1. `active`: `boolean|`true`|`false``
-
-  Returns:
-
-  - `boolean` Returns `true` if paused successfully.
-## Function ac.tryToRestartSession()
-Attempts to restart current session (for offline racing only).
-
-  Returns:
-
-  - `boolean` Returns `true` if restarted successfully.
-## Function ac.tryToSkipSession()
-Attempts to restart current session (for offline racing only).
-
-  Returns:
-
-  - `boolean` Returns `true` if restarted successfully.
-## Function ac.tryToOpenRaceMenu(tab)
-Attempts to open race menu (only available if car is in pits).
-
-  Parameters:
-
-  1. `tab`: `nil|'info'|'setup'|'telemetry'|'time'|nil` Default value: `nil`.
-
-  Returns:
-
-  - `boolean` Returns `true` if restarted successfully.
-## Function ac.tryToTeleportToPits()
-Teleports car to pits.
-
-  Returns:
-
-  - `boolean` Returns `true` if teleported successfully.
-## Function ac.setOrbitOnboardCamera(orbit)
-
-  Parameters:
-
-  1. `orbit`: `boolean|`true`|`false``
-## Function ac.highlightCar(carIndex, highlightColor)
-Add fake light to a car (not realistic at all, can be used for something like bringing an attention to a recently
-teleported car with its collisions disabled).
-
- When script reloads, colors reset if the last cars set for the car were from the script.
-
-  Parameters:
-
-  1. `carIndex`: `integer` 0-based car index.
-
-  2. `highlightColor`: `rgb|nil` Pass `nil` to cancel out the highlight. Or, pass a color in 0…1 range. Default value: `nil`.
-## Function ac.trySimKeyPressCommand(command, shift)
-Runs a sim command usually associated with AC hotkeys, such as “Ideal Line”. Original hotkey logic is applied: for example,
-most commands won’t work if the race is not started. Returns `false` if there is no such command.
-
-  Parameters:
-
-  1. `command`: `string`
-
-  2. `shift`: `boolean?` Some commands perform opposite action if shift is held down. Default value: `false`.
-
-  Returns:
-
-  - `boolean`
-## Function ac.setCarActive(carIndex, active)
-Toggles car visibility.
-
-  Parameters:
-
-  1. `carIndex`: `integer`
-
-  2. `active`: `boolean|`true`|`false``
-## Function ac.blockEscapeButton()
-Block Escape button from pausing AC for a few frames.
-function ac.blockEscapeButton() end
-## Function ac.applyContentConfig(targetIndex, data, flags)
-Similar to `ac.ext_applyTrackConfig()` from CSP Python API, reload a track config live. Works even if live updates are disabled. Use carefully,
-might cause a freeze or crash the game.
-Not available to scripts without I/O access.
-
-  Parameters:
-
-  1. `targetIndex`: `integer` Set to -1 to apply track config, or to car index to apply a car config.
-
-  2. `data`: `string` INI config data.
-
-  3. `flags`: `integer?` Bit flags. 1: restore the state of track conditions, set by default. 2: partial mode (do not discard existing config loaded from INI file on a disk), set by default. 4: reload 3D-trees as well, set by default. 8: apply shader replacements from the config to the entire model, not just to meshes loaded from KN5. Use `bit.bor()` to combine flags. Default value: 7.
-## Function ac.getAppWindows()
-Collect information about available windows.
-## Function ac.pauseFilesWatching(pause)
-Pauses or un-pauses file system monitoring used for live reloading. Might be useful to pause it if you’re about to update a lot of configs, for example. Make sure
-to always re-enable watching afterwards though, or it’ll be re-enabled in a few seconds automatically.
-
-  Parameters:
-
-  1. `pause`: `boolean|`true`|`false``
-## Function ac.debugLights(filter, count, mode, distance)
-Enables and disables lights debugging outlines. Parameters can be used to tune which lights would generate those outlines.
-
-  Parameters:
-
-  1. `filter`: `string`
-
-  2. `count`: `integer`
-
-  3. `mode`: `ac.LightsDebugMode`
-
-  4. `distance`: `number?` Default value: 100.
-## Function ac.debugRainRacingLine(active)
-Enables and disables racing line debug view. Racing line is used to keep track of dynamic wetness offset caused by cars drying up the track when driving by.
-
-  Parameters:
-
-  1. `active`: `boolean?` Default value: `true`.
-## Function ac.overrideTrackTrees(listName, data, alignSurface)
-Replace track trees with a custom list. Use `listKey` not set in “ext_config.ini” to add new lists. Feel free to call this function each frame if amount of
-data is small. For example, you can have a trees editing tool defining two lists: one rarely updating large list with already added trees and another often updating
-small list with trees being edited now.
-
-  Parameters:
-
-  1. `listName`: `string` Path to list name, all tree models are loaded relative to it. Use list name already written in track config to override it.
-
-  2. `data`: `string|nil` List of trees in that text file format, or `nil` to clear out the list. Default value: `nil`.
-
-  3. `alignSurface`: `boolean?` Set to `true` to align trees positions and shading alogn track surface described in track config (very slow). Default value: `false`.
-## Function ac.setPhysicsDebugLines(mask, carsMask)
-Enables and disables physics debugging outlines. Pass `1` as `carsMask` to show lines for the first car only, `0` to show lines for all cars
-or set specific bits to 1 for certain cars.
-
-  Parameters:
-
-  1. `mask`: `ac.PhysicsDebugLines`
-
-  2. `carsMask`: `integer?` Default value: 1.
-## Function ac.setExposureMultiplier(value)
-
-  Parameters:
-
-  1. `value`: `number`
-## Function ac.disableFrameLimiter(disable)
-Pause frame limiter (both vertical syncing and regular frame limiter). Temporary change, rolls back when script is unloaded.
-
-  Parameters:
-
-  1. `disable`: `boolean?` Default value: `true`.
-## Function ac.isPythonAppActive(appName)
-Checks if a Python app with given name (name of its folder) is currently loaded in-game.
-
-  Parameters:
-
-  1. `appName`: `string`
-
-  Returns:
-
-  - `boolean`
-## Function ac.reloadPythonApp(appName, withoutDisposing)
-Tries to reload a Python app with given name (name of its folder).
-
-  Parameters:
-
-  1. `appName`: `string`
-
-  2. `withoutDisposing`: `boolean?` Default value: `false`.
-
-  Returns:
-
-  - `boolean` Returns `false` if app with this name was not found.
-## Function ac.configureCarForceFeedback(carIndex, ffbBase, ffbSteerAssist)
-Alter `FFMULT` and `STEER_ASSIST` from car.ini. Original values are available in car state. Since 0.3.0, pass `0` to restore original values.
-
-  Parameters:
-
-  1. `carIndex`: `integer`
-
-  2. `ffbBase`: `number`
-
-  3. `ffbSteerAssist`: `number?` Kunos use 1 for all of their cars. Default value: 1.
-## Function ac.setWeatherExactUTC0Timestamp(time, explicitDate)
-Replace current time entirely. Also alters timezone if new time would have different DST. Note: `time` here is a global timestamp with no timezone correction!
-Can’t be reverted, changes time stored in replay. Affects offline races only. Does not work in replays.
-
-  Parameters:
-
-  1. `time`: `number`
-
-  2. `explicitDate`: `boolean?` New state for `ac.StateSim.explicitDateSet` flag. Default value: `true`.
-## Function ac.setWeatherTimeMultiplier(multiplier)
-Sets current time multiplier used by WeatherFX. Affects offline races only.
-
-  Parameters:
-
-  1. `multiplier`: `number`
-## Function ac.setWeatherTimeOffset(offset, instant)
-Adds or subtracts time offset, useful for debugging. Affects offline races only. Offset above 24 hours counts as race date being set, so if it wasn’t set
-in session settings and sun was using an equinox trajectory, it’ll use real trajectory now.
-
-  Parameters:
-
-  1. `offset`: `number` Offset in seconds.
-
-  2. `instant`: `boolean?` Set to `true` to apply change instantly. Default value: `false`.
-## Function ac.overrideReplayConditions(set)
-Override weather conditions in replay. Can be called each frame for smooth transition.
-
-  Parameters:
-
-  1. `set`: `ac.ConditionsSet|nil` Pass `nil` to disable override. Default value: `nil`.
-## Function ac.setVAOMode(mode)
-Sets current VAO mode, meant to be used for debugging purposes only.
-
-  Parameters:
-
-  1. `mode`: `ac.VAODebugMode`
-## Function ac.getVAOMode()
-Gets current VAO mode, meant to be used for debugging purposes only.
- Use `ac.getSim().currentVAOMode` instead.
-
-  Returns:
-
-  - `ac.VAODebugMode`
-## Function ac.setCameraCPLSettings(intensity, rotation, offset, iridescenceBoost)
-Override camera CPL settings.
-
-  Parameters:
-
-  1. `intensity`: `number?` CPL intensity, set to 0 to disable override. Default value: 0.
-
-  2. `rotation`: `number?` CPL rotation in degrees from −180° to 180°. Default value: 0.
-
-  3. `offset`: `number?` CPL offset in degrees from −90° to 90°. Default value: 0.
-
-  4. `iridescenceBoost`: `number?` Boost for glass iridescence effect, from 0 to 3. Default value: 1.
-## Function ac.configureSceneTweaks()
-Override scene tweaks.
-
-  Returns:
-
-  - `ac.SceneTweaks`
-## Function ac.setAudioVolume(audioChannelKey, value, carIndex)
-Sets audio volume for given channel, value from 0 to 1. If channel is not recognized, does nothing, unless (since 0.2.4) you specify key in a
-`'your.namespace/Readable name'` format: this will register a new volume level and show it in Audio Volume app for sessions where value was
-accessed or set.
-
-  Parameters:
-
-  1. `audioChannelKey`: `ac.AudioChannel`
-
-  2. `value`: `number` Value from 0 to 1.
-
-  3. `carIndex`: `integer?` If set, applies volume as a multiplier to a specific car (currently supported: `'dirt'`, `'engine'`, `'opponents'`, `'surfaces'`, `'transmission'`, `'tyres'`, `'wind'`). Default value: -1.
-## Function ac.setWiperSpeed(carIndex, wiperSpeed)
-Use `ac.setWiperMode()` instead.
-
-  Parameters:
-
-  1. `carIndex`: `integer`
-
-  2. `wiperSpeed`: `integer` Wiper speed index from 0 (disabled) to `ac.StateCar.wiperModes` (excluding).
-## Function ac.setTrackCoordinatesDeg(coords, headingDeg)
-Sets track world coordinates in degrees. Not available online.
-
-  Parameters:
-
-  1. `coords`: `number|vec2` X for lattitude, Y for longitude.
-
-  2. `headingDeg`: `number?` Heading angle in degrees, optional. Default value: `nil`.
-## Function ac.setTrackTimezoneOffset(offset)
-Sets timezone offset for the track in seconds. Not available online. Be careful: unlike with configs, this method does not have any coordinate-related sanity checks.
-
-  Parameters:
-
-  1. `offset`: `number` Offset in seconds (with DST offset added if necessary).
-## Function ac.tryToToggleReplay(active, rewindS)
-Starts or stops instant replay.
-
-  Parameters:
-
-  1. `active`: `boolean?` Default value: `true`.
-
-  2. `rewindS`: `number?` Default value: 30.
-
-  Returns:
-
-  - `boolean` Returns false if replay is not currently available.
-## Function ac.setReplayPosition(frameIndex, playCounter)
-Sets index of a current replay frame.
-
-  Parameters:
-
-  1. `frameIndex`: `integer`
-
-  2. `playCounter`: `number` Transition between frames, from 0 to 1.
-## Function ac.replaceDriverModel(carIndex, data)
-Replace driver model with a custom one asynchronously. For method to work current and new driver models should have common skeleton.
-
-  Parameters:
-
-  1. `carIndex`: `integer` 0-based car index.
-
-  2. `data`: `binary?` Use `nil` to restore original model.
-
-  Returns:
-
-  - `boolean` Returns `false` if there is no such car or if another replacement is already taking place.
-## Function ac.setHShifterActive(active)
-Toggle H-shifter to be active or not. Doesn’t have an effect if AC is not controlled by a wheel. Use `ac.getSim().controlsWithShifter`
-to check the current state.
-
-  Parameters:
-
-  1. `active`: `boolean|`true`|`false``
-
-  Returns:
-
-  - `boolean`
-## Function ac.toggleFullscreen(fullscreen)
-Toggle fullscreen state. Currently, doesn’t work with exclusive fullscreen. Returns `false` if no change has been made.
-
-  Parameters:
-
-  1. `fullscreen`: `boolean?` Pass `nil` to toggle.
-
-  Returns:
-
-  - `boolean`
-## Function ac.overrideCameraClipPlanes(nearPlane, farPlane)
-Override camera clip planes. Pass distances in meters, or `nil` to disable the override.
-
-  Parameters:
-
-  1. `nearPlane`: `number?`
-
-  2. `farPlane`: `number?`
-## Function ac.packDriverModel(destination, lodAData, lodBData, configData)
-Packs driver model into a replacement package.
-
-  Parameters:
-
-  1. `destination`: `string`
-
-  2. `lodAData`: `binary`
-
-  3. `lodBData`: `binary`
-
-  4. `configData`: `binary`
-
-  Returns:
-
-  - `boolean`
-## Function ac.consoleExecute(command)
-Executes command in AC console.
-
-  Parameters:
-
-  1. `command`: `string`
-## Function ac.onConsoleInput(callback)
-Sets a callback which will be called each time a new command is entered in AC console. If callback would return `true`, AC wouldn’t process
-command (return it if your script recognizes command to stop further processing).
-
-  Parameters:
-
-  1. `callback`: `fun(command: string): boolean`
-
-  Returns:
-
-  - `ac.Disposable`
-## Function ac.onAudioVolumeCalculation(callback)
-Sets a callback which will be called each frame when computing overall audio volume level. Callback returns a number which is used as volume multiplier.
-Use this function to fade out volume for one reason or another.
-
-  Parameters:
-
-  1. `callback`: `fun(): number`
-
-  Returns:
-
-  - `ac.Disposable`
-## Function ac.reloadControlSettings()
-Reload control settings.
-function ac.reloadControlSettings() end
-## Function ac.accessOverlayLeaderboardParams()
-
-  Returns:
-
-  - `ac.OverlayLeaderboardParams`
-## Function ac.overrideCarControls(carIndex)
-Overwrite car controls entirely. Easier than simulating inputs with fake gamepads and keypresses.
-
-  Parameters:
-
-  1. `carIndex`: `integer?` 0-based car index (only controls for AIs and user cars can be overriden). Default value: 0.
-
-  Returns:
-
-  - `ac.CarControlsInput`
-## Function ac.simulateCustomHotkeyPress(key, frames)
-Simulate CSP hotkey (one of ones listed in Patch section of control settings in CM) press for the next few frames. Keep calling regularly if you need to hold down a button.
-
-  Parameters:
-
-  1. `key`: `string` Section name from “controls.ini”.
-
-  2. `frames`: `integer?` Number of frames to keep pressing button for. Default value: 3.
-## Function ac.resetVRPose()
-Use `ac.recenterVR()`.
-
-  Returns:
-
-  - `boolean`
-## Function ac.setFFBMultiplier(multiplier)
-Changes FFB gain. Unlike `ac.setCarFFB()` in Python apps, this one takes an absolute value, not a relative offset. To get current FFB multiplier,
-use `ac.getCar(0).ffbMultiplier`.
-
-  Parameters:
-
-  1. `multiplier`: `number` 1 for regular 100% FFB gain.
-## Function ac.setOnboardCameraFOV(fovDeg)
-Use `ac.setFirstPersonCameraFOV()`
-
-  Parameters:
-
-  1. `fovDeg`: `number`
-## Function ac.resetOnboardCameraFOV()
-Use `ac.resetFirstPersonCameraFOV()`
-## Function ac.setFirstPersonCameraFOV(fovDeg)
-Changes FOV for first person camera. To get current value, use `ac.getSim().firstPersonFOV`.
-
-  Parameters:
-
-  1. `fovDeg`: `number`
-## Function ac.resetFirstPersonCameraFOV()
-Resets FOV for first person camera to 56° (which is a default, but actual value is loaded from “assettocorsa/cfg/camera_onboard.ini”).
-To get current value, use `ac.getSim().firstPersonFOV`.
-function ac.resetFirstPersonCameraFOV() end
-## Function ac.getOnboardCameraParams(carIndex)
-Gets onboard camera parameters for a specific car.
-
-  Parameters:
-
-  1. `carIndex`: `integer`
-
-  Returns:
-
-  - `ac.SeatParams`
-## Function ac.getOnboardCameraDefaultParams(carIndex)
-Gets default onboard camera parameters for a specific car (loading them from “car.ini” from car data).
-
-  Parameters:
-
-  1. `carIndex`: `integer`
-
-  Returns:
-
-  - `ac.SeatParams`
-## Function ac.setOnboardCameraParams(carIndex, params, save)
-Sets onboard camera parameters for a specific car. Optional saving works for the first car only.
-
-  Parameters:
-
-  1. `carIndex`: `integer`
-
-  2. `params`: `ac.SeatParams`
-
-  3. `save`: `boolean?` If `true`, new values will be saved in “view.ini” in “Documents\AC\cfg\cars” a few seconds after a call, otherwise default camera positioning app will get a “Save needed” label. Default value: `true`.
-## Function ac.areOnboardCameraParamsNeedSaving()
-Returns `true` if current camera parameters need saving (when default camera positioning app shows a “Save needed” label).
-
-  Returns:
-
-  - `boolean`
-## Function ac.applyLiveConfigEdit(config, data)
-Applies an edit to AC config, such as “video.ini”, live without actually altering file on a disk. Only a very few values are
-currently supported.
-
-  Parameters:
-
-  1. `config`: `'controls.ini'|'video.ini'|'gameplay.ini'|'assetto_corsa.ini'|'mouse_hider.ini'|'proximity_indicator.ini'|'graphics.ini'|'graphics_adjustments.ini'|'custom_rendering_modes.ini'|'general.ini'|'walking_out.ini'`
-
-  2. `data`: `string` Serialized INI data.
-## Function ac.makeScreenshot(filename, format, callback)
-Runs asyncronously.
-
-  Parameters:
-
-  1. `filename`: `string|nil` If not set, default path will be used. Default value: `nil`.
-
-  2. `format`: `ac.ScreenshotFormat?` Default value: `ac.ScreenshotFormat.Auto`.
-
-  3. `callback`: `nil|fun(err: string)?` Default value: `nil`.
-## Function ac.makeSimpleScreenshot(format, callback)
-Returns a binary image JPG data containing stuff on the screen (with HUD and everything). Asynchronous version.
-
-  Parameters:
-
-  1. `format`: `ac.ScreenshotFormat?` Default value: `ac.ScreenshotFormat.JPG`.
-
-  2. `callback`: `fun(err: string, data: binary)?` Default value: `nil`.
-## Function ac.isAISplineRecorderPresent()
-Returns `true` if AI spline recorder is present and ready to do some recording.
-
-  Returns:
-
-  - `boolean`
-## Function ac.isAISplineRecorderActive()
-
-  Returns:
-
-  - `boolean`
-## Function ac.isAISplineRecorderRecordingPitLane()
-
-  Returns:
-
-  - `boolean`
-## Function ac.getAISplineRecordedFrames()
-
-  Returns:
-
-  - `integer`
-## Function ac.startAISplineRecorder(recordPitLane)
-
-  Parameters:
-
-  1. `recordPitLane`: `boolean?` Default value: `false`.
-## Function ac.stopAISplineRecorder(saveResult, callback)
-
-  Parameters:
-
-  1. `saveResult`: `boolean|`true`|`false``
-
-  2. `callback`: `nil|fun(err: string)`
-## Function ac.setCurrentDesktop(desktop)
-
-  Parameters:
-
-  1. `desktop`: `integer` Desktop index from 0 to 3.
-
-  Returns:
-
-  - `boolean`
-## Function ac.loadCarControlsConfiguration(carIndex, relativeConfigName)
-Use carefully and in limited amount: currently each loaded configuration stays in memory, expects to override controls of an AI driver.
-
-  Parameters:
-
-  1. `carIndex`: `integer`
-
-  2. `relativeConfigName`: `string` Config relative to Assetto Corsa user `cfg` folder.
-
-  Returns:
-
-  - `boolean` Returns `true` if applied successfully.
-## Function ac.setVRSConfigurationForVR(active, rateOuter, rateMiddle, rateInner, areaOuter, areaMiddle, areaInner)
-
-  Parameters:
-
-  1. `active`: `boolean|`true`|`false``
-
-  2. `rateOuter`: `ac.VRSRateMode`
-
-  3. `rateMiddle`: `ac.VRSRateMode`
-
-  4. `rateInner`: `ac.VRSRateMode`
-
-  5. `areaOuter`: `number|vec2`
-
-  6. `areaMiddle`: `number|vec2`
-
-  7. `areaInner`: `number|vec2`
-## Function ac.setVRSGazeForVR(fov, eyeL, eyeR)
-Returns `false` if gaze is not available.
-
-  Parameters:
-
-  1. `fov`: `number|vec2` View angle in degrees (for example, `vec2(110, 110)`.
-
-  2. `eyeL`: `number|vec2` Left eye position from 0 to 1.
-
-  3. `eyeR`: `number|vec2` Right eye position from 0 to 1.
-
-  Returns:
-
-  - `boolean`
-## Function ac.setTrackCondition(key, value)
-Sets custom track condition input.
-
-  Parameters:
-
-  1. `key`: `string`
-
-  2. `value`: `number`
-## Function ac.setTrackConditionInput(conditionInput, value)
-Use `ac.setTrackCondition()` instead.
-
-  Parameters:
-
-  1. `conditionInput`: `string`
-
-  2. `value`: `number`
-## Function ac.setHeatShimmerIntensity(key, intensity)
-Sets intensity of a heat shimmer zone with a given key. Returns `false` if there is no zone with such key.
-
-  Parameters:
-
-  1. `key`: `integer`
-
-  2. `intensity`: `number`
-
-  Returns:
-
-  - `boolean`
-## Function ac.setScriptFlamesIntensity(intensity)
-Sets intensity of script flames. See docs for exhaust flames configuration on how to set them up.
-
-  Parameters:
-
-  1. `intensity`: `number`
-## Function ac.getExtraSwitchName(index)
-Returns name of a switch, or `nil` if switch name is not available or not named.
-
-  Parameters:
-
-  1. `index`: `integer` 0-based index.
-
-  Returns:
-
-  - `string`
-## Function ac.setExteriorAudioMix(value)
-Mix exterior audio for interior views. If your car has something like rolling down windows, might be a good idea to set it to 1 then.
-
-  Parameters:
-
-  1. `value`: `number` Value from 0 to 1.
-## Function ac.setTurboWastegate(wastegate, turboIndex)
-Set a custom value for turbo wastegate. Accessible only if turbo is adjustable.
-
-  Parameters:
-
-  1. `wastegate`: `number`
-
-  2. `turboIndex`: `integer?` Default value: -1.
-## Function ac.getRealMirrorCount()
-Get number of Real Mirror mirrors in a car (for car scripts, associated car, for apps and tools — player’s car). If Real
-Mirrors are disabled or not active for that car, returns -1.
-
-  Returns:
-
-  - `integer`
-## Function ac.getRealMirrorAABB(mirrorIndex, min, max)
-
-  Parameters:
-
-  1. `mirrorIndex`: `integer` 0-based mirror index (leftmost mirror is 0, the first one to right of it is 1 and so on).
-
-  2. `min`: `vec3`
-
-  3. `max`: `vec3`
-
-  Returns:
-
-  - `boolean`
-## Function ac.setRealMirrorParams(mirrorIndex, params, userDriven)
-Updates mirror settings for a given Real Mirror mirror (for car scripts, associated car, for apps and tools — player’s car). Easiest way is to use
-it in combination with `ac.getRealMirrorParams()`:
- ```lua
- local params = ac.getRealMirrorParams()
- params.fov = params.fov + 1
- ac.setRealMirrorParams(params.fov)
- ```
-
- Updated settings will be written onto disk a few seconds after updated values have applied (if they’re different from current values).
-
- If called before with `userDriven` set to `false`, any subsequent calls with `userDriven` set to `true` will be ignored.
-
-  Parameters:
-
-  1. `mirrorIndex`: `integer` 0-based mirror index (leftmost mirror is 0, the first one to right of it is 1 and so on).
-
-  2. `params`: `ac.RealMirrorParams` New params to apply.
-
-  3. `userDriven`: `boolean?` Set to `false` to not write settings to a disk and instead stop user-driven changes for current session. Default value: `true`.
-## Function ac.overrideTyreSmoke(tyreIndex, intensity, thickness, surfaceHeat)
-Changes behaviour of smoke going off a tyre (won’t affect dust or water splashes). Actual movement of smoke might change with CSP updates.
-
-  Parameters:
-
-  1. `tyreIndex`: `integer`
-
-  2. `intensity`: `number` Use `math.nan` to restore original behaviour, or a value from 0 to 1.
-
-  3. `thickness`: `number` A value from 0 to 1.
-
-  4. `surfaceHeat`: `number?` Values above 0 will get entire surface to emit smoke as well. Default value: 0.
-## Function ac.setGearLabel(c)
-Changes label used to display current gear. Label can be up to four symbols long. If label is 2 characters or less, it’ll be stored in a replay as well
-(do any gearboxes have labels longer than that?) Can be useful for creating automatic gearboxes and such: AC widgets will use this label, and other apps can access the label
-using `ac.getCar().gearLabel`.
-
-  Parameters:
-
-  1. `c`: `string|nil` If empty or `nil`, resets label to default gear label. Default value: `nil`.
-## Function ac.setABS(mode)
-
   Parameters:
 
-  1. `mode`: `integer`
-## Function ac.setTC(mode)
+  1. `params`: `{serverIP: string, serverPort: integer, serverHttpPort: integer, serverName: string, serverPassword: string, carID: string, trackID: string, trackLayoutID: string}|`{serverIP` = '', serverPort = 0, serverHttpPort = 0, serverName = '', serverPassword = '', carID = '', trackID = '', trackLayoutID = ''}` "Table with properties:\n- `serverIP` (`string`): IP of a new server.\n- `serverPort` (`integer`): TCP port of a new server.\n- `serverHttpPort` (`integer`): HTTP port of a new server.\n- `serverName` (`string`): Server name to show during loading.\n- `serverPassword` (`string`): Optional server password.\n- `carID` (`string`): Optional car ID (name of car folder) if user needs to change car when reconnecting.\n- `trackID` (`string`): Track ID (name of folder in “content/tracks”), optional, used for loading background.\n- `trackLayoutID` (`string`): Track layout ID, optional, used for loading background."
+## Function ac.configValues(layout)
+Returns values from section which defined current script. Use `layout` to specify which
+values are needed, with their corresponding default values to determine types. This function
+can be used to configure script from config, allowing to create customizable scripts which
+would, for example, act as new types of displays, especially if used with INIpp templates.
 
-  Parameters:
-
-  1. `mode`: `integer`
-## Function ac.isTurboWastegateAdjustable(turboIndex)
-
-  Parameters:
-
-  1. `turboIndex`: `integer`
-
-  Returns:
-
-  - `boolean`
-## Function ac.setBrakeBias(balance)
-
-  Parameters:
-
-  1. `balance`: `number`
-## Function ac.setEngineBrakeSetting(settingIndex)
-
-  Parameters:
-
-  1. `settingIndex`: `integer`
-## Function ac.setDRS(state)
-
-  Parameters:
-
-  1. `state`: `boolean|`true`|`false``
-## Function ac.setKERS(state)
-
-  Parameters:
-
-  1. `state`: `boolean|`true`|`false``
-## Function ac.setMGUHCharging(charging)
-
-  Parameters:
-
-  1. `charging`: `boolean|`true`|`false``
-## Function ac.setMGUKDelivery(level)
-
-  Parameters:
-
-  1. `level`: `integer`
-## Function ac.setMGUKRecovery(level)
-
-  Parameters:
-
-  1. `level`: `integer`
-## Function ac.setHeadlights(active)
-
-  Parameters:
-
-  1. `active`: `boolean|`true`|`false``
-## Function ac.flashLights()
-Activates flashing lights for a bit.
-function ac.flashLights() end
-## Function ac.setWiperMode(wiperMode)
-Sets index of current wiper speed. To get current speed or number of available speeds, check `ac.StateCar`.
-
-  Parameters:
-
-  1. `wiperMode`: `integer` Wiper mode index from 0 (disabled) to `ac.StateCar.wiperModes` (excluding).
-## Function ac.setHighBeams(active)
-Toggles high beams on and off. Note: the way lights work, this only changes if high beams are working with low beams or if low beams are alone (and,
-in reality, they actually switch a low-beam flag used to switch headlights into low-beam mode). To flash high beams without low beams,
-use `ac.flashLights()`.
-
-  Parameters:
-
-  1. `active`: `boolean|`true`|`false``
-## Function ac.setDaytimeLights(active)
-
-  Parameters:
-
-  1. `active`: `boolean|`true`|`false``
-## Function ac.setBrakingLightsThreshold(threshold)
-
-  Parameters:
-
-  1. `threshold`: `number?` Default value: 0.01.
-## Function ac.setTurningLights(mode)
-
-  Parameters:
-
-  1. `mode`: `ac.TurningLights`
-## Function ac.setExtraSwitch(index, value)
-Changes the state of an extra switch. Note: if switch is in hold mode, it’ll reset to its disabled state after a few frames.
- This function ignores availability checks (but wouldn’t work if the switch has been disabled from car custom physics script).
-
-  Parameters:
-
-  1. `index`: `integer` 0-based index.
-
-  2. `value`: `boolean|`true`|`false``
-
-  Returns:
-
-  - `boolean`
-## Function ac.isExtraSwitchAvailable(index, availableToCarControl)
-Checks if an extra switch is available.
-
-  Parameters:
-
-  1. `index`: `integer` 0-based index.
-
-  2. `availableToCarControl`: `boolean?` Car control scripts can toggle a switch even if it’s not available to user with switch flags unless switch has been disabled by car physics script. Set this parameter to `false` to check if user can toggle the state with a hotkey, or leave it as `true` if you need to verify if the switch hasn’t been disabled by physics. Default value: `true`.
-
-  Returns:
-
-  - `boolean`
-## Function ac.setTargetCar(carIndex)
-Changes index of a target car. Target car is used by car controlling API functions which don’t receive car index, such
-as `ac.setDRS()`. Originally those functions were intended for car display scripts and such, but Lua apps can alter non-player
-cars to, for example, control second car in split-screen mode or alter AI behavior.
-
-Note: not all functions and not all cars are available anyway. For example, most functions called for remote cars will not have
-any affect. Also, effect of some functions on AI cars might be cancelled out a few frames lates.
-
-  Parameters:
-
-  1. `carIndex`: `integer?` 0-based car index. Default value: 0.
-
-  Returns:
-
-  - `boolean`
-## Function ac.iconColor()
-
-  Returns:
-
-  - `vec4`
-## Function ac.noticeNewApp(appID)
-Loads a new app if it was just added. Usually file monitoring should take care of it as well, but in some cases (like with
-symlinks) it might malfunction.
-
-  Parameters:
-
-  1. `appID`: `string`
-
-  Returns:
-
-  - `boolean` Returns `false` if there is no such app or if it’s already loaded.
-## Function ac.uninstallApp(appID)
-Tries to unload an app and move its folder to the recycle bin. Use carefully.
-
-  Parameters:
-
-  1. `appID`: `string`
-
-  Returns:
-
-  - `boolean` Returns `false` if there is no such point or it can’t be used as destination at the moment (for example, if there is already another car there).
-## Function ac.teleportToServerPoint(pointIndex)
-Teleports car to a point defined by a server. Available online and only with servers with custom teleport destinations. Usual restrictions still
-apply. Meant for creating custom UI for that function.
-
-Use `ac.INIConfig.onlineExtras()` to get server config and parse destinations from there.
-
-  Parameters:
-
-  1. `pointIndex`: `integer` 0-based index.
-
-  Returns:
-
-  - `boolean` Returns `false` if there is no such point or it can’t be used as destination at the moment (for example, if there is already another car there).
-## Function ac.canTeleportToServerPoint(pointIndex)
-Checks if it’s possible to teleport to a custom server teleport destination. Meant for creating custom UI for that function.
-
-Use `ac.INIConfig.onlineExtras()` to get server config and parse destinations from there.
-
-  Parameters:
-
-  1. `pointIndex`: `integer` 0-based index.
-
-  Returns:
-
-  - `boolean`
-## Function ac.isWindowOpen(windowID)
-Returns `true` if window with given ID is opened.
-
-  Parameters:
-
-  1. `windowID`: `string`
-
-  Returns:
-
-  - `boolean`
-## Function ac.isWindowCollapsed(windowID)
-Returns `true` if window with given ID is in collapse state.
-
-  Parameters:
-
-  1. `windowID`: `string`
-
-  Returns:
-
-  - `boolean`
-## Function ac.setWindowSizeConstraints(windowID, minSize, maxSize)
-Changes window size constraints, can be used to update window size live.
-
-  Parameters:
-
-  1. `windowID`: `string`
-
-  2. `minSize`: `number|vec2`
-
-  3. `maxSize`: `number|vec2`
-## Function ac.isWindowPinned(windowID)
-Returns `true` if window with given ID is pinned.
-
-  Parameters:
-
-  1. `windowID`: `string`
-
-  Returns:
-
-  - `boolean`
-## Function ac.setWindowOpen(windowID, opened)
-Opens or closes a window.
-
-  Parameters:
-
-  1. `windowID`: `string`
-
-  2. `opened`: `boolean|`true`|`false``
-## Function ac.setWindowIcon(windowID, iconID)
-Changes window icon. If your icon doesn’t change every frame, use this function instead of a live icon.
-
-  Parameters:
-
-  1. `windowID`: `string`
-
-  2. `iconID`: `ui.Icons`
-## Function ac.setWindowTitle(windowID, title)
-Sets window title.
+Note: consider using lowerCamelCase for keys to make sure there wouldn’t be a collision with
+CSP parameters for track scripts, as well as with INIpp template parameters (which use UpperCamelCase).
 
-  Parameters:
-
-  1. `windowID`: `string`
-
-  2. `title`: `string|nil` If `nil`, restores original title. Default value: `nil`.
-## Function ac.setWindowBackground(windowID, color, darkHeader)
-Sets window background color.
-
-  Parameters:
-
-  1. `windowID`: `string`
-
-  2. `color`: `rgbm|nil` If `nil`, restores original color. Default value: `nil`.
-
-  3. `darkHeader`: `boolean?` If `true`, window title and control elements will be painted black. Default value: `false`.
-## Function ac.setWindowNotificationCounter(windowID, counter)
-Adds notifications counter to a window for something like amount of unread messages. Make sure to set it back to 0 when things have been seen.
-
-  Parameters:
-
-  1. `windowID`: `string`
-
-  2. `counter`: `integer`
-## Function ac.windowFading()
-If current window fades (has “FADING” flag), this value would store fading value. If background is fully opaque, value is 0.
-
-  Returns:
-
-  - `number`
-## Function ac.unloadApp()
-Fully unloads and terminates current app if possible. Execution will continue after this function, unloading will be attempted in the next frame.
-Only apps with no visible windows can be unloaded.
-function ac.unloadApp() end
-## Function ac.forceFadingIn()
-Forces window with “FADING” flag to fade in even if it’s not currently hovered by a cursor or focused.
-function ac.forceFadingIn() end
-## Function ac.redirectVirtualMirror(active)
-
-  Parameters:
-
-  1. `active`: `boolean|`true`|`false``
-## Function ac.redirectDamageDisplayer(active)
-
-  Parameters:
-
-  1. `active`: `boolean|`true`|`false``
-## Function ac.redirectFuelWarningIndicator(active)
-
-  Parameters:
-
-  1. `active`: `boolean|`true`|`false``
-## Function ac.getPitstopSpinners()
-Added in CSP 0.2.7, collects information about spinners in Quick Pitstop menu. Entries are listed in order they’re shown in UI. Each
-entry has `value` storing value set in current preset, as well as `values` storing the list of values for each preset.
-Use `ac.getSim().currentQuickPitPreset` to get the currently selected presets index (0-based).
-## Function ac.getSetupSpinners()
-Get information about available spinners in setup menu. Names match section names of setup INI files. Value `label` might contain localized setup items. Array `itemValues` is only present for custom CSP setup entries with LUTs.
-## Function ac.isSetupAvailableToEdit()
-
-  Returns:
-
-  - `boolean`
-## Function ac.getSetupSpinnerValue(setupValueID, fallbackValue)
-
-  Parameters:
-
-  1. `setupValueID`: `string`
-
-  2. `fallbackValue`: `integer?` Default value: 0.
-
-  Returns:
-
-  - `integer`
-## Function ac.setPitstopSpinnerValue(valueName, value, presetIndex)
-Returns `false` if there is no such element or it can’t be edited now.
-
-  Parameters:
-
-  1. `valueName`: `string`
-
-  2. `value`: `number`
-
-  3. `presetIndex`: `integer?` 0-based preset index (if not set, currently selected preset will be changed.
-
-  Returns:
-
-  - `boolean`
-## Function ac.setCurrentQuickPitPreset(preset)
-Change currently selected Quick Pit preset.
-Use `ac.getSim().currentQuickPitPreset` to get the currently selected presets index (0-based).
-
-  Parameters:
-
-  1. `preset`: `integer` 0-based index, from 0 to 2.
-
-  Returns:
-
-  - `boolean` Returns `false` if there is no such preset.
-## Function ac.setSetupSpinnerValue(setupValueID, value)
-Returns `false` if there is no such element or it can’t be edited now.
-
-  Parameters:
-
-  1. `setupValueID`: `string`
-
-  2. `value`: `integer`
-
-  Returns:
-
-  - `boolean`
-## Function ac.refreshSetups()
-Refreshes list of setups. Any listeners set with `ac.onSetupsListRefresh()` will be called as well.
-
-  Returns:
-
-  - `boolean`
-## Function ac.saveCurrentSetup(setupFilename)
-Saves current setup into a file. If successful, refreshes setups list and calls any listeners set with `ac.onSetupsListRefresh()` as well.
-
-  Parameters:
-
-  1. `setupFilename`: `string` Absolute path, or path relative to “Documents\Assetto Corsa\setups\<car ID>”.
-
-  Returns:
-
-  - `boolean`
-## Function ac.setActiveSetupName(setupName, trackID, changed)
-Change currently active setup name used for saving setups.
+You can achieve the same results by using `ac.getTrackConfig()` (name of section which creates script
+is available in `__cfgSection__` global variable). This is just a shortcut to make things nicer.
 
   Parameters:
 
-  1. `setupName`: `string`
+  1. `layout`: `T`
 
-  2. `trackID`: `string?` Default value: 'generic'.
-
-  3. `changed`: `boolean?` Default value: `false`.
-
-  Returns:
-
-  - `boolean`
-## Function ac.loadSetup(setupFilename)
-Loads car setup from a file. Works only from setup menu, and only if setup is not fixed.
-
-  Parameters:
-
-  1. `setupFilename`: `binary` Absolute path, or path relative to “Documents\Assetto Corsa\setups\<car ID>”. Since CSP v0.1.80-preview459 can also be setup contents.
-
-  Returns:
-
-  - `boolean`
-## Function ac.resetSetupToDefault()
-Resets car setup to default values. Works only from setup menu, and only if setup is not fixed.
-
-  Returns:
-
-  - `boolean` Returns `true` if successful.
-## Function ac.stringifyCurrentSetup(includeMetadata)
-Exports current setup into a string.
-
-  Parameters:
-
-  1. `includeMetadata`: `boolean?` Default value: `true`.
-
-  Returns:
-
-  - `string`
-## Function ac.getCurrentVoteDetails()
-Returns information about the current vote, or `nil` if there is not any. Time is in seconds.
-## Function ac.canCastVote(voteType)
-Returns `true` if `ac.castVote()` can be called now and it’s not an offline race or a cooldown.
-
-  Parameters:
-
-  1. `voteType`: `'restart'|'skip'|'kick'|nil`
-
-  Returns:
-
-  - `boolean` Returns `true` if successful.
-## Function ac.timeToNextVote(voteType)
-If `ac.canCastVote()` returns `false` due to cooldown, this option will return time in seconds until the next vote will become available.
-
-  Parameters:
-
-  1. `voteType`: `'restart'|'skip'|'kick'|nil`
-
-  Returns:
-
-  - `number` Returns `true` if successful.
-## Function ac.castVote(voteType, vote, carIndex)
-Cast a vote online. Can be used to participate in an existing vote, or to start a new vote. Votes can only be cast once in awhile.
-
-  Parameters:
-
-  1. `voteType`: `'restart'|'skip'|'kick'`
-
-  2. `vote`: `boolean?` `true` for yes, `false` for no. Default value: `true`.
-
-  3. `carIndex`: `integer?` For `'kick'`, index of a car to kick. Default value: -1.
-
-  Returns:
-
-  - `boolean` Returns `true` if successful.
-## Function ac.restartApp()
-Try and reload app a bit later (like, in the next frame). Might cause a lag, use only in response to user actions and not in background.
-function ac.restartApp() end
-## Function ac.exportLapTimesToCSV(destination)
-Asks AC to do the thing it does when “Print” button in original menu was pressed, saving lap times in a CSV file.
-
-  Parameters:
-
-  1. `destination`: `path?`
-
   Returns:
-
-  - `string|nil` Returns saved filename, or `nil` if nothing was saved.
-## Function ac.setMousePosition(posPixels)
-Move mouse to a certain position.
-
-  Parameters:
-
-  1. `posPixels`: `number|vec2` New mouse cursor position in pixels relative to AC window.
-## Function ac.setMouseLeftButtonDown(isDown)
-Can be used for simulating mouse clicks.
-
-  Parameters:
-
-  1. `isDown`: `boolean|`true`|`false``
-## Function ac.setMouseWheel(scroll)
-Can be used for simulating mouse wheel.
-
-  Parameters:
-
-  1. `scroll`: `number`
-## Function ac.startBackgroundWorker(script, data, callback)
-Load a separate Lua script and run it in background. Script simply runs once and then the returned value (or an error message if any)
-will be passed to the callback. Loaded script has access only to basic `ac` API, nothing specific like accessing scene or audio, thus
-keeping things safe. Also, there’ll be a new function `os.sleep()` allowing for a script to wait a certain amount of time (in seconds).
-When called, it will also trigger callbacks set by functions like `setTimeout()`, `setInterval()` or `ac.onSharedEvent()`.
-
-You can use this background script do compute something heavy and return, like run a script to sum numbers from 0 to a quadrillion
-or load a bit of important data from a huge file. Alternatively, you can create a script which will keep running with something like
-`while true do … os.sleep(1) end`, awaking once a second to see if there are any new jobs that need doing. Note: to exchange data with
-other scripts (including your main script or other background scripts), you can also use shared events (`ac.broadcastSharedEvent()`,
-`ac.onSharedEvent()`), shared structures (`ac.connect()`) or even memory-mapped files.
-
-Creating a new background worker and initializing a VM for it takes about 10 ms (in different thread, for your main script there won’t
-be any delay at all), so plan accordingly (if you have a ton of jobs taking about 2 ms each, it might be a better option to have a
-single worker take care of them all, but if you have a few jobs each taking a second of time, feel free to create a separate worker
-for each).
-
-Workers won’t be automatically reloaded when their scripts change, but when your main script reloads they’ll be shut and reloaded as
-well. Please note: workers won’t be terminated until the next `os.sleep()` call. If you have a worker doing intense computations, it
-might be a good idea to add `os.sleep(0)` somewhere in its loop from time to time to let other threads do their thing, let callbacks
-through and allow for the whole thing to reload.
 
-Worker threads are created with low priority to ensure they won’t reduce AC performance.
+  - `T`
+## Function ac.addColorCorrection(item)
+Adds a color correction to the list of active color corrections.
 
-Documentation for worker scripts is available in `ac_background` directory. You might need to plug it to your VS Code configuration
-manually (just add a new line with it in “.vscode/settings.json”).
-
   Parameters:
-
-  1. `script`: `string` File name (without extension) relative to script directory, or script code.
-
-  2. `data`: `serializable|nil` Data to pass to the script (will be available as `worker.input` value). Default value: `nil`.
-
-  3. `callback`: `fun(err: string, data: string|number|boolean|table, ...)?` Default value: `nil`.
-## Function ui.drawVirtualMirror(p1, p2, color)
-Draw virtual mirror. If Real Mirrors module is active and has its virtual mirrors option enabled, mirror might be drawn in two pieces 
-taking less space width-wise (for cars without middle mirror) or just drawn narrower. If that option is disabled, Real Mirrors will pause.
 
-Use 4:1 for aspect ratio for the mirror to be drawn properly.
+  1. `item`: `ac.ColorCorrectionBase`
+## Function ac.removeColorCorrection(item)
+Removes a color correction from the list of active color corrections.
 
   Parameters:
-
-  1. `p1`: `vec2`
-
-  2. `p2`: `vec2`
-
-  3. `color`: `rgbm?` Default value: `rgbm.colors.white`.
-
-  Returns:
 
-  - `boolean` Returns `false` if there is no virtual mirror currently available.
+  1. `item`: `ac.ColorCorrectionBase`
 ## Class ScriptData
+
+# Module common/ac_color_corrections.lua
+
+## Class ac.ColorCorrectionBase
+## Function ac.ColorCorrectionGrayscale()
+Grayscale filter.
+
+  Returns:
+
+  - `ac.ColorCorrectionGrayscale`
+## Class ac.ColorCorrectionGrayscale
+Grayscale filter.
+## Function ac.ColorCorrectionNegative()
+Negative filter.
+
+  Returns:
+
+  - `ac.ColorCorrectionNegative`
+## Class ac.ColorCorrectionNegative
+Negative filter.
+## Function ac.ColorCorrectionSepiaTone(t)
+Sepia filter.
+
+  Parameters:
+
+  1. `t`: `nil|{` value: number } "Table with parameters."
+
+  Returns:
+
+  - `ac.ColorCorrectionSepiaTone`
+## Class ac.ColorCorrectionSepiaTone
+Sepia filter.
+## Function ac.ColorCorrectionBrightness(t)
+Brightness filter.
+
+  Parameters:
+
+  1. `t`: `nil|{` value: number } "Table with parameters."
+
+  Returns:
+
+  - `ac.ColorCorrectionBrightness`
+## Class ac.ColorCorrectionBrightness
+Brightness filter.
+## Function ac.ColorCorrectionSaturation(t)
+Saturation filter.
+
+  Parameters:
+
+  1. `t`: `nil|{` value: number } "Table with parameters."
+
+  Returns:
+
+  - `ac.ColorCorrectionSaturation`
+## Class ac.ColorCorrectionSaturation
+Saturation filter.
+## Function ac.ColorCorrectionContrast(t)
+Contrast filter.
+
+  Parameters:
+
+  1. `t`: `nil|{` value: number } "Table with parameters."
+
+  Returns:
+
+  - `ac.ColorCorrectionContrast`
+## Class ac.ColorCorrectionContrast
+Contrast filter.
+## Function ac.ColorCorrectionBias(t)
+Bias filter (shifts color values: result=original+value).
+
+  Parameters:
+
+  1. `t`: `nil|{` value: number } "Table with parameters."
+
+  Returns:
+
+  - `ac.ColorCorrectionBias`
+## Class ac.ColorCorrectionBias
+Bias filter (shifts color values: result=original+value).
+## Function ac.ColorCorrectionModulationRgb(t)
+Modulation (RGB) filter (multiplies color values: result=original*color).
+
+  Parameters:
+
+  1. `t`: `nil|{` color: rgb } "Table with parameters."
+
+  Returns:
+
+  - `ac.ColorCorrectionModulationRgb`
+## Class ac.ColorCorrectionModulationRgb
+Modulation (RGB) filter (multiplies color values: result=original*color).
+## Function ac.ColorCorrectionSaturationRgb(t)
+Saturation (color) filter.
+
+  Parameters:
+
+  1. `t`: `nil|{` color: rgb } "Table with parameters."
+
+  Returns:
+
+  - `ac.ColorCorrectionSaturationRgb`
+## Class ac.ColorCorrectionSaturationRgb
+Saturation (color) filter.
+## Function ac.ColorCorrectionContrastRgb(t)
+Contrast (color) filter.
+
+  Parameters:
+
+  1. `t`: `nil|{` color: rgb } "Table with parameters."
+
+  Returns:
+
+  - `ac.ColorCorrectionContrastRgb`
+## Class ac.ColorCorrectionContrastRgb
+Contrast (color) filter.
+## Function ac.ColorCorrectionBiasRgb(t)
+Bias (color) filter.
+
+  Parameters:
+
+  1. `t`: `nil|{` color: rgb } "Table with parameters."
+
+  Returns:
+
+  - `ac.ColorCorrectionBiasRgb`
+## Class ac.ColorCorrectionBiasRgb
+Bias (color) filter.
+## Function ac.ColorCorrectionMonotoneRgb(t)
+Monotone filter.
+
+  Parameters:
+
+  1. `t`: `nil|{` color: rgb, effectRatio: number } "Table with parameters."
+
+  Returns:
+
+  - `ac.ColorCorrectionMonotoneRgb`
+## Class ac.ColorCorrectionMonotoneRgb
+Monotone filter.
+## Function ac.ColorCorrectionMonotoneRgbSatMod(t)
+Monotone filter.
+
+  Parameters:
+
+  1. `t`: `nil|{` color: rgb, saturation: number, modulation: number } "Table with parameters."
+
+  Returns:
+
+  - `ac.ColorCorrectionMonotoneRgbSatMod`
+## Class ac.ColorCorrectionMonotoneRgbSatMod
+Monotone filter.
+## Function ac.ColorCorrectionFadeRgb(t)
+Fade filter.
+
+  Parameters:
+
+  1. `t`: `nil|{` color: rgb, effectRatio: number } "Table with parameters."
+
+  Returns:
+
+  - `ac.ColorCorrectionFadeRgb`
+## Class ac.ColorCorrectionFadeRgb
+Fade filter.
+## Function ac.ColorCorrectionHue(t)
+Hue filter.
+
+  Parameters:
+
+  1. `t`: `nil|{` hue: number, keepLuminance: boolean } "Table with parameters."
+
+  Returns:
+
+  - `ac.ColorCorrectionHue`
+## Class ac.ColorCorrectionHue
+Hue filter.
+## Function ac.ColorCorrectionHsb(t)
+HSB (hue, saturation, brightness) filter.
+
+  Parameters:
+
+  1. `t`: `nil|{` hue: number, saturation: number, brightness: number } "Table with parameters."
+
+  Returns:
+
+  - `ac.ColorCorrectionHsb`
+## Class ac.ColorCorrectionHsb
+HSB (hue, saturation, brightness) filter.
+## Function ac.ColorCorrectionTemperature(t)
+Temperature filter.
+
+  Parameters:
+
+  1. `t`: `nil|{` temperature: number, luminance: number } "Table with parameters."
+
+  Returns:
+
+  - `ac.ColorCorrectionTemperature`
+## Class ac.ColorCorrectionTemperature
+Temperature filter.
+## Function ac.ColorCorrectionWhiteBalance(t)
+White balance filter.
+
+  Parameters:
+
+  1. `t`: `nil|{` whitebalance: number, luminance: number } "Table with parameters."
+
+  Returns:
+
+  - `ac.ColorCorrectionWhiteBalance`
+## Class ac.ColorCorrectionWhiteBalance
+White balance filter.
 
 # Module common/ac_audio.lua
 
@@ -21355,10 +20475,18 @@ old API since it could be a tiny bit faster overall).
 
   - `ac.ColorCorrection`
 
-# Module common/ac_physics.lua
+# Module common/ac_track.lua
 
-## Class physics.CarControls
-State of car controls.
+## Function ac.findCarAtPlace(place)
+Finds a car at a given place in a race, for creating leaderboards. Returns nil if couldn’t find a car.
+
+  Parameters:
+
+  1. `place`: `integer` Starts with 1 for first place.
+
+  Returns:
+
+  - `ac.StateCar|nil`
 
 # Module common/ac_gameplay.lua
 
@@ -21463,178 +20591,6 @@ forcefully activates them (since 0.2.4).
   Returns:
 
   - `ac.Disposable`
-
-# Module common/ac_game.lua
-
-## Function ac.SeatParams(position, pitch, yaw)
-Driver seat parameters.
-
-  Parameters:
-
-  1. `position`: `vec3` Driver eyes position. Starting value is taken from “GRAPHICS/DRIVEREYES” from “car.ini”.
-
-  2. `pitch`: `number` Pitch angle in degrees. Starting value is taken from “GRAPHICS/ON_BOARD_PITCH_ANGLE” from “car.ini”.
-
-  3. `yaw`: `number` Yaw angle in degrees. Starting value is 0.
-
-  Returns:
-
-  - `ac.SeatParams`
-## Class ac.SeatParams
-Driver seat parameters.
-## Function ac.SceneTweaks()
-Driver seat parameters.
-
-  Returns:
-
-  - `ac.SceneTweaks`
-## Class ac.SceneTweaks
-Driver seat parameters.
-## Function ac.getVRAMConsumption()
-Returns VRAM stats if available (older versions of Windows won’t provide access to this API). All sizes are in megabytes. Note: values
-provided are for a GPU in general, not for the Assetto Corsa itself.
-
-  Returns:
-
-  - `nil|`
-## Class ac.DriverWeightShift
-Driver seat parameters.
-## Function ac.DriverWeightShift(carIndex)
-Access driver weight shift.
-
-  Parameters:
-
-  1. `carIndex`: `integer` 0-based car index.
-
-  Returns:
-
-  - `ac.DriverWeightShift`
-## Class ac.CarControlsInput
-A helper structure to simulate some inputs for controlling the car.
-
-- `ac.CarControlsInput:active()`
-
-  Checks if controls override is active (as in, has been read by AC physics in the last couple of frames).
-
-  Returns:
-
-    - `boolean`
-## Class ac.OverlayLeaderboardParams
-A helper structure to simulate some inputs for controlling the car.
-
-# Module common/ac_track_conditions.lua
-
-## Function ac.TrackCondition(expression, offset, defaultValue)
-Creates a wrapper to access track condition. If you want to get the value often, consider caching and reusing the wrapper.
-
-  Parameters:
-
-  1. `expression`: `string` Expression similar to ones config have as CONDITION=… value.
-
-  2. `offset`: `number?` Condition offset. Default value: 0.
-
-  3. `defaultValue`: `number?` Default value in case referenced condition is missing or parsing failed. Default value: 0.
-
-  Returns:
-
-  - `ac.TrackCondition`
-## Function ac.TrackCondition.count()
-Returns number of conditions defined on the current track.
-
-  Returns:
-
-  - `integer`
-## Function ac.TrackCondition.name(index)
-Returns name of a condition with certain index.
-
-  Parameters:
-
-  1. `index`: `integer` 0-based condition index.
-
-  Returns:
-
-  - `string`
-## Function ac.TrackCondition.input(index)
-Returns input of a condition with certain index.
-
-  Parameters:
-
-  1. `index`: `integer` 0-based condition index.
-
-  Returns:
-
-  - `string`
-## Function ac.TrackCondition.get(index, offset)
-Returns value of a condition with certain index.
-
-  Parameters:
-
-  1. `index`: `integer` 0-based condition index.
-
-  2. `offset`: `number?` Optional offset for conditions with variance.
-
-  Returns:
-
-  - `number` Returns `0` if there is no such condition.
-## Function ac.TrackCondition.getColor(index, offset)
-Returns RGB value of a condition with certain index.
-
-  Parameters:
-
-  1. `index`: `integer` 0-based condition index.
-
-  2. `offset`: `number?` Optional offset for conditions with variance.
-
-  Returns:
-
-  - `rgb` Returns `rgb()` if there is no such condition.
-## Class ac.TrackCondition
-Track condition evaluator. Given expression, which might refer to some existing condition, condition input or a complex expression of those,
-computes the resulting value.
-
-- `ac.TrackCondition:get(offset)`
-
-  Parameters:
-
-    1. `offset`: `number?` Optional offset (in case track condition has a variance).
-
-  Returns:
-
-    - `number`
-
-- `ac.TrackCondition:getColor(offset)`
-
-  Parameters:
-
-    1. `offset`: `number?` Optional offset (in case track condition has a variance).
-
-  Returns:
-
-    - `rgb`
-
-- `ac.TrackCondition:isDynamic()`
-
-  Returns `true` if there is a condition with value changing live.
-
-  Returns:
-
-    - `boolean`
-
-- `ac.TrackCondition:input()`
-
-  Returns condition input, if any.
-
-  Returns:
-
-    - `string`
-
-- `ac.TrackCondition:name()`
-
-  Returns condition name, if any.
-
-  Returns:
-
-    - `string`
 
 # Module common/ac_car_control.lua
 
@@ -21821,3 +20777,8 @@ A helper structure to simulate some inputs for controlling the car.
   Returns:
 
   - `ac.CarExtraSwitchParams`
+
+# Module common/ac_physics.lua
+
+## Class physics.CarControls
+State of car controls.
