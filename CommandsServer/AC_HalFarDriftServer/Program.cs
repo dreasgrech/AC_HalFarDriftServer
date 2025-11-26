@@ -37,7 +37,10 @@ public class Program
             Console.WriteLine("WebSocket server started in background.");
         });
 
-        // Meanwhile, run a console loop waiting for commands
+        // Wait for the server to starts
+        serverTask.Wait();
+
+        // Run a console loop waiting for commands
         Console.WriteLine("Enter commands (type 'exit' to shut down):");
         while (true)
         {
@@ -52,13 +55,13 @@ public class Program
                 break;
             }
 
-            // Otherwise pass to your server-command manager
             // ServerCommandsManager.Instance.HandleConsoleCommand(input);
             Console.WriteLine($"command: {input}");
         }
 
-        // Optional: wait for server task to complete if needed
+        // make sure server task is complete before exiting
         serverTask.Wait();
+        
         Console.WriteLine("Server stopped. Exiting.");
     }
 }
