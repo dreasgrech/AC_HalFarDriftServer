@@ -45,19 +45,28 @@ public class Program
         while (true)
         {
             var input = Console.ReadLine();
-            if (input == null) continue;
-
-            input = input.Trim();
-            if (input.Equals("exit", StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrEmpty(input))
             {
-                Console.WriteLine("Stopping server...");
-                wssv.Stop();
-                break;
+                continue;
             }
 
-            // ServerCommandsManager.Instance.HandleConsoleCommand(input);
-            Console.WriteLine($"command: {input}");
+            input = input.Trim().ToLowerInvariant();
+            switch (input)
+            {
+                case "exit":
+                {
+                    Console.WriteLine("Stopping server...");
+                    wssv.Stop();
+                    goto afterInputLoop;
+                }
+                default:
+                {
+                    // ServerCommandsManager.Instance.HandleConsoleCommand(input);
+                    Console.WriteLine($"command: {input}");
+                }break;
+            }
         }
+        afterInputLoop:
 
         // make sure server task is complete before exiting
         serverTask.Wait();
