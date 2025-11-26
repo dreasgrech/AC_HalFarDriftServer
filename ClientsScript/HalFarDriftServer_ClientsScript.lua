@@ -6,9 +6,28 @@ local SERVER_COMMAND_TYPE = {
 }
 
 
+local drawTimer = function ()
+  ui.drawText('From script', vec2(400, 400), rgbm(1, 0, 0, 1))
+  ui.dwriteDrawText('from script dwrite', 30, vec2(400, 450), rgbm(0, 1, 0, 1))
+
+  -- ui.toolWindow('timer', vec2(300, 300), vec2(500, 500), function()
+    -- ui.text('Timer from script')
+    -- if ui.modernButton('Close', vec2(120, 40)) then
+      -- ac.log('Closing timer window')
+    -- end
+  -- end)
+  -- ac.log('Drawing timer window')
+end
+
 function script.update()
     -- ac.log('From script')
+    -- drawTimer()
 end
+
+-- ui.onUIFinale(function()
+  -- ac.log('UI finalie')
+  -- drawTimer()
+-- end)
 
 local showIntro = function()
 	ui.modalDialog('From online script!', function()
@@ -27,6 +46,10 @@ local showIntro = function()
 end
 
 -- showIntro()
+
+script.drawUI = function()
+  drawTimer()
+end
 
 local messageHandlers = {
   [SERVER_COMMAND_TYPE.ShowWelcomeMessage] = function(messageObject)
