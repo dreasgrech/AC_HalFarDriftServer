@@ -20,9 +20,28 @@ end
 
 showIntro()
 
-local url = "ws://127.0.0.1/DriftServer"
-local socket = web.socket(url, nil, function(data)
-  ac.log('Message from server: ' .. data)
-end, {})
+local serverDataCallback = function(data)
+  local dataString = data == nil and 'nil' or tostring(data)
+  ac.log('Data from server: ' .. dataString)
+end
+
+-- local url = "ws://127.0.0.1/DriftServer"
+local url = "ws://127.0.0.1/DriftServer?hello=itsme"
+
+---@type web.SocketParams
+local socketParams = {
+  reconnect = true,
+  -- encoding = 'json',
+  encoding = 'utf8',
+  onClose = function()
+    ac.log('Socket closed')
+  end,
+  onError = function(err)
+    ac.log('Socket error: ' .. err)
+  end
+}
+
+local socketHeaders = nil
+local socket = web.socket(url, socketHeaders, serverDataCallback, socketParams)
 
 socket("hello from the client")

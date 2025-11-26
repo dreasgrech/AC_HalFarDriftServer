@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
@@ -27,6 +28,34 @@ namespace AC_HalFarDriftServer
       {
         Console.WriteLine($"Sent async message, success: {b}");
       });
+      
+      // QueryString[]
+      var currentWebSocketContext = Context;
+      var currentQueryStringKeyValueCollection = currentWebSocketContext.QueryString;
+      var allKeys = currentQueryStringKeyValueCollection.AllKeys;
+      var queryStringBuilder = new StringBuilder( /*capacity*/);
+      foreach (var queryStringKey in allKeys)
+      {
+        var queryStringValue = currentQueryStringKeyValueCollection[queryStringKey];
+        queryStringBuilder.Append($"{queryStringKey}={queryStringValue}&");
+      }
+      
+      // build the querystring into one string
+      Console.WriteLine($"Client QueryString: {queryStringBuilder.ToString()}");
+      
+
+      var sessions = Sessions.Sessions.ToArray();
+      Console.WriteLine($"Current active sessions count: {sessions.Length}");
+      foreach (var webSocketSession in sessions)
+      {
+        var webSocketSessionContext = webSocketSession.Context;
+        var id = webSocketSession.ID;
+        var protocol = webSocketSession.Protocol;
+        var startTime = webSocketSession.StartTime;
+        var state = webSocketSession.State;
+        
+        Console.WriteLine($"Session Info: ID = {id}, Protocol = {protocol}, StartTime = {startTime}, State = {state}");
+      }
     }
   }
 
@@ -42,7 +71,9 @@ namespace AC_HalFarDriftServer
       var fullServerAddress = $"{baseServerAddress}/{serverEndpoint}";
       Console.WriteLine($"Starting WebSocket server at {fullServerAddress}");
 
-      var wssv = new WebSocketServer (baseServerAddress);
+      var wssv = new WebSocketServer(baseServerAddress);
+      wssv.Log.Level = LogLevel.Trace;
+      
       wssv.AddWebSocketService<DriftServerEndpoint> ($"/{serverEndpoint}");
       wssv.Start ();
       Console.ReadKey (true);
