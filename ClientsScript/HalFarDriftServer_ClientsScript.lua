@@ -19,3 +19,10 @@ local showIntro = function()
 end
 
 showIntro()
+
+local url = "ws://127.0.0.1/DriftServer"
+local socket = web.socket(url, nil, function(data)
+  ac.log('Message from server: ' .. data)
+end, {})
+
+-- socket("hello from the client")
