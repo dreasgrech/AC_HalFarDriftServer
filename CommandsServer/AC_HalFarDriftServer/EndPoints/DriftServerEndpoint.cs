@@ -55,7 +55,8 @@ public class DriftServerEndpoint : WebSocketBehavior
 
             var acUserManager = ACUserManager.Instance;
             var webSocketID = this.ID;
-            acUserManager.AddPlayer(webSocketID, sessionID, playerName, playerCarID);
+            var webSocket = Context.WebSocket;
+            acUserManager.AddPlayer(webSocketID, webSocket, sessionID, playerName, playerCarID);
 
             // SendAsync($"ACUserManagerPlayerID={acUserManagerPlayerID}", b =>
             // {
@@ -63,7 +64,10 @@ public class DriftServerEndpoint : WebSocketBehavior
             // });
 
             Console.WriteLine($"(OnOpen) WebSocket Session ID: {webSocketID}");
+            
+            ServerCommandsManager.Instance.SendAsyncCommandToClient(webSocketID, new ShowWelcomeMessageServerCommand("This is my welcome message!  Fidelio**."));
         }
+        
     }
 
 

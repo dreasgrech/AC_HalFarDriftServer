@@ -9,6 +9,9 @@ namespace AC_HalFarDriftServer
   {
     public static void Main (string[] args)
     {
+      var cmd = new ShowWelcomeMessageServerCommand("asdasd");
+      var s = cmd.Serialize();
+      
       var serverProtocol = "ws";
       var serverAddress = "127.0.0.1";
       var serverEndpoint = DriftServerEndpoint.EndpointName;
@@ -19,6 +22,9 @@ namespace AC_HalFarDriftServer
       
       var acUserManager = new ACUserManager ();
       ACUserManager.Instance = acUserManager;
+      
+      var serverCommandsManager = new ServerCommandsManager();
+      ServerCommandsManager.Instance = serverCommandsManager;
 
       var wssv = new WebSocketServer(baseServerAddress);
       wssv.Log.Level = LogLevel.Trace;

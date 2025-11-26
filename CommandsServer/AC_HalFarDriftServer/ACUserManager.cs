@@ -1,4 +1,36 @@
-﻿namespace AC_HalFarDriftServer;
+﻿using Newtonsoft.Json;
+using WebSocketSharp.Server;
+
+namespace AC_HalFarDriftServer;
+
+public enum ServerCommandType
+{
+    None,
+    ShowWelcomeMessage
+}
+
+public abstract class ServerCommand
+{
+    [JsonProperty(PropertyName = "X")]
+    public ServerCommandType CommandType { get; protected set; }
+
+    public string Serialize()
+    {
+        return JsonConvert.SerializeObject(this);
+    }
+}
+
+public class ShowWelcomeMessageServerCommand : ServerCommand
+{
+    [JsonProperty(PropertyName = "M")]
+    public string Message { get; set; }
+
+    public ShowWelcomeMessageServerCommand(string message)
+    {
+        CommandType = ServerCommandType.ShowWelcomeMessage;
+        Message = message;
+    }
+}
 
 public class ACUserManager
 {
@@ -6,6 +38,7 @@ public class ACUserManager
 
     private readonly List<string> webSocketIDs;
     
+    private readonly Dictionary<string, WebSocketSharp.WebSocket> playersWebSocket;
     private readonly Dictionary<string, string> playersName;
     private readonly Dictionary<string, int> playersSessionID;
     private readonly Dictionary<string, string> playersCarName;
@@ -16,12 +49,13 @@ public class ACUserManager
     {
         webSocketIDs = new List<string>();
         
+        playersWebSocket = new Dictionary<string, WebSocketSharp.WebSocket>();
         playersSessionID = new Dictionary<string, int>();
         playersName = new Dictionary<string, string>();
         playersCarName = new Dictionary<string, string>();
     }
 
-    public void AddPlayer(string webSocketID, int acSessionCarID, string acPlayerName, string acPlayerCarName)
+    public void AddPlayer(string webSocketID, WebSocketSharp.WebSocket webSocket, int acSessionCarID, string acPlayerName, string acPlayerCarName)
     {
         lock (lockObject)
         {
@@ -33,11 +67,20 @@ public class ACUserManager
             
             webSocketIDs.Add(webSocketID);
             
+            playersWebSocket[webSocketID] = webSocket;
             playersSessionID[webSocketID] = acSessionCarID;
             playersName[webSocketID] = acPlayerName;
             playersCarName[webSocketID] = acPlayerCarName;
             
             Console.WriteLine($"Added player.  WebSocketID: {webSocketID}, SessionCarID: {acSessionCarID}, PlayerName: {acPlayerName}, PlayerCarName: {acPlayerCarName}");
+        }
+    }
+    
+    public bool TryGetPlayerWebSocket(string webSocketID, out WebSocketSharp.WebSocket webSocket)
+    {
+        lock (lockObject)
+        {
+            return playersWebSocket.TryGetValue(webSocketID, out webSocket);
         }
     }
     
@@ -51,6 +94,7 @@ public class ACUserManager
                 return;
             }
             
+            playersWebSocket.Remove(webSocketID);
             playersSessionID.Remove(webSocketID);
             playersName.Remove(webSocketID);
             playersCarName.Remove(webSocketID);
