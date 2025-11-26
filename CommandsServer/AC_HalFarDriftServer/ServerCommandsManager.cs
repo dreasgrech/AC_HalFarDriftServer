@@ -1,4 +1,12 @@
-﻿namespace AC_HalFarDriftServer;
+﻿using AC_HalFarDriftServer.ServerCommands;
+
+namespace AC_HalFarDriftServer;
+
+public enum ServerCommandType
+{
+    None,
+    ShowWelcomeMessage
+}
 
 public class ServerCommandsManager
 {

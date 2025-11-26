@@ -1,5 +1,6 @@
 ﻿using System;
 using AC_HalFarDriftServer.EndPoints;
+using AC_HalFarDriftServer.ServerCommands;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
@@ -9,9 +10,6 @@ namespace AC_HalFarDriftServer
   {
     public static void Main (string[] args)
     {
-      var cmd = new ShowWelcomeMessageServerCommand("asdasd");
-      var s = cmd.Serialize();
-      
       var serverProtocol = "ws";
       var serverAddress = "127.0.0.1";
       var serverEndpoint = DriftServerEndpoint.EndpointName;

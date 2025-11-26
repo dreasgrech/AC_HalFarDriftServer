@@ -1,36 +1,4 @@
-﻿using Newtonsoft.Json;
-using WebSocketSharp.Server;
-
-namespace AC_HalFarDriftServer;
-
-public enum ServerCommandType
-{
-    None,
-    ShowWelcomeMessage
-}
-
-public abstract class ServerCommand
-{
-    [JsonProperty(PropertyName = "X")]
-    public ServerCommandType CommandType { get; protected set; }
-
-    public string Serialize()
-    {
-        return JsonConvert.SerializeObject(this);
-    }
-}
-
-public class ShowWelcomeMessageServerCommand : ServerCommand
-{
-    [JsonProperty(PropertyName = "M")]
-    public string Message { get; set; }
-
-    public ShowWelcomeMessageServerCommand(string message)
-    {
-        CommandType = ServerCommandType.ShowWelcomeMessage;
-        Message = message;
-    }
-}
+﻿namespace AC_HalFarDriftServer;
 
 public class ACUserManager
 {
