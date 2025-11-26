@@ -6,7 +6,7 @@ public class ACUserManager
 
     private readonly List<string> webSocketIDs;
     
-    private readonly Dictionary<string, string> playersNames;
+    private readonly Dictionary<string, string> playersName;
     private readonly Dictionary<string, int> playersSessionID;
     private readonly Dictionary<string, string> playersCarName;
     
@@ -17,7 +17,7 @@ public class ACUserManager
         webSocketIDs = new List<string>();
         
         playersSessionID = new Dictionary<string, int>();
-        playersNames = new Dictionary<string, string>();
+        playersName = new Dictionary<string, string>();
         playersCarName = new Dictionary<string, string>();
     }
 
@@ -34,7 +34,7 @@ public class ACUserManager
             webSocketIDs.Add(webSocketID);
             
             playersSessionID[webSocketID] = acSessionCarID;
-            playersNames[webSocketID] = acPlayerName;
+            playersName[webSocketID] = acPlayerName;
             playersCarName[webSocketID] = acPlayerCarName;
             
             Console.WriteLine($"Added player.  WebSocketID: {webSocketID}, SessionCarID: {acSessionCarID}, PlayerName: {acPlayerName}, PlayerCarName: {acPlayerCarName}");
@@ -52,7 +52,7 @@ public class ACUserManager
             }
             
             playersSessionID.Remove(webSocketID);
-            playersNames.Remove(webSocketID);
+            playersName.Remove(webSocketID);
             playersCarName.Remove(webSocketID);
             
             Console.WriteLine($"Removed player.  WebSocketID: {webSocketID}");

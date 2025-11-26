@@ -8,100 +8,113 @@ namespace AC_HalFarDriftServer.EndPoints;
 public class DriftServerEndpoint : WebSocketBehavior
 {
     public static string EndpointName => "DriftServer";
+    
+    private static readonly object LockObject = new object();
 
     protected override void OnMessage (MessageEventArgs e)
     {
-        var dataString = e.Data;
-        var isBinary = e.IsBinary;
-        var isPing = e.IsPing;
-        var isText = e.IsText;
-        var rawData = e.RawData;
+        lock (LockObject)
+        {
+            var dataString = e.Data;
+            var isBinary = e.IsBinary;
+            var isPing = e.IsPing;
+            var isText = e.IsText;
+            var rawData = e.RawData;
 
-        var currentWebSocketContext = Context;
-        //currentWebSocketContext.WebSocket.
-        var currentWebSocketContextUser = currentWebSocketContext.User;
-        //currentWebSocketContextUser.
-        var userEndPoint = currentWebSocketContext.UserEndPoint;
-        var ipAddress = userEndPoint.Address.ToString();
-      
-        Console.WriteLine($"Message received: ID = {this.ID}, IP = {ipAddress}, Data = {dataString}, Data Length = {dataString.Length}, IsBinary = {isBinary}, IsPing = {isPing}, IsText = {isText}, RawData Length = {rawData.Length}");
+            var currentWebSocketContext = Context;
+            //currentWebSocketContext.WebSocket.
+            var currentWebSocketContextUser = currentWebSocketContext.User;
+            //currentWebSocketContextUser.
+            var userEndPoint = currentWebSocketContext.UserEndPoint;
+            var ipAddress = userEndPoint.Address.ToString();
 
-        Send ("Message received, thank you!");
+            Console.WriteLine($"Message received: ID = {this.ID}, IP = {ipAddress}, Data = {dataString}, Data Length = {dataString.Length}, IsBinary = {isBinary}, IsPing = {isPing}, IsText = {isText}, RawData Length = {rawData.Length}");
+
+            Send("Message received, thank you!");
+        }
     }
 
     protected override void OnOpen()
     {
-        Console.WriteLine("New client connected.");
-        Send("Welcome to the Drift Server! (from blocking call)");
-        SendAsync("another message (from async call)", b =>
+        lock (LockObject)
         {
-            Console.WriteLine($"Sent async message, success: {b}");
-        });
-      
-        var currentWebSocketContext = Context;
-        var currentQueryStringKeyValueCollection = currentWebSocketContext.QueryString;
-        var allKeys = currentQueryStringKeyValueCollection.AllKeys;
-        var queryStringBuilder = new StringBuilder( /*capacity*/);
-        foreach (var queryStringKey in allKeys)
-        {
-            var queryStringValue = currentQueryStringKeyValueCollection[queryStringKey];
-            queryStringValue = Uri.UnescapeDataString(queryStringValue);
-            queryStringBuilder.Append($"{queryStringKey}={queryStringValue}&");
-        }
-      
-        // build the querystring into one string
-        Console.WriteLine($"Client QueryString: {queryStringBuilder.ToString()}");
-      
+            Console.WriteLine("New client connected.");
+            Send("Welcome to the Drift Server! (from blocking call)");
+            SendAsync("another message (from async call)",
+                b => { Console.WriteLine($"Sent async message, success: {b}"); });
 
-        var sessions = Sessions.Sessions.ToArray();
-        Console.WriteLine($"Current active sessions count: {sessions.Length}");
-        foreach (var webSocketSession in sessions)
-        {
-            var webSocketSessionContext = webSocketSession.Context;
-            var id = webSocketSession.ID;
-            var protocol = webSocketSession.Protocol;
-            var startTime = webSocketSession.StartTime;
-            var state = webSocketSession.State;
-        
-            Console.WriteLine($"Session Info: ID = {id}, Protocol = {protocol}, StartTime = {startTime}, State = {state}");
-        }
+            var currentWebSocketContext = Context;
+            var currentQueryStringKeyValueCollection = currentWebSocketContext.QueryString;
+            var allKeys = currentQueryStringKeyValueCollection.AllKeys;
+            var queryStringBuilder = new StringBuilder( /*capacity*/);
+            foreach (var queryStringKey in allKeys)
+            {
+                var queryStringValue = currentQueryStringKeyValueCollection[queryStringKey];
+                queryStringValue = Uri.UnescapeDataString(queryStringValue);
+                queryStringBuilder.Append($"{queryStringKey}={queryStringValue}&");
+            }
 
-        var sessionID = Convert.ToInt16(currentQueryStringKeyValueCollection["SessionID"]);
-        var playerName = currentQueryStringKeyValueCollection["DriverName"];
-        var playerCarID = currentQueryStringKeyValueCollection["CarID"];
-        
-        var acUserManager = ACUserManager.Instance;
-        var webSocketID = this.ID;
-        acUserManager.AddPlayer(webSocketID, sessionID, playerName, playerCarID);
-        
-        // SendAsync($"ACUserManagerPlayerID={acUserManagerPlayerID}", b =>
-        // {
-        //     Console.WriteLine($"Sent async message, success: {b}");
-        // });
-        
-        Console.WriteLine($"(OnOpen) WebSocket Session ID: {webSocketID}");
+            // build the querystring into one string
+            Console.WriteLine($"Client QueryString: {queryStringBuilder.ToString()}");
+
+
+            var sessions = Sessions.Sessions.ToArray();
+            Console.WriteLine($"Current active sessions count: {sessions.Length}");
+            foreach (var webSocketSession in sessions)
+            {
+                var webSocketSessionContext = webSocketSession.Context;
+                var id = webSocketSession.ID;
+                var protocol = webSocketSession.Protocol;
+                var startTime = webSocketSession.StartTime;
+                var state = webSocketSession.State;
+
+                Console.WriteLine(
+                    $"Session Info: ID = {id}, Protocol = {protocol}, StartTime = {startTime}, State = {state}");
+            }
+
+            var sessionID = Convert.ToInt16(currentQueryStringKeyValueCollection["SessionID"]);
+            var playerName = currentQueryStringKeyValueCollection["DriverName"];
+            var playerCarID = currentQueryStringKeyValueCollection["CarID"];
+
+            var acUserManager = ACUserManager.Instance;
+            var webSocketID = this.ID;
+            acUserManager.AddPlayer(webSocketID, sessionID, playerName, playerCarID);
+
+            // SendAsync($"ACUserManagerPlayerID={acUserManagerPlayerID}", b =>
+            // {
+            //     Console.WriteLine($"Sent async message, success: {b}");
+            // });
+
+            Console.WriteLine($"(OnOpen) WebSocket Session ID: {webSocketID}");
+        }
     }
 
     protected override void OnClose(CloseEventArgs e)
     {
-        var code = e.Code;
-        var reason = e.Reason;
-        var wasClean = e.WasClean;
-      
-        var webSocketID = this.ID;
-        Console.WriteLine($"(OnClose) ID = {webSocketID} Code = {code}, Reason = {reason}, WasClean = {wasClean}");
-        
-        ACUserManager.Instance.RemovePlayer(webSocketID);
+        lock (LockObject)
+        {
+            var code = e.Code;
+            var reason = e.Reason;
+            var wasClean = e.WasClean;
+
+            var webSocketID = this.ID;
+            Console.WriteLine($"(OnClose) ID = {webSocketID} Code = {code}, Reason = {reason}, WasClean = {wasClean}");
+
+            ACUserManager.Instance.RemovePlayer(webSocketID);
+        }
     }
 
     protected override void OnError(ErrorEventArgs e)
     {
-        var exception = e.Exception;
-        var message = e.Message;
-      
-        var webSocketID = this.ID;
-        Console.WriteLine($"(OnError) ID = {webSocketID}, Message = {message}, Exception = {exception}");
-        
-        ACUserManager.Instance.RemovePlayer(webSocketID);
+        lock (LockObject)
+        {
+            var exception = e.Exception;
+            var message = e.Message;
+
+            var webSocketID = this.ID;
+            Console.WriteLine($"(OnError) ID = {webSocketID}, Message = {message}, Exception = {exception}");
+
+            ACUserManager.Instance.RemovePlayer(webSocketID);
+        }
     }
 }
