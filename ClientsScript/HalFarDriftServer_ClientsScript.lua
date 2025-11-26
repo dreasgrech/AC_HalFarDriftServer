@@ -1,3 +1,11 @@
+
+---@enum SERVER_COMMAND_TYPE
+local SERVER_COMMAND_TYPE = {
+  None = 0,
+  ShowWelcomeMessage = 1,
+}
+
+
 function script.update()
     -- ac.log('From script')
 end
@@ -18,11 +26,33 @@ local showIntro = function()
   end, true)
 end
 
-showIntro()
+-- showIntro()
 
+local messageHandlers = {
+  [SERVER_COMMAND_TYPE.ShowWelcomeMessage] = function(messageObject)
+    ac.log(string.format('Handling ShowWelcomeMessage command from server: %s', tostring(messageObject.M)))
+
+    showIntro()
+  end
+}
+
+---@param data binary
 local serverDataCallback = function(data)
-  local dataString = data == nil and 'nil' or tostring(data)
+  if data == nil then
+    ac.log('Data from server: nil data received')
+    return
+  end
+
+  local dataString = tostring(data)
   ac.log('Data from server: ' .. dataString)
+  local messageObject = JSON.parse(dataString)
+  local messageType = messageObject.X
+  local handlerFunction = messageHandlers[messageType]
+  if handlerFunction ~= nil then
+    handlerFunction(messageObject)
+  else
+    ac.log('No handler for message type: ' .. tostring(messageType))
+  end
 end
 
 --[===[

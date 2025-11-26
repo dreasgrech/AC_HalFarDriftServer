@@ -17,9 +17,6 @@ public class DriftServerEndpoint : WebSocketBehavior
         lock (LockObject)
         {
             Console.WriteLine("New client connected.");
-            Send("Welcome to the Drift Server! (from blocking call)");
-            SendAsync("another message (from async call)",
-                b => { Console.WriteLine($"Sent async message, success: {b}"); });
 
             var currentWebSocketContext = Context;
             var currentQueryStringKeyValueCollection = currentWebSocketContext.QueryString;
@@ -68,9 +65,7 @@ public class DriftServerEndpoint : WebSocketBehavior
             
             ServerCommandsManager.Instance.SendAsyncCommandToClient(webSocketID, new ShowWelcomeMessageServerCommand("This is my welcome message!  Fidelio**."));
         }
-        
     }
-
 
     protected override void OnMessage (MessageEventArgs e)
     {
@@ -91,7 +86,7 @@ public class DriftServerEndpoint : WebSocketBehavior
 
             Console.WriteLine($"Message received: ID = {this.ID}, IP = {ipAddress}, Data = {dataString}, Data Length = {dataString.Length}, IsBinary = {isBinary}, IsPing = {isPing}, IsText = {isText}, RawData Length = {rawData.Length}");
 
-            Send("Message received, thank you!");
+            // Send("Message received, thank you!");
         }
     }
 
