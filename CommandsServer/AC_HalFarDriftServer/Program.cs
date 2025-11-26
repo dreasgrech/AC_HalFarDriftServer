@@ -16,16 +16,16 @@ namespace AC_HalFarDriftServer
       
       Console.WriteLine($"Message received: Data = {dataString}, Data Length = {dataString.Length}, IsBinary = {isBinary}, IsPing = {isPing}, IsText = {isText}, RawData Length = {rawData.Length}");
 
-      // Send ("Message received, thank you!");
+      Send ("Message received, thank you!");
     }
 
     protected override void OnOpen()
     {
       Console.WriteLine("New client connected.");
-      // Send("Welcome to the Drift Server!");
-      SendAsync("ok", b =>
+      Send("Welcome to the Drift Server! (from blocking call)");
+      SendAsync("another message (from async call)", b =>
       {
-        Console.WriteLine(b);
+        Console.WriteLine($"Sent async message, success: {b}");
       });
     }
   }

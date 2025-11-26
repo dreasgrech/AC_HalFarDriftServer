@@ -25,4 +25,4 @@ local socket = web.socket(url, nil, function(data)
   ac.log('Message from server: ' .. data)
 end, {})
 
--- socket("hello from the client")
+socket("hello from the client")
