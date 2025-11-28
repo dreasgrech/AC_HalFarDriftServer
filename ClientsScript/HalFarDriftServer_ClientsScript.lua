@@ -27,6 +27,7 @@ local SERVER_COMMAND_TYPE = {
   -- -- ac.log('Drawing timer window')
 -- end
 
+---@enum COUNTDOWN_TIMER_STATE
 local COUNTDOWN_TIMER_STATE = {
   Inactive = 0,
   Red = 1,
@@ -34,12 +35,67 @@ local COUNTDOWN_TIMER_STATE = {
   Green = 3
 }
 
+local StartingLights = (function()
+  local red = vec3(255, 0, 0)
+  local green = vec3(0, 255, 0)
+  local offColor = vec3(0, 0, 0)
+  local cyclableColors = { red, green }
+
+  local ksEmissivePropertyName = 'ksEmissive'
+
+  local startlightsMeshes = ac.findMeshes('{ Cube.005_SUB1, Cube.006_SUB1, Cube.007_SUB1, Cube.008_SUB1 }')
+
+  startlightsMeshes:setMaterialProperty('ksAlphaRef', -193) -- value from ext_config file
+
+  local setRed = function()
+    startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, red)
+  end
+
+  local setGreen = function()
+    startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, green)
+  end
+
+  local turnOff = function()
+    startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, offColor)
+  end
+  
+  return {
+    setRed = setRed,
+    setGreen = setGreen,
+    turnOff = turnOff
+  }
+end)()
+
+StartingLights.turnOff()
+
 local COUNTDOWN_TIMER_GAP_BETWEEN_STATES_SECONDS = 2.0
 local countdownTimerState = COUNTDOWN_TIMER_STATE.Inactive
 local countdownTimerStartTime = 0.0
 local countdownTimerCurrentStateEnterTimeSeconds = 0.0
 
+--[===[
+-- local startlightsMeshes = ac.findMeshes('material:fresnel4')
+local startlightsMeshes = ac.findMeshes('{ Cube.005_SUB1, Cube.006_SUB1, Cube.007_SUB1, Cube.008_SUB1 }')
+
+-- make sure we don’t affect other things using the same material
+-- startlightsMeshes:ensureUniqueMaterials()
+
+-- values from config file:
+startlightsMeshes:setMaterialProperty('ksAlphaRef', -193)
+
+local beforeChange = startlightsMeshes:getMaterialPropertyValue('ksEmissive')
+-- startlightsMeshes:setMaterialProperty('ksEmissive', rgbm(0, 0, 255, 0.5))
+-- startlightsMeshes:setMaterialProperty('ksEmissive', vec3(255,192,203))
+startlightsMeshes:setMaterialProperty('ksEmissive', vec3(0,255,0))
+local afterChange = startlightsMeshes:getMaterialPropertyValue('ksEmissive')
+
+ac.log(string.format('Found %d startlight meshes. beforeChange: %s, afterChange: %s', #startlightsMeshes, tostring(beforeChange), tostring(afterChange)))
+--]===]
+
+---@type table<COUNTDOWN_TIMER_STATE, fun(currentTimeSeconds: number)>
 local countdownTimerStateMachine = {
+  [COUNTDOWN_TIMER_STATE.Inactive] = function(currentTimeSeconds)
+  end,
   [COUNTDOWN_TIMER_STATE.Red] = function(currentTimeSeconds)
     if currentTimeSeconds - countdownTimerCurrentStateEnterTimeSeconds >= COUNTDOWN_TIMER_GAP_BETWEEN_STATES_SECONDS then
       ac.log(string.format('Countdown Timer State changing to Yellow. currentTimeSeconds: %f, stateEnterTime: %f', currentTimeSeconds, countdownTimerCurrentStateEnterTimeSeconds))
@@ -63,6 +119,7 @@ local countdownTimerStateMachine = {
   end
 }
 
+---@type table<COUNTDOWN_TIMER_STATE, fun()>
 local countdownTimerStateMachine_UI = {
   [COUNTDOWN_TIMER_STATE.Red] = function()
     local windowSize = ui.windowSize()
@@ -85,6 +142,8 @@ function script.update(dt)
     local stateMachineFunction = countdownTimerStateMachine[countdownTimerState]
     stateMachineFunction(currentTimeSeconds)
   end
+-- startlightsMeshes:setMaterialProperty('ksEmissive', rgbm(0, 0, 1, 0.5))
+-- startlightsMeshes:setMaterialProperty('ksEmissive', rgbm(0/255, 255/255, 0/255, 0.5))
 end
 
 local showIntro = function()
