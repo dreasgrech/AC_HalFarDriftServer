@@ -72,10 +72,6 @@ local StartingLights = (function()
     ac.log(string.format('Set startlights color to R=%f, G=%f, B=%f', colorValue.x, colorValue.y, colorValue.z))
   end
 
-  local setBlack = function()
-    setColor(AVAILABLE_COLOR_TYPES.Black)
-  end
-
   local currentEffectStateTime = 0.0
 
   local GradientEffectState = (function()
@@ -156,6 +152,8 @@ local StartingLights = (function()
 
     local StartCountdownState_StateMachine
 
+    local FLICKER_GREEN_INTERVAL_SECONDS = 0.1
+
     ---@param newState StartCountdownState_States
     local changeStartCountdownState = function(newState)
       StartCountdownState_stateStartTime = getTimeSeconds()
@@ -198,11 +196,20 @@ local StartingLights = (function()
         end,
         update = function(dt)
           if StartCountdownState_timeInStateSeconds > 5 then
-            -- changeStartCountdownState(StartCountdownState_States.None)
-            changeStartCountdownState(StartCountdownState_States.ShowingRed)
+            changeStartCountdownState(StartCountdownState_States.None)
+            -- changeStartCountdownState(StartCountdownState_States.ShowingRed)
 
-            -- setBlack()
+            setColor(AVAILABLE_COLOR_TYPES.Black)
             ac.log('StartCountdownState: Finished')
+            return
+          end
+
+          -- continue the flicker between green and black
+          local intervalIndex = math.floor(StartCountdownState_timeInStateSeconds / FLICKER_GREEN_INTERVAL_SECONDS)
+          if (intervalIndex % 2) == 0 then
+            setColor(AVAILABLE_COLOR_TYPES.Green)
+          else
+            setColor(AVAILABLE_COLOR_TYPES.Black)
           end
         end
       }
@@ -224,7 +231,7 @@ local StartingLights = (function()
     [EFFECTS.None] = { start = function() end, update = function(dt) end },
     [EFFECTS.FlickeringGreen] = {
       start = function()
-        setBlack()
+        setColor(AVAILABLE_COLOR_TYPES.Black)
       end,
       update = function(dt)
       end
@@ -241,7 +248,9 @@ local StartingLights = (function()
 
   return {
     EFFECTS = EFFECTS,
-    turnOff = setBlack,
+    turnOff = function()
+      setColor(AVAILABLE_COLOR_TYPES.Black)
+    end,
     startEffect = function(effectType)
       currentEffect = effectType
       currentEffectStateTime = getTimeSeconds()
@@ -254,7 +263,7 @@ local StartingLights = (function()
 end)()
 
 StartingLights.turnOff()
-StartingLights.startEffect(StartingLights.EFFECTS.StartCountdown)
+-- StartingLights.startEffect(StartingLights.EFFECTS.StartCountdown)
 
 ---@enum COUNTDOWN_TIMER_STATE
 local COUNTDOWN_TIMER_STATE = {
@@ -395,7 +404,8 @@ local messageHandlers = {
   [SERVER_COMMAND_TYPE.StartCountdownTimer] = function(messageObject)
     ac.log(string.format('Handling StartCountdownTimer command from server'))
 
-    startCountdownTimer()
+    -- startCountdownTimer()
+    StartingLights.startEffect(StartingLights.EFFECTS.StartCountdown)
   end
 }
 
