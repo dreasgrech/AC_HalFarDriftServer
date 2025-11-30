@@ -76,18 +76,11 @@ local StartingLights = (function()
 
   local currentEffectStateTime = 0.0
 
-  ----------------------------------------------------------------
-  -- Gradient color state (full RGB wheel)
-  ----------------------------------------------------------------
-  -- How many degrees of hue to advance per second (360° = full rainbow).
-  local GRADIENT_COLOR_SPEED_DEGREES_PER_SECOND = 60.0
-
-  -- Hue in degrees [0, 360). We’ll walk around the HSV color wheel.
-  local gradientHueDegrees = 0.0
-
+  local GRADIENTEFFECT_SPEED_DEGREES_PER_SECOND = 60.0 -- How many degrees of hue to advance per second (360° = full rainbow).
+  local GRADIENTEFFECT_gradientHueDegrees = 0.0 -- Hue in degrees [0, 360). We’ll walk around the HSV color wheel.
   -- Saturation and value for HSV (1 = full saturation/brightness).
-  local GRADIENT_SATURATION = 1.0
-  local GRADIENT_VALUE = 1.0
+  local GRADIENTEFFECT_SATURATION = 1.0
+  local GRADIENTEFFECT_VALUE = 1.0
 
   -- Converts HSV (with H in degrees, S/V in [0..1]) to RGB [0..255].
   local hsvToRgb255 = function(h, s, v)
@@ -146,19 +139,18 @@ local StartingLights = (function()
     },
     [EFFECTS.GradientRGB] = {
       start = function()
-        gradientHueDegrees = 0.0
+        GRADIENTEFFECT_gradientHueDegrees = 0.0
       end,
       update = function(dt)
         -- Advance hue based on time:
-        gradientHueDegrees = gradientHueDegrees + GRADIENT_COLOR_SPEED_DEGREES_PER_SECOND * dt
-        if gradientHueDegrees >= 360.0 then
-          gradientHueDegrees = gradientHueDegrees - 360.0
+        GRADIENTEFFECT_gradientHueDegrees = GRADIENTEFFECT_gradientHueDegrees + GRADIENTEFFECT_SPEED_DEGREES_PER_SECOND * dt
+        if GRADIENTEFFECT_gradientHueDegrees >= 360.0 then
+          GRADIENTEFFECT_gradientHueDegrees = GRADIENTEFFECT_gradientHueDegrees - 360.0
         end
 
-        local r, g, b = hsvToRgb255(gradientHueDegrees, GRADIENT_SATURATION, GRADIENT_VALUE)
+        local r, g, b = hsvToRgb255(GRADIENTEFFECT_gradientHueDegrees, GRADIENTEFFECT_SATURATION, GRADIENTEFFECT_VALUE)
 
-        -- This will give values like (255, 0, 0), (0, 255, 0), (0, 0, 255),
-        -- and many intermediate combinations (e.g. (0, 120, 221)) over time.
+        -- This will give values like (255, 0, 0), (0, 255, 0), (0, 0, 255), and many intermediate combinations (e.g. (0, 120, 221)) over time.
         startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, vec3(r, g, b)) --todo: reuse vec3
 
         ac.log(string.format('Gradient color value: R=%f, G=%f, B=%f', r, g, b))
@@ -176,14 +168,12 @@ local StartingLights = (function()
       effectsStateMachine[currentEffect].start()
     end,
     update = function (dt)
-      -- effectsStateMachine[currentEffect].update(dt)
-
-      -- updateGradientColor(dt)
+      effectsStateMachine[currentEffect].update(dt)
     end
   }
 end)()
 
--- StartingLights.turnOff()
+StartingLights.turnOff()
 
 ---@enum COUNTDOWN_TIMER_STATE
 local COUNTDOWN_TIMER_STATE = {
