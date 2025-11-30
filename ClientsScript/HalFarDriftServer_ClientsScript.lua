@@ -27,19 +27,13 @@ local SERVER_COMMAND_TYPE = {
   -- -- ac.log('Drawing timer window')
 -- end
 
----@enum COUNTDOWN_TIMER_STATE
-local COUNTDOWN_TIMER_STATE = {
-  Inactive = 0,
-  Red = 1,
-  Yellow = 2,
-  Green = 3
-}
-
 local StartingLights = (function()
   local EFFECTS = {
     None = 0,
     FlickeringGreen = 1,
-    CyclingRedGreen = 2
+    CyclingRedGreen = 2,
+    -- Gradient RGB sweep 0..255..0
+    GradientRGB = 3
   }
 
   local AVAILABLE_COLOR_TYPES = {
@@ -130,27 +124,6 @@ local StartingLights = (function()
     return r, g, b
   end
 
-  local updateGradientColor = function(dt)
-    if dt == nil or dt <= 0.0 then
-      return
-    end
-
-    -- Advance hue based on time:
-    gradientHueDegrees = gradientHueDegrees + GRADIENT_COLOR_SPEED_DEGREES_PER_SECOND * dt
-    if gradientHueDegrees >= 360.0 then
-      gradientHueDegrees = gradientHueDegrees - 360.0
-    end
-
-    local r, g, b = hsvToRgb255(gradientHueDegrees, GRADIENT_SATURATION, GRADIENT_VALUE)
-
-    -- This will give values like (255, 0, 0), (0, 255, 0), (0, 0, 255),
-    -- and many intermediate combinations (e.g. (0, 120, 221)) over time.
-    startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, vec3(r, g, b))
-    ac.log(string.format('Gradient color value: R=%f, G=%f, B=%f', r, g, b))
-  end
-
-  ----------------------------------------------------------------
-
   local effectsStateMachine = {
     [EFFECTS.None] = {
       start = function()
@@ -170,6 +143,26 @@ local StartingLights = (function()
       end,
       update = function(dt)
       end
+    },
+    [EFFECTS.GradientRGB] = {
+      start = function()
+        gradientHueDegrees = 0.0
+      end,
+      update = function(dt)
+        -- Advance hue based on time:
+        gradientHueDegrees = gradientHueDegrees + GRADIENT_COLOR_SPEED_DEGREES_PER_SECOND * dt
+        if gradientHueDegrees >= 360.0 then
+          gradientHueDegrees = gradientHueDegrees - 360.0
+        end
+
+        local r, g, b = hsvToRgb255(gradientHueDegrees, GRADIENT_SATURATION, GRADIENT_VALUE)
+
+        -- This will give values like (255, 0, 0), (0, 255, 0), (0, 0, 255),
+        -- and many intermediate combinations (e.g. (0, 120, 221)) over time.
+        startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, vec3(r, g, b)) --todo: reuse vec3
+
+        ac.log(string.format('Gradient color value: R=%f, G=%f, B=%f', r, g, b))
+      end
     }
   }
 
@@ -185,14 +178,20 @@ local StartingLights = (function()
     update = function (dt)
       -- effectsStateMachine[currentEffect].update(dt)
 
-      -- Gradient RGB sweep 0..255..0
-      updateGradientColor(dt)
+      -- updateGradientColor(dt)
     end
   }
 end)()
 
-
 -- StartingLights.turnOff()
+
+---@enum COUNTDOWN_TIMER_STATE
+local COUNTDOWN_TIMER_STATE = {
+  Inactive = 0,
+  Red = 1,
+  Yellow = 2,
+  Green = 3
+}
 
 local COUNTDOWN_TIMER_GAP_BETWEEN_STATES_SECONDS = 2.0
 local countdownTimerState = COUNTDOWN_TIMER_STATE.Inactive
