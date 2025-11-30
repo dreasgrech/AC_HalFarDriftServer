@@ -33,20 +33,29 @@ local StartingLights = (function()
     FlickeringGreen = 1,
     CyclingRedGreen = 2,
     -- Gradient RGB sweep 0..255..0
-    GradientRGB = 3
+    GradientRGB = 3,
+    StartCountdown = 4
+
   }
 
   local AVAILABLE_COLOR_TYPES = {
     Red = 1,
     Green = 2,
-    Black = 3
+    Black = 3,
+    Yellow = 4
   }
 
   local COLOR_VALUES = {
     [AVAILABLE_COLOR_TYPES.Red] = vec3(255, 0, 0),
     [AVAILABLE_COLOR_TYPES.Green] = vec3(0, 255, 0),
-    [AVAILABLE_COLOR_TYPES.Black] = vec3(0, 0, 0)
+    [AVAILABLE_COLOR_TYPES.Black] = vec3(0, 0, 0),
+    [AVAILABLE_COLOR_TYPES.Yellow] = vec3(255, 255, 0)
   }
+
+   local getTimeSeconds = function ()
+     local ms = ac.getSim().time
+     return ms * 0.001
+   end
 
   local currentEffect = EFFECTS.None
   local currentColor;
@@ -60,14 +69,7 @@ local StartingLights = (function()
     currentColor = color
     local colorValue = COLOR_VALUES[color]
     startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, colorValue)
-  end
-
-  local setRed = function()
-    setColor(AVAILABLE_COLOR_TYPES.Red)
-  end
-
-  local setGreen = function()
-    setColor(AVAILABLE_COLOR_TYPES.Green)
+    ac.log(string.format('Set startlights color to R=%f, G=%f, B=%f', colorValue.x, colorValue.y, colorValue.z))
   end
 
   local setBlack = function()
@@ -76,54 +78,150 @@ local StartingLights = (function()
 
   local currentEffectStateTime = 0.0
 
-  local GRADIENTEFFECT_SPEED_DEGREES_PER_SECOND = 60.0 -- How many degrees of hue to advance per second (360° = full rainbow).
-  local GRADIENTEFFECT_gradientHueDegrees = 0.0 -- Hue in degrees [0, 360). We’ll walk around the HSV color wheel.
-  -- Saturation and value for HSV (1 = full saturation/brightness).
-  local GRADIENTEFFECT_SATURATION = 1.0
-  local GRADIENTEFFECT_VALUE = 1.0
+  local GradientEffectState = (function()
+    -- Converts HSV (with H in degrees, S/V in [0..1]) to RGB [0..255].
+    local hsvToRgb255 = function(h, s, v)
+      if s <= 0.0 then
+        local gray = v * 255.0
+        return gray, gray, gray
+      end
 
-  -- Converts HSV (with H in degrees, S/V in [0..1]) to RGB [0..255].
-  local hsvToRgb255 = function(h, s, v)
-    if s <= 0.0 then
-      local gray = v * 255.0
-      return gray, gray, gray
+      h = h % 360.0
+      local c = v * s
+      local hp = h / 60.0
+      local x = c * (1.0 - math.abs((hp % 2.0) - 1.0))
+
+      local r1, g1, b1
+      if hp < 1.0 then
+        r1, g1, b1 = c, x, 0.0
+      elseif hp < 2.0 then
+        r1, g1, b1 = x, c, 0.0
+      elseif hp < 3.0 then
+        r1, g1, b1 = 0.0, c, x
+      elseif hp < 4.0 then
+        r1, g1, b1 = 0.0, x, c
+      elseif hp < 5.0 then
+        r1, g1, b1 = x, 0.0, c
+      else
+        r1, g1, b1 = c, 0.0, x
+      end
+
+      local m = v - c
+      local r = (r1 + m) * 255.0
+      local g = (g1 + m) * 255.0
+      local b = (b1 + m) * 255.0
+
+      return r, g, b
     end
 
-    h = h % 360.0
-    local c = v * s
-    local hp = h / 60.0
-    local x = c * (1.0 - math.abs((hp % 2.0) - 1.0))
+    local GRADIENT_SPEED_DEGREES_PER_SECOND = 60.0 -- How many degrees of hue to advance per second (360° = full rainbow).
+    local gradientHueDegrees = 0.0 -- Hue in degrees [0, 360). We’ll walk around the HSV color wheel.
+    -- Saturation and value for HSV (1 = full saturation/brightness).
+    local GRADIENT_SATURATION = 1.0
+    local GRADIENT_VALUE = 1.0
 
-    local r1, g1, b1
-    if hp < 1.0 then
-      r1, g1, b1 = c, x, 0.0
-    elseif hp < 2.0 then
-      r1, g1, b1 = x, c, 0.0
-    elseif hp < 3.0 then
-      r1, g1, b1 = 0.0, c, x
-    elseif hp < 4.0 then
-      r1, g1, b1 = 0.0, x, c
-    elseif hp < 5.0 then
-      r1, g1, b1 = x, 0.0, c
-    else
-      r1, g1, b1 = c, 0.0, x
+    return {
+        start = function()
+          gradientHueDegrees = 0.0
+        end,
+        update = function(dt)
+          -- Advance hue based on time:
+          gradientHueDegrees = gradientHueDegrees + GRADIENT_SPEED_DEGREES_PER_SECOND * dt
+          if gradientHueDegrees >= 360.0 then
+            gradientHueDegrees = gradientHueDegrees - 360.0
+          end
+
+          local r, g, b = hsvToRgb255(gradientHueDegrees, GRADIENT_SATURATION, GRADIENT_VALUE)
+
+          -- This will give values like (255, 0, 0), (0, 255, 0), (0, 0, 255), and many intermediate combinations (e.g. (0, 120, 221)) over time.
+          startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, vec3(r, g, b)) --todo: reuse vec3
+
+          ac.log(string.format('Gradient color value: R=%f, G=%f, B=%f', r, g, b))
+        end
+      }
+  end)()
+
+  local StartCountdownState = (function ()
+    ---@enum StartCountdownState_States
+    local StartCountdownState_States = {
+      None = 0,
+      ShowingRed = 1,
+      ShowingYellow = 2,
+      ShowingGreen = 3
+    }
+
+    local StartCountdownState_stateStartTime = 0
+    local StartCountdownState_timeInStateSeconds = 0
+    local startCountdownState_currentState = StartCountdownState_States.None
+
+    local StartCountdownState_StateMachine
+
+    ---@param newState StartCountdownState_States
+    local changeStartCountdownState = function(newState)
+      StartCountdownState_stateStartTime = getTimeSeconds()
+      StartCountdownState_timeInStateSeconds = 0
+
+      ac.log(string.format('StartCountdownState: Changing state from %d to %d.  Start time: %f', startCountdownState_currentState, newState, StartCountdownState_stateStartTime))
+      startCountdownState_currentState = newState
+
+      StartCountdownState_StateMachine[startCountdownState_currentState].start()
     end
 
-    local m = v - c
-    local r = (r1 + m) * 255.0
-    local g = (g1 + m) * 255.0
-    local b = (b1 + m) * 255.0
+    StartCountdownState_StateMachine = {
+      [StartCountdownState_States.None] = { start = function() end, update = function(dt) end },
+      [StartCountdownState_States.ShowingRed] = {
+        start = function()
+          ac.log('StartCountdownState: Showing Red')
+          setColor(AVAILABLE_COLOR_TYPES.Red)
+        end,
+        update = function(dt)
+          if StartCountdownState_timeInStateSeconds > 5 then
+            changeStartCountdownState(StartCountdownState_States.ShowingYellow)
+          end
+        end
+      },
+      [StartCountdownState_States.ShowingYellow] = {
+        start = function()
+          ac.log('StartCountdownState: Showing Yellow')
+          setColor(AVAILABLE_COLOR_TYPES.Yellow)
+        end,
+        update = function(dt)
+          if StartCountdownState_timeInStateSeconds > 5 then
+            changeStartCountdownState(StartCountdownState_States.ShowingGreen)
+          end
+        end
+      },
+      [StartCountdownState_States.ShowingGreen] = {
+        start = function()
+          ac.log('StartCountdownState: Showing Green')
+          setColor(AVAILABLE_COLOR_TYPES.Green)
+        end,
+        update = function(dt)
+          if StartCountdownState_timeInStateSeconds > 5 then
+            -- changeStartCountdownState(StartCountdownState_States.None)
+            changeStartCountdownState(StartCountdownState_States.ShowingRed)
 
-    return r, g, b
-  end
+            -- setBlack()
+            ac.log('StartCountdownState: Finished')
+          end
+        end
+      }
+    }
 
-  local effectsStateMachine = {
-    [EFFECTS.None] = {
+    return {
       start = function()
+        changeStartCountdownState(StartCountdownState_States.ShowingRed)
       end,
       update = function(dt)
+        StartCountdownState_StateMachine[startCountdownState_currentState].update(dt)
+        StartCountdownState_timeInStateSeconds = StartCountdownState_timeInStateSeconds + dt
+        -- ac.log(string.format('StartCountdownState: In state %d for %f seconds', startCountdownState_currentState, StartCountdownState_timeInStateSeconds))
       end
-    },
+    }
+  end)()
+
+  local effectsStateMachine = {
+    [EFFECTS.None] = { start = function() end, update = function(dt) end },
     [EFFECTS.FlickeringGreen] = {
       start = function()
         setBlack()
@@ -137,34 +235,16 @@ local StartingLights = (function()
       update = function(dt)
       end
     },
-    [EFFECTS.GradientRGB] = {
-      start = function()
-        GRADIENTEFFECT_gradientHueDegrees = 0.0
-      end,
-      update = function(dt)
-        -- Advance hue based on time:
-        GRADIENTEFFECT_gradientHueDegrees = GRADIENTEFFECT_gradientHueDegrees + GRADIENTEFFECT_SPEED_DEGREES_PER_SECOND * dt
-        if GRADIENTEFFECT_gradientHueDegrees >= 360.0 then
-          GRADIENTEFFECT_gradientHueDegrees = GRADIENTEFFECT_gradientHueDegrees - 360.0
-        end
-
-        local r, g, b = hsvToRgb255(GRADIENTEFFECT_gradientHueDegrees, GRADIENTEFFECT_SATURATION, GRADIENTEFFECT_VALUE)
-
-        -- This will give values like (255, 0, 0), (0, 255, 0), (0, 0, 255), and many intermediate combinations (e.g. (0, 120, 221)) over time.
-        startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, vec3(r, g, b)) --todo: reuse vec3
-
-        ac.log(string.format('Gradient color value: R=%f, G=%f, B=%f', r, g, b))
-      end
-    }
-  }
+    [EFFECTS.GradientRGB] = GradientEffectState,
+    [EFFECTS.StartCountdown] = StartCountdownState
+   }
 
   return {
-    setRed = setRed,
-    setGreen = setGreen,
+    EFFECTS = EFFECTS,
     turnOff = setBlack,
     startEffect = function(effectType)
       currentEffect = effectType
-      currentEffectStateTime = ac.getSim().time
+      currentEffectStateTime = getTimeSeconds()
       effectsStateMachine[currentEffect].start()
     end,
     update = function (dt)
@@ -174,6 +254,7 @@ local StartingLights = (function()
 end)()
 
 StartingLights.turnOff()
+StartingLights.startEffect(StartingLights.EFFECTS.StartCountdown)
 
 ---@enum COUNTDOWN_TIMER_STATE
 local COUNTDOWN_TIMER_STATE = {
