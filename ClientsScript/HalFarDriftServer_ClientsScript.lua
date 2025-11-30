@@ -36,37 +36,94 @@ local COUNTDOWN_TIMER_STATE = {
 }
 
 local StartingLights = (function()
-  local red = vec3(255, 0, 0)
-  local green = vec3(0, 255, 0)
-  local offColor = vec3(0, 0, 0)
-  local cyclableColors = { red, green }
+  local EFFECTS = {
+    None = 0,
+    FlickeringGreen = 1,
+    CyclingRedGreen = 2
+  }
+
+  local AVAILABLE_COLOR_TYPES = {
+    Red = 1,
+    Green = 2,
+    Black = 3
+  }
+
+  local COLOR_VALUES = {
+    [AVAILABLE_COLOR_TYPES.Red] = vec3(255, 0, 0),
+    [AVAILABLE_COLOR_TYPES.Green] = vec3(0, 255, 0),
+    [AVAILABLE_COLOR_TYPES.Black] = vec3(0, 0, 0)
+  }
+
+  local currentEffect = EFFECTS.None
+  local currentColor;
 
   local ksEmissivePropertyName = 'ksEmissive'
 
   local startlightsMeshes = ac.findMeshes('{ Cube.005_SUB1, Cube.006_SUB1, Cube.007_SUB1, Cube.008_SUB1 }')
-
   startlightsMeshes:setMaterialProperty('ksAlphaRef', -193) -- value from ext_config file
 
+  local setColor = function(color)
+    currentColor = color
+    local colorValue = COLOR_VALUES[color]
+    startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, colorValue)
+  end
+
   local setRed = function()
-    startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, red)
+    -- startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, red)
+    setColor(AVAILABLE_COLOR_TYPES.Red)
   end
 
   local setGreen = function()
-    startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, green)
+    -- startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, green)
+    setColor(AVAILABLE_COLOR_TYPES.Green)
   end
 
-  local turnOff = function()
-    startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, offColor)
+  local setBlack = function()
+    -- startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, black)
+    setColor(AVAILABLE_COLOR_TYPES.Black)
   end
+
+  local currentEffectStateTime = 0.0
+
+  local effectsStateMachine = {
+    [EFFECTS.None] = {
+      start = function()
+      end,
+      update = function(dt)
+      end
+    },
+    [EFFECTS.FlickeringGreen] = {
+      start = function()
+        setBlack()
+      end,
+      update = function(dt)
+      end
+    },
+    [EFFECTS.CyclingRedGreen] = {
+      start = function()
+      end,
+      update = function(dt)
+      end
+    }
+  }
+
   
   return {
     setRed = setRed,
     setGreen = setGreen,
-    turnOff = turnOff
+    turnOff = setBlack,
+    startEffect = function(effectType)
+      currentEffect = effectType
+      currentEffectStateTime = ac.getSim().time
+      effectsStateMachine[currentEffect].start()
+    end,
+    update = function (dt)
+      effectsStateMachine[currentEffect].update(dt)
+    end
   }
 end)()
 
-StartingLights.turnOff()
+-- StartingLights.turnOff()
 
 local COUNTDOWN_TIMER_GAP_BETWEEN_STATES_SECONDS = 2.0
 local countdownTimerState = COUNTDOWN_TIMER_STATE.Inactive
@@ -142,8 +199,8 @@ function script.update(dt)
     local stateMachineFunction = countdownTimerStateMachine[countdownTimerState]
     stateMachineFunction(currentTimeSeconds)
   end
--- startlightsMeshes:setMaterialProperty('ksEmissive', rgbm(0, 0, 1, 0.5))
--- startlightsMeshes:setMaterialProperty('ksEmissive', rgbm(0/255, 255/255, 0/255, 0.5))
+
+  StartingLights.update(dt)
 end
 
 local showIntro = function()
