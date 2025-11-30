@@ -83,35 +83,72 @@ local StartingLights = (function()
   local currentEffectStateTime = 0.0
 
   ----------------------------------------------------------------
-  -- Gradient color state (0..255 grayscale)
+  -- Gradient color state (full RGB wheel)
   ----------------------------------------------------------------
-  local GRADIENT_MIN_VALUE = 0.0
-  local GRADIENT_MAX_VALUE = 255.0
-  local GRADIENT_SPEED_PER_SECOND = 255.0  -- full 0→255 in 1 second; tweak if needed
+  -- How many degrees of hue to advance per second (360° = full rainbow).
+  local GRADIENT_COLOR_SPEED_DEGREES_PER_SECOND = 60.0
 
-  local gradientCurrentValue = 0.0
-  local gradientDirection = 1.0
+  -- Hue in degrees [0, 360). We’ll walk around the HSV color wheel.
+  local gradientHueDegrees = 0.0
+
+  -- Saturation and value for HSV (1 = full saturation/brightness).
+  local GRADIENT_SATURATION = 1.0
+  local GRADIENT_VALUE = 1.0
+
+  -- Converts HSV (with H in degrees, S/V in [0..1]) to RGB [0..255].
+  local hsvToRgb255 = function(h, s, v)
+    if s <= 0.0 then
+      local gray = v * 255.0
+      return gray, gray, gray
+    end
+
+    h = h % 360.0
+    local c = v * s
+    local hp = h / 60.0
+    local x = c * (1.0 - math.abs((hp % 2.0) - 1.0))
+
+    local r1, g1, b1
+    if hp < 1.0 then
+      r1, g1, b1 = c, x, 0.0
+    elseif hp < 2.0 then
+      r1, g1, b1 = x, c, 0.0
+    elseif hp < 3.0 then
+      r1, g1, b1 = 0.0, c, x
+    elseif hp < 4.0 then
+      r1, g1, b1 = 0.0, x, c
+    elseif hp < 5.0 then
+      r1, g1, b1 = x, 0.0, c
+    else
+      r1, g1, b1 = c, 0.0, x
+    end
+
+    local m = v - c
+    local r = (r1 + m) * 255.0
+    local g = (g1 + m) * 255.0
+    local b = (b1 + m) * 255.0
+
+    return r, g, b
+  end
 
   local updateGradientColor = function(dt)
     if dt == nil or dt <= 0.0 then
       return
     end
 
-    gradientCurrentValue = gradientCurrentValue + gradientDirection * GRADIENT_SPEED_PER_SECOND * dt
-
-    if gradientCurrentValue >= GRADIENT_MAX_VALUE then
-      gradientCurrentValue = GRADIENT_MAX_VALUE
-      gradientDirection = -1.0
-    elseif gradientCurrentValue <= GRADIENT_MIN_VALUE then
-      gradientCurrentValue = GRADIENT_MIN_VALUE
-      gradientDirection = 1.0
+    -- Advance hue based on time:
+    gradientHueDegrees = gradientHueDegrees + GRADIENT_COLOR_SPEED_DEGREES_PER_SECOND * dt
+    if gradientHueDegrees >= 360.0 then
+      gradientHueDegrees = gradientHueDegrees - 360.0
     end
 
-    local v = gradientCurrentValue
-    -- Grayscale: goes smoothly from (0,0,0) to (255,255,255) and back
-    startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, vec3(v, v, v))
-    ac.log(string.format('Gradient color value: %f', v))
+    local r, g, b = hsvToRgb255(gradientHueDegrees, GRADIENT_SATURATION, GRADIENT_VALUE)
+
+    -- This will give values like (255, 0, 0), (0, 255, 0), (0, 0, 255),
+    -- and many intermediate combinations (e.g. (0, 120, 221)) over time.
+    startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, vec3(r, g, b))
+    ac.log(string.format('Gradient color value: R=%f, G=%f, B=%f', r, g, b))
   end
+
   ----------------------------------------------------------------
 
   local effectsStateMachine = {
