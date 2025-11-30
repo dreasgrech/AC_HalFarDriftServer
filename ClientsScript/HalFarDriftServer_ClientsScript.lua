@@ -69,21 +69,50 @@ local StartingLights = (function()
   end
 
   local setRed = function()
-    -- startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, red)
     setColor(AVAILABLE_COLOR_TYPES.Red)
   end
 
   local setGreen = function()
-    -- startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, green)
     setColor(AVAILABLE_COLOR_TYPES.Green)
   end
 
   local setBlack = function()
-    -- startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, black)
     setColor(AVAILABLE_COLOR_TYPES.Black)
   end
 
   local currentEffectStateTime = 0.0
+
+  ----------------------------------------------------------------
+  -- Gradient color state (0..255 grayscale)
+  ----------------------------------------------------------------
+  local GRADIENT_MIN_VALUE = 0.0
+  local GRADIENT_MAX_VALUE = 255.0
+  local GRADIENT_SPEED_PER_SECOND = 255.0  -- full 0→255 in 1 second; tweak if needed
+
+  local gradientCurrentValue = 0.0
+  local gradientDirection = 1.0
+
+  local updateGradientColor = function(dt)
+    if dt == nil or dt <= 0.0 then
+      return
+    end
+
+    gradientCurrentValue = gradientCurrentValue + gradientDirection * GRADIENT_SPEED_PER_SECOND * dt
+
+    if gradientCurrentValue >= GRADIENT_MAX_VALUE then
+      gradientCurrentValue = GRADIENT_MAX_VALUE
+      gradientDirection = -1.0
+    elseif gradientCurrentValue <= GRADIENT_MIN_VALUE then
+      gradientCurrentValue = GRADIENT_MIN_VALUE
+      gradientDirection = 1.0
+    end
+
+    local v = gradientCurrentValue
+    -- Grayscale: goes smoothly from (0,0,0) to (255,255,255) and back
+    startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, vec3(v, v, v))
+    ac.log(string.format('Gradient color value: %f', v))
+  end
+  ----------------------------------------------------------------
 
   local effectsStateMachine = {
     [EFFECTS.None] = {
@@ -107,7 +136,6 @@ local StartingLights = (function()
     }
   }
 
-  
   return {
     setRed = setRed,
     setGreen = setGreen,
@@ -118,10 +146,14 @@ local StartingLights = (function()
       effectsStateMachine[currentEffect].start()
     end,
     update = function (dt)
-      effectsStateMachine[currentEffect].update(dt)
+      -- effectsStateMachine[currentEffect].update(dt)
+
+      -- Gradient RGB sweep 0..255..0
+      updateGradientColor(dt)
     end
   }
 end)()
+
 
 -- StartingLights.turnOff()
 
