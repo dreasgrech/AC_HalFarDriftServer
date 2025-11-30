@@ -83,71 +83,53 @@ local StartingLights = (function()
   local currentEffectStateTime = 0.0
 
   ----------------------------------------------------------------
-  -- Gradient color state (full RGB wheel)
+  -- Gradient color state (enumerate ALL 0–255 RGB combinations)
   ----------------------------------------------------------------
-  -- How many degrees of hue to advance per second (360° = full rainbow).
-  local GRADIENT_COLOR_SPEED_DEGREES_PER_SECOND = 60.0
+  -- Total number of distinct RGB colors with 8 bits per channel:
+  local GRADIENT_MAX_COLOR_COUNT = 256 * 256 * 256  -- 16,777,216
 
-  -- Hue in degrees [0, 360). We’ll walk around the HSV color wheel.
-  local gradientHueDegrees = 0.0
+  -- How often to advance to the next color (in seconds per step).
+  -- Example: 0.01 = 100 colors / second.
+  -- local GRADIENT_STEP_INTERVAL_SECONDS = 0.01
+  local GRADIENT_STEP_INTERVAL_SECONDS = 0.0001
 
-  -- Saturation and value for HSV (1 = full saturation/brightness).
-  local GRADIENT_SATURATION = 1.0
-  local GRADIENT_VALUE = 1.0
+  -- Current color index [0 .. GRADIENT_MAX_COLOR_COUNT - 1].
+  local gradientColorIndex = 0
 
-  -- Converts HSV (with H in degrees, S/V in [0..1]) to RGB [0..255].
-  local hsvToRgb255 = function(h, s, v)
-    if s <= 0.0 then
-      local gray = v * 255.0
-      return gray, gray, gray
-    end
-
-    h = h % 360.0
-    local c = v * s
-    local hp = h / 60.0
-    local x = c * (1.0 - math.abs((hp % 2.0) - 1.0))
-
-    local r1, g1, b1
-    if hp < 1.0 then
-      r1, g1, b1 = c, x, 0.0
-    elseif hp < 2.0 then
-      r1, g1, b1 = x, c, 0.0
-    elseif hp < 3.0 then
-      r1, g1, b1 = 0.0, c, x
-    elseif hp < 4.0 then
-      r1, g1, b1 = 0.0, x, c
-    elseif hp < 5.0 then
-      r1, g1, b1 = x, 0.0, c
-    else
-      r1, g1, b1 = c, 0.0, x
-    end
-
-    local m = v - c
-    local r = (r1 + m) * 255.0
-    local g = (g1 + m) * 255.0
-    local b = (b1 + m) * 255.0
-
-    return r, g, b
-  end
+  -- Accumulator so we can step in fixed time intervals regardless of FPS.
+  local gradientTimeAccumulator = 0.0
 
   local updateGradientColor = function(dt)
     if dt == nil or dt <= 0.0 then
       return
     end
 
-    -- Advance hue based on time:
-    gradientHueDegrees = gradientHueDegrees + GRADIENT_COLOR_SPEED_DEGREES_PER_SECOND * dt
-    if gradientHueDegrees >= 360.0 then
-      gradientHueDegrees = gradientHueDegrees - 360.0
+    -- Accumulate time
+    gradientTimeAccumulator = gradientTimeAccumulator + dt
+
+    -- Advance color index in fixed time steps
+    while gradientTimeAccumulator >= GRADIENT_STEP_INTERVAL_SECONDS do
+      gradientTimeAccumulator = gradientTimeAccumulator - GRADIENT_STEP_INTERVAL_SECONDS
+
+      -- Move to next color in 24-bit space (wrap around at the end)
+      gradientColorIndex = gradientColorIndex + 1
+      if gradientColorIndex >= GRADIENT_MAX_COLOR_COUNT then
+        gradientColorIndex = 0
+      end
     end
 
-    local r, g, b = hsvToRgb255(gradientHueDegrees, GRADIENT_SATURATION, GRADIENT_VALUE)
+    -- Decode 24-bit index into R,G,B in [0..255]
+    -- Index layout: R is high byte, G is middle, B is low.
+    local r = math.floor(gradientColorIndex / (256 * 256))
+    local g = math.floor(gradientColorIndex / 256) % 256
+    local b = gradientColorIndex % 256
 
-    -- This will give values like (255, 0, 0), (0, 255, 0), (0, 0, 255),
-    -- and many intermediate combinations (e.g. (0, 120, 221)) over time.
+    -- Apply color to the starting lights
     startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, vec3(r, g, b))
-    ac.log(string.format('Gradient color value: R=%f, G=%f, B=%f', r, g, b))
+    -- Optional logging (comment out if too spammy):
+    ac.log(string.format('Gradient color value: R=%d, G=%d, B=%d (index=%d)', r, g, b, gradientColorIndex))
   end
+
 
   ----------------------------------------------------------------
 
