@@ -1,6 +1,6 @@
 ﻿using AssettoCorsaCommandsServer.Loggers;
 
-namespace AC_HalFarDriftServer;
+namespace HalFarDriftCommandsServerConsoleApp;
 
 internal class ConsoleLogger : ICommandsServerLogger
 {

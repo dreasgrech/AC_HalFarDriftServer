@@ -1,8 +1,6 @@
-﻿using AssettoCorsaCommandsServer;
-using HalFarDriftCommandsServer;
-using HalFarDriftCommandsServer.ServerCommands;
+﻿using HalFarDriftCommandsServer.ServerCommands;
 
-namespace AC_HalFarDriftServer;
+namespace HalFarDriftCommandsServerConsoleApp;
 
 public class Program
 {
