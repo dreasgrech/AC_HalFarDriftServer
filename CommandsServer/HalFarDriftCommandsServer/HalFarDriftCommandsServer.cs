@@ -31,9 +31,9 @@ public class HalFarDriftCommandsServer
         CommandsServerUserManager = assettoCorsaCommandsServer.UserManager;
     }
     
-    public bool StartServer(string serverHost)
+    public bool StartServer(string webSocketProtocol, string serverHost)
     {
-        return assettoCorsaCommandsServer.StartServer(serverHost, endpointImplementation);
+        return assettoCorsaCommandsServer.StartServer(webSocketProtocol, serverHost, endpointImplementation);
     }
 
     public bool SendAsyncCommandToClient(string webSocketID, ServerCommand command)

@@ -15,7 +15,7 @@ namespace AssettoCorsaCommandsServer
         public static CommandsServerUserManager CommandsServerUserManager { get; private set; }
         
 
-        private const string ServerProtocol = "ws";
+        // private const string ServerProtocol = "ws";
 
         private WebSocketServer wssv;
         private Task serverTask;
@@ -29,10 +29,10 @@ namespace AssettoCorsaCommandsServer
         public AssettoCorsaCommandsServer(ICommandsServerLogger logger)
         {
             Logger = logger;
-            UserManager = new CommandsServerUserManager();
+            UserManager = new CommandsServerUserManager(logger);
         }
         
-        public bool StartServer(string serverHost, ICommandsServerEndpointOperations operations)
+        public bool StartServer(string webSocketProtocol, string serverHost, ICommandsServerEndpointOperations operations)
         {
             if (ServerRunning)
             {
@@ -43,7 +43,8 @@ namespace AssettoCorsaCommandsServer
             tokenSource = new CancellationTokenSource();
             ct = tokenSource.Token; 
             
-            var baseServerAddress = $"{ServerProtocol}://{serverHost}";
+            // var baseServerAddress = $"{ServerProtocol}://{serverHost}";
+            var baseServerAddress = $"{webSocketProtocol}://{serverHost}";
             
             wssv = new WebSocketServer(baseServerAddress);
             wssv.Log.Level = LogLevel.Trace;
@@ -57,8 +58,9 @@ namespace AssettoCorsaCommandsServer
             // Start server in background task
             serverTask = Task.Run(() =>
             {
+                Logger.WriteLine($"Starting server => {webSocketProtocol}://{serverHost}/{serverEndpoint}");
+
                 wssv.Start();
-                Logger.WriteLine("WebSocket server started in background.");
 
                 // while (!ct.IsCancellationRequested)
                 // {

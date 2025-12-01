@@ -12,7 +12,7 @@ public class Program
         // commandsServer.StartServer();
 
         var driftCommandsServer = new HalFarDriftCommandsServer.HalFarDriftCommandsServer(logger);
-        var serverStarted = driftCommandsServer.StartServer(serverAddress);
+        var serverStarted = driftCommandsServer.StartServer("ws", serverAddress);
 
         var commandsServerUserManager = driftCommandsServer.CommandsServerUserManager;
 

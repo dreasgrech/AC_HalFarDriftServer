@@ -1,5 +1,6 @@
 ﻿using HalFarDriftCommandsServer;
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace HalFarDriftCommandsServerWinFormsApp
@@ -12,15 +13,20 @@ namespace HalFarDriftCommandsServerWinFormsApp
 
         private bool serverRunning;
 
+        private readonly Dictionary<string, ListViewItem> connectedPlayersListViewItems = new Dictionary<string, ListViewItem>(EqualityComparer<string>.Default);
+
         public CommandsServerManagerWindow()
         {
             InitializeComponent();
+
+            webSocketServerProtocolComboBox.SelectedIndex = 0;
             
             HalFarDriftCommandsServerWinFormsManager.Initialize(LogTextBox);
             driftCommandsServer = HalFarDriftCommandsServerWinFormsManager.driftCommandsServer;
 
             var commandsServerUserManager = driftCommandsServer.CommandsServerUserManager;
             commandsServerUserManager.OnPlayerAdded += CommandsServerUserManager_OnPlayerAdded;
+            commandsServerUserManager.OnPlayerRemoved += CommandsServerUserManager_OnPlayerRemoved;
 
             serverStatusTimer = new System.Windows.Forms.Timer()
             {
@@ -50,6 +56,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             }
 
             ServerAddressTextBox.Enabled = !serverRunning;
+            webSocketServerProtocolComboBox.Enabled = !serverRunning;
         }
 
         private void CommandsServerUserManager_OnPlayerAdded(object sender, AssettoCorsaCommandsServer.PlayerAddedEventArgs e)
@@ -66,12 +73,34 @@ namespace HalFarDriftCommandsServerWinFormsApp
             listViewItem.SubItems.Add(playerSessionID.ToString());
             listViewItem.SubItems.Add(playerCarName);
 
+            connectedPlayersListViewItems.Add(playerWebSocketID, listViewItem);
+
             ConnectedPlayersListView.BeginInvoke(new Action<ListViewItem>(AddListViewItem), listViewItem);
         }
+
+        private void CommandsServerUserManager_OnPlayerRemoved(object sender, AssettoCorsaCommandsServer.PlayerRemovedEventArgs e)
+        {
+            var playerWebSocketID = e.PlayerWebSocketID;
+
+            if (connectedPlayersListViewItems.TryGetValue(playerWebSocketID, out var listViewItem))
+            {
+                // remove the listviewitem from our listviewitems collection
+                connectedPlayersListViewItems.Remove(playerWebSocketID);
+
+                // remove the listviewitem from the listview
+                ConnectedPlayersListView.BeginInvoke(new Action<ListViewItem>(RemoveListViewItem), listViewItem);
+            }
+        }
+
 
         private void AddListViewItem(ListViewItem listViewItem)
         {
             ConnectedPlayersListView.Items.Add(listViewItem);
+        }
+
+        private void RemoveListViewItem(ListViewItem listViewItem)
+        {
+            ConnectedPlayersListView.Items.Remove(listViewItem);
         }
 
         private void StartServerButton_Click(object sender, EventArgs e)
@@ -83,7 +112,24 @@ namespace HalFarDriftCommandsServerWinFormsApp
             else
             {
                 var serverHost = ServerAddressTextBox.Text;
-                var serverStarted = HalFarDriftCommandsServerWinFormsManager.StartServer(serverHost);
+
+                string webServerProtocol = null;
+                switch (webSocketServerProtocolComboBox.SelectedIndex)
+                {
+                    case 0:
+                        {
+                            webServerProtocol = "ws";
+                        }
+                        break;
+                    case 1:
+                        {
+                            webServerProtocol = "wss";
+                        }
+                        break;
+                }
+                ;
+
+                var serverStarted = HalFarDriftCommandsServerWinFormsManager.StartServer(webServerProtocol, serverHost);
             }
         }
 

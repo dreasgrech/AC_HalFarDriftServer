@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AssettoCorsaCommandsServer.Loggers;
+using System;
 using System.Collections.Generic;
 
 namespace AssettoCorsaCommandsServer;
@@ -8,6 +9,16 @@ public class PlayerAddedEventArgs : EventArgs
     public string PlayerWebSocketID { get; set; }
 
     public PlayerAddedEventArgs(string playerWebSocketID)
+    {
+        PlayerWebSocketID = playerWebSocketID;
+    }
+}
+
+public class PlayerRemovedEventArgs : EventArgs
+{
+    public string PlayerWebSocketID { get; set; }
+
+    public PlayerRemovedEventArgs(string playerWebSocketID)
     {
         PlayerWebSocketID = playerWebSocketID;
     }
@@ -25,9 +36,14 @@ public class CommandsServerUserManager
     private readonly object lockObject = new();
 
     public event EventHandler<PlayerAddedEventArgs> OnPlayerAdded;
+    public event EventHandler<PlayerRemovedEventArgs> OnPlayerRemoved;
+
+    private readonly ICommandsServerLogger logger;
     
-    public CommandsServerUserManager()
+    public CommandsServerUserManager(ICommandsServerLogger logger)
     {
+        this.logger = logger;
+
         webSocketIDs = new List<string>();
         
         playersWebSocket = new Dictionary<string, WebSocketSharp.WebSocket>();
@@ -42,7 +58,7 @@ public class CommandsServerUserManager
         {
             if (webSocketIDs.Contains(webSocketID))
             {
-                Console.WriteLine($"Attempted to add player with WebSocketID: {webSocketID}, but it already exists.");
+                logger.WriteLine($"Attempted to add player with WebSocketID: {webSocketID}, but it already exists.");
                 return;
             }
             
@@ -53,7 +69,7 @@ public class CommandsServerUserManager
             playersName[webSocketID] = acPlayerName;
             playersCarName[webSocketID] = acPlayerCarName;
             
-            Console.WriteLine($"Added player.  WebSocketID: {webSocketID}, SessionCarID: {acSessionCarID}, PlayerName: {acPlayerName}, PlayerCarName: {acPlayerCarName}");
+            logger.WriteLine($"Added player.  WebSocketID: {webSocketID}, SessionCarID: {acSessionCarID}, PlayerName: {acPlayerName}, PlayerCarName: {acPlayerCarName}");
 
             OnPlayerAdded?.Invoke(this, new PlayerAddedEventArgs(webSocketID));
         }
@@ -114,7 +130,7 @@ public class CommandsServerUserManager
         {
             if (!webSocketIDs.Remove(webSocketID))
             {
-                Console.WriteLine($"Attempted to remove player with WebSocketID: {webSocketID}, but it was not found.");
+                logger.WriteLine($"Attempted to remove player with WebSocketID: {webSocketID}, but it was not found.");
                 return;
             }
             
@@ -123,7 +139,9 @@ public class CommandsServerUserManager
             playersName.Remove(webSocketID);
             playersCarName.Remove(webSocketID);
             
-            Console.WriteLine($"Removed player.  WebSocketID: {webSocketID}");
+            logger.WriteLine($"Removed player.  WebSocketID: {webSocketID}");
+
+            OnPlayerRemoved?.Invoke(this, new PlayerRemovedEventArgs(webSocketID));
         }
     }
 

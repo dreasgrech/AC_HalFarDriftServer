@@ -40,9 +40,10 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.StartServerButton = new System.Windows.Forms.Button();
             this.ServerAddressTextBox = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.serverStatusIndicatorControl = new HalFarDriftCommandsServerWinFormsApp.ServerStatusIndicatorControl();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.InitiateStartingLightsSequenceForAllButton = new System.Windows.Forms.Button();
+            this.webSocketServerProtocolComboBox = new System.Windows.Forms.ComboBox();
+            this.serverStatusIndicatorControl = new HalFarDriftCommandsServerWinFormsApp.ServerStatusIndicatorControl();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -99,7 +100,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             // 
             // StartServerButton
             // 
-            this.StartServerButton.Location = new System.Drawing.Point(210, 6);
+            this.StartServerButton.Location = new System.Drawing.Point(278, 6);
             this.StartServerButton.Name = "StartServerButton";
             this.StartServerButton.Size = new System.Drawing.Size(150, 20);
             this.StartServerButton.TabIndex = 4;
@@ -109,7 +110,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             // 
             // ServerAddressTextBox
             // 
-            this.ServerAddressTextBox.Location = new System.Drawing.Point(3, 6);
+            this.ServerAddressTextBox.Location = new System.Drawing.Point(71, 5);
             this.ServerAddressTextBox.Name = "ServerAddressTextBox";
             this.ServerAddressTextBox.Size = new System.Drawing.Size(201, 20);
             this.ServerAddressTextBox.TabIndex = 3;
@@ -118,20 +119,14 @@ namespace HalFarDriftCommandsServerWinFormsApp
             // panel1
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.webSocketServerProtocolComboBox);
             this.panel1.Controls.Add(this.serverStatusIndicatorControl);
             this.panel1.Controls.Add(this.ServerAddressTextBox);
             this.panel1.Controls.Add(this.StartServerButton);
-            this.panel1.Location = new System.Drawing.Point(601, 241);
+            this.panel1.Location = new System.Drawing.Point(541, 241);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(396, 29);
+            this.panel1.Size = new System.Drawing.Size(456, 29);
             this.panel1.TabIndex = 5;
-            // 
-            // serverStatusIndicatorControl
-            // 
-            this.serverStatusIndicatorControl.Location = new System.Drawing.Point(366, 5);
-            this.serverStatusIndicatorControl.Name = "serverStatusIndicatorControl";
-            this.serverStatusIndicatorControl.Size = new System.Drawing.Size(18, 18);
-            this.serverStatusIndicatorControl.TabIndex = 1;
             // 
             // groupBox1
             // 
@@ -155,6 +150,25 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.InitiateStartingLightsSequenceForAllButton.Text = "Initiate Starting Lights sequence to all";
             this.InitiateStartingLightsSequenceForAllButton.UseVisualStyleBackColor = true;
             this.InitiateStartingLightsSequenceForAllButton.Click += new System.EventHandler(this.InitiateStartingLightsSequenceForAllButton_Click);
+            // 
+            // webSocketServerProtocolComboBox
+            // 
+            this.webSocketServerProtocolComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.webSocketServerProtocolComboBox.FormattingEnabled = true;
+            this.webSocketServerProtocolComboBox.Items.AddRange(new object[] {
+            "ws://",
+            "wss://"});
+            this.webSocketServerProtocolComboBox.Location = new System.Drawing.Point(3, 5);
+            this.webSocketServerProtocolComboBox.Name = "webSocketServerProtocolComboBox";
+            this.webSocketServerProtocolComboBox.Size = new System.Drawing.Size(62, 21);
+            this.webSocketServerProtocolComboBox.TabIndex = 1;
+            // 
+            // serverStatusIndicatorControl
+            // 
+            this.serverStatusIndicatorControl.Location = new System.Drawing.Point(434, 7);
+            this.serverStatusIndicatorControl.Name = "serverStatusIndicatorControl";
+            this.serverStatusIndicatorControl.Size = new System.Drawing.Size(18, 18);
+            this.serverStatusIndicatorControl.TabIndex = 1;
             // 
             // CommandsServerManagerWindow
             // 
@@ -193,5 +207,6 @@ namespace HalFarDriftCommandsServerWinFormsApp
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private ServerStatusIndicatorControl serverStatusIndicatorControl;
+        private System.Windows.Forms.ComboBox webSocketServerProtocolComboBox;
     }
 }

@@ -15,9 +15,9 @@ namespace HalFarDriftCommandsServerWinFormsApp
             CommandsServerUserManager = driftCommandsServer.CommandsServerUserManager;
         }
         
-        public static bool StartServer(string serverHost)
+        public static bool StartServer(string webSocketProtocol, string serverHost)
         {
-            return driftCommandsServer.StartServer(serverHost);
+            return driftCommandsServer.StartServer(webSocketProtocol, serverHost);
         }
 
         public static bool StopServer()
