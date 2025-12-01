@@ -15,7 +15,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\AssettoCorsaCommandsServer\AssettoCorsaCommandsServer.csproj" />
-      <ProjectReference Include="..\DriftCommandServerLibrary\DriftCommandServerLibrary.csproj" />
+      <ProjectReference Include="..\HalFarDriftCommandsServer\HalFarDriftCommandsServer.csproj" />
     </ItemGroup>
 
 </Project>

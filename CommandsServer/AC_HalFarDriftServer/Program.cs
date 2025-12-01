@@ -1,6 +1,6 @@
 ﻿using AssettoCorsaCommandsServer;
-using DriftCommandServerLibrary;
-using DriftCommandServerLibrary.ServerCommands;
+using HalFarDriftCommandsServer;
+using HalFarDriftCommandsServer.ServerCommands;
 
 namespace AC_HalFarDriftServer;
 
@@ -13,7 +13,7 @@ public class Program
         // var commandsServer = new CommandsServer(logger, serverAddress);
         // commandsServer.StartServer();
 
-        var driftCommandsServer = new DriftCommandsServer(logger);
+        var driftCommandsServer = new HalFarDriftCommandsServer.HalFarDriftCommandsServer(logger);
         driftCommandsServer.StartServer(serverAddress);
 
         // Run a console loop waiting for commands

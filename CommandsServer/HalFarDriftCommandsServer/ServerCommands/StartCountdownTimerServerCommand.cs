@@ -1,6 +1,6 @@
 ﻿using AssettoCorsaCommandsServer.ServerCommands;
 
-namespace DriftCommandServerLibrary.ServerCommands;
+namespace HalFarDriftCommandsServer.ServerCommands;
 
 public class StartCountdownTimerServerCommand : ServerCommand
 {

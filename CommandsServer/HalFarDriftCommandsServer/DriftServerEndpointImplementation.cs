@@ -1,8 +1,8 @@
 ﻿using AssettoCorsaCommandsServer;
-using DriftCommandServerLibrary.ServerCommands;
+using HalFarDriftCommandsServer.ServerCommands;
 using WebSocketSharp;
 
-namespace DriftCommandServerLibrary;
+namespace HalFarDriftCommandsServer;
 
 public class DriftServerEndpointImplementation : ICommandsServerEndpointOperations
 {

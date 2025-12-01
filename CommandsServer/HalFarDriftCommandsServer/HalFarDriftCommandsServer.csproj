@@ -8,8 +8,8 @@
         <ProjectGuid>{0CF69295-0474-4622-82A2-8E166C714AE0}</ProjectGuid>
         <OutputType>Library</OutputType>
         <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>DriftCommandServerLibrary</RootNamespace>
-        <AssemblyName>DriftCommandServerLibrary</AssemblyName>
+        <RootNamespace>HalFarDriftCommandsServer</RootNamespace>
+        <AssemblyName>HalFarDriftCommandsServer</AssemblyName>
         <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
         <LangVersion>11</LangVersion>
@@ -46,7 +46,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="DriftCommandsServer.cs" />
+        <Compile Include="HalFarDriftCommandsServer.cs" />
         <Compile Include="DriftServerEndpointImplementation.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
         <Compile Include="ServerCommands\ShowWelcomeMessageServerCommand.cs" />

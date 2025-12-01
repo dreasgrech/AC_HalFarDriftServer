@@ -1,7 +1,7 @@
 ﻿using AssettoCorsaCommandsServer.ServerCommands;
 using Newtonsoft.Json;
 
-namespace DriftCommandServerLibrary.ServerCommands;
+namespace HalFarDriftCommandsServer.ServerCommands;
 
 public class ShowWelcomeMessageServerCommand : ServerCommand
 {

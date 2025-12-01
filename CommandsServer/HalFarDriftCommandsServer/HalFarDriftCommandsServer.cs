@@ -2,7 +2,7 @@
 using AssettoCorsaCommandsServer.Loggers;
 using AssettoCorsaCommandsServer.ServerCommands;
 
-namespace DriftCommandServerLibrary;
+namespace HalFarDriftCommandsServer;
 
 public enum ServerCommandType
 {
@@ -11,12 +11,12 @@ public enum ServerCommandType
     StartCountdownTimer = 2
 }
 
-public class DriftCommandsServer
+public class HalFarDriftCommandsServer
 {
     private readonly CommandsServer commandsServer;
     private readonly DriftServerEndpointImplementation endpointImplementation;
     
-    public DriftCommandsServer(ICommandServerLogger commandServerLogger)
+    public HalFarDriftCommandsServer(ICommandServerLogger commandServerLogger)
     {
         commandsServer = new CommandsServer(commandServerLogger);
         endpointImplementation = new DriftServerEndpointImplementation(commandsServer);

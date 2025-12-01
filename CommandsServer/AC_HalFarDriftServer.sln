@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AC_HalFarDriftServer", "AC_HalFarDriftServer\AC_HalFarDriftServer.csproj", "{649E9C9D-6607-43DD-AC4A-9C16B7F655B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriftCommandServerLibrary", "DriftCommandServerLibrary\DriftCommandServerLibrary.csproj", "{0CF69295-0474-4622-82A2-8E166C714AE0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HalFarDriftCommandsServer", "HalFarDriftCommandsServer\HalFarDriftCommandsServer.csproj", "{0CF69295-0474-4622-82A2-8E166C714AE0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssettoCorsaCommandsServer", "AssettoCorsaCommandsServer\AssettoCorsaCommandsServer.csproj", "{F62D867B-F6B3-4848-A7B6-0C1A7DFC259F}"
 EndProject
