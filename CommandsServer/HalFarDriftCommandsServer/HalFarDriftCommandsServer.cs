@@ -1,6 +1,7 @@
 ﻿using AssettoCorsaCommandsServer;
 using AssettoCorsaCommandsServer.Loggers;
 using AssettoCorsaCommandsServer.ServerCommands;
+using HalFarDriftCommandsServer.ServerCommands;
 
 namespace HalFarDriftCommandsServer;
 
@@ -34,6 +35,17 @@ public class HalFarDriftCommandsServer
     public void SendAsyncCommandToClient(string webSocketID, ServerCommand command)
     {
         assettoCorsaCommandsServer.SendAsyncCommandToClient(webSocketID, command);
+    }
+
+    public void SendStartStartingLightsInitiationSequenceToAll()
+    {
+        var playersEnumerator = CommandsServerUserManager.GetAllPlayersEnumerator();
+        var command = new StartCountdownTimerServerCommand();
+        while (playersEnumerator.MoveNext())
+        {
+            var playerID = playersEnumerator.Current;
+            assettoCorsaCommandsServer.SendAsyncCommandToClient(playerID, command);
+        }
     }
     
     public void StopServer()

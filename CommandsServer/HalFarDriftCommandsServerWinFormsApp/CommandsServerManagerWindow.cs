@@ -17,5 +17,12 @@ namespace HalFarDriftCommandsServerWinFormsApp
             var serverHost = ServerAddressTextBox.Text;
             HalFarDriftCommandsServerWinFormsManager.StartServer(serverHost);
         }
+
+        private void InitiateStartingLightsSequenceForAllButton_Click(object sender, EventArgs e)
+        {
+            var driftCommandsServer = HalFarDriftCommandsServerWinFormsManager.driftCommandsServer;
+            driftCommandsServer.SendStartStartingLightsInitiationSequenceToAll();
+
+        }
     }
 }

@@ -24,6 +24,7 @@ namespace AssettoCorsaCommandsServer
         public AssettoCorsaCommandsServer(ICommandsServerLogger logger)
         {
             Logger = logger;
+            UserManager = new CommandsServerUserManager();
             
             tokenSource = new CancellationTokenSource();
             ct = tokenSource.Token; 
@@ -31,8 +32,6 @@ namespace AssettoCorsaCommandsServer
         
         public void StartServer(string serverHost, ICommandsServerEndpointOperations operations)
         {
-            UserManager = new CommandsServerUserManager();
-            
             var baseServerAddress = $"{ServerProtocol}://{serverHost}";
             
             wssv = new WebSocketServer(baseServerAddress);

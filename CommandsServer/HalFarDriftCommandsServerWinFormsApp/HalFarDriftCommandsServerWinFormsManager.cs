@@ -3,7 +3,7 @@
     public static class HalFarDriftCommandsServerWinFormsManager
     {
         private static HalFarDriftCommandsServerWinFormsLogger logger;
-        private static HalFarDriftCommandsServer.HalFarDriftCommandsServer driftCommandsServer;
+        public static HalFarDriftCommandsServer.HalFarDriftCommandsServer driftCommandsServer { get; private set; }
         
         public static void Initialize(System.Windows.Forms.TextBox logTextBox)
         {

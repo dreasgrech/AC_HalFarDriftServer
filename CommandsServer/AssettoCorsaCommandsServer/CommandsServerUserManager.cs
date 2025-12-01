@@ -88,4 +88,9 @@ public class CommandsServerUserManager
             Console.WriteLine($"Removed player.  WebSocketID: {webSocketID}");
         }
     }
+
+    public IEnumerator<string> GetAllPlayersEnumerator()
+    {
+        return webSocketIDs.GetEnumerator();
+    }
 }

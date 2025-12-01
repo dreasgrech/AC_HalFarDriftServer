@@ -1,6 +1,7 @@
-﻿using System.Threading;
+﻿using AssettoCorsaCommandsServer.Loggers;
+using System;
+using System.Threading;
 using System.Windows.Forms;
-using AssettoCorsaCommandsServer.Loggers;
 
 namespace HalFarDriftCommandsServerWinFormsApp
 {
@@ -14,10 +15,13 @@ namespace HalFarDriftCommandsServerWinFormsApp
         
         public void WriteLine(string line)
         {
-                loggerTextBox.Invoke((MethodInvoker)(() =>
-                {
-                    loggerTextBox.Text += $"{line}\r\n";
-                }));
+            loggerTextBox.BeginInvoke(new Action<string>(UpdateTextBox), line);
+
+        }
+
+        void UpdateTextBox(string text)
+        {
+            loggerTextBox.Text += $"{text}\r\n";
         }
     }
 }
