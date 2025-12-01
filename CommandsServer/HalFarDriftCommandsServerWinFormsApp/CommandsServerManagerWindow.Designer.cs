@@ -40,9 +40,9 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.StartServerButton = new System.Windows.Forms.Button();
             this.ServerAddressTextBox = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.serverStatusIndicatorControl = new HalFarDriftCommandsServerWinFormsApp.ServerStatusIndicatorControl();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.InitiateStartingLightsSequenceForAllButton = new System.Windows.Forms.Button();
-            this.serverStatusIndicatorControl = new HalFarDriftCommandsServerWinFormsApp.ServerStatusIndicatorControl();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -77,6 +77,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             // columnHeader2
             // 
             this.columnHeader2.Text = "Session ID";
+            this.columnHeader2.Width = 100;
             // 
             // columnHeader3
             // 
@@ -92,6 +93,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.LogTextBox.Multiline = true;
             this.LogTextBox.Name = "LogTextBox";
             this.LogTextBox.ReadOnly = true;
+            this.LogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.LogTextBox.Size = new System.Drawing.Size(985, 232);
             this.LogTextBox.TabIndex = 2;
             // 
@@ -124,6 +126,13 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.panel1.Size = new System.Drawing.Size(396, 29);
             this.panel1.TabIndex = 5;
             // 
+            // serverStatusIndicatorControl
+            // 
+            this.serverStatusIndicatorControl.Location = new System.Drawing.Point(366, 5);
+            this.serverStatusIndicatorControl.Name = "serverStatusIndicatorControl";
+            this.serverStatusIndicatorControl.Size = new System.Drawing.Size(18, 18);
+            this.serverStatusIndicatorControl.TabIndex = 1;
+            // 
             // groupBox1
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -146,13 +155,6 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.InitiateStartingLightsSequenceForAllButton.Text = "Initiate Starting Lights sequence to all";
             this.InitiateStartingLightsSequenceForAllButton.UseVisualStyleBackColor = true;
             this.InitiateStartingLightsSequenceForAllButton.Click += new System.EventHandler(this.InitiateStartingLightsSequenceForAllButton_Click);
-            // 
-            // serverStatusIndicatorControl
-            // 
-            this.serverStatusIndicatorControl.Location = new System.Drawing.Point(366, 5);
-            this.serverStatusIndicatorControl.Name = "serverStatusIndicatorControl";
-            this.serverStatusIndicatorControl.Size = new System.Drawing.Size(18, 18);
-            this.serverStatusIndicatorControl.TabIndex = 1;
             // 
             // CommandsServerManagerWindow
             // 
