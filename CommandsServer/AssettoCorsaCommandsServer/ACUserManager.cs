@@ -1,4 +1,7 @@
-﻿namespace AC_HalFarDriftServer;
+﻿using System;
+using System.Collections.Generic;
+
+namespace AssettoCorsaCommandsServer;
 
 public class ACUserManager
 {

@@ -13,4 +13,9 @@
       <PackageReference Include="WebSocketSharp" Version="1.0.3-rc11" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\AssettoCorsaCommandsServer\AssettoCorsaCommandsServer.csproj" />
+      <ProjectReference Include="..\DriftCommandServerLibrary\DriftCommandServerLibrary.csproj" />
+    </ItemGroup>
+
 </Project>

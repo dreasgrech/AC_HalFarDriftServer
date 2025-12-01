@@ -1,14 +1,17 @@
-﻿using System.Text;
-using AC_HalFarDriftServer.ServerCommands;
+﻿using System;
+using System.Linq;
+using System.Text;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 using ErrorEventArgs = WebSocketSharp.ErrorEventArgs;
 
-namespace AC_HalFarDriftServer.EndPoints;
+namespace AssettoCorsaCommandsServer.EndPoints;
 
-public class DriftServerEndpoint : WebSocketBehavior
+internal class CommandsServerEndpoint : WebSocketBehavior
 {
-    public static string EndpointName => "DriftServer";
+    // public static string EndpointName => "DriftServer";
+    
+    public static ICommandsServerEndpointOperations EndpointOperations { get; set; }
     
     private static readonly object LockObject = new object();
     
@@ -16,7 +19,9 @@ public class DriftServerEndpoint : WebSocketBehavior
     {
         lock (LockObject)
         {
-            Console.WriteLine("New client connected.");
+            var logger = CommandsServer.Logger;
+            
+            logger.WriteLine("New client connected.");
 
             var currentWebSocketContext = Context;
             var currentQueryStringKeyValueCollection = currentWebSocketContext.QueryString;
@@ -30,11 +35,11 @@ public class DriftServerEndpoint : WebSocketBehavior
             }
 
             // build the querystring into one string
-            Console.WriteLine($"Client QueryString: {queryStringBuilder.ToString()}");
+            logger.WriteLine($"Client QueryString: {queryStringBuilder.ToString()}");
 
 
             var sessions = Sessions.Sessions.ToArray();
-            Console.WriteLine($"Current active sessions count: {sessions.Length}");
+            logger.WriteLine($"Current active sessions count: {sessions.Length}");
             foreach (var webSocketSession in sessions)
             {
                 var webSocketSessionContext = webSocketSession.Context;
@@ -43,7 +48,7 @@ public class DriftServerEndpoint : WebSocketBehavior
                 var startTime = webSocketSession.StartTime;
                 var state = webSocketSession.State;
 
-                Console.WriteLine(
+                logger.WriteLine(
                     $"Session Info: ID = {id}, Protocol = {protocol}, StartTime = {startTime}, State = {state}");
             }
 
@@ -58,12 +63,14 @@ public class DriftServerEndpoint : WebSocketBehavior
 
             // SendAsync($"ACUserManagerPlayerID={acUserManagerPlayerID}", b =>
             // {
-            //     Console.WriteLine($"Sent async message, success: {b}");
+            //     logger.WriteLine($"Sent async message, success: {b}");
             // });
 
-            Console.WriteLine($"(OnOpen) WebSocket Session ID: {webSocketID}");
+            logger.WriteLine($"(OnOpen) WebSocket Session ID: {webSocketID}");
             
-            ServerCommandsManager.Instance.SendAsyncCommandToClient(webSocketID, new ShowWelcomeMessageServerCommand("This is my welcome message!  Fidelio**."));
+            // ServerCommandsManager.Instance.SendAsyncCommandToClient(webSocketID, new ShowWelcomeMessageServerCommand("This is my welcome message!  Fidelio**."));
+            
+            EndpointOperations.OnOpen(webSocketID);
         }
     }
 
@@ -84,9 +91,11 @@ public class DriftServerEndpoint : WebSocketBehavior
             var userEndPoint = currentWebSocketContext.UserEndPoint;
             var ipAddress = userEndPoint.Address.ToString();
 
-            Console.WriteLine($"Message received: ID = {this.ID}, IP = {ipAddress}, Data = {dataString}, Data Length = {dataString.Length}, IsBinary = {isBinary}, IsPing = {isPing}, IsText = {isText}, RawData Length = {rawData.Length}");
+            CommandsServer.Logger.WriteLine($"Message received: ID = {this.ID}, IP = {ipAddress}, Data = {dataString}, Data Length = {dataString.Length}, IsBinary = {isBinary}, IsPing = {isPing}, IsText = {isText}, RawData Length = {rawData.Length}");
 
             // Send("Message received, thank you!");
+            
+            EndpointOperations.OnMessage(e);
         }
     }
 
@@ -99,9 +108,11 @@ public class DriftServerEndpoint : WebSocketBehavior
             var wasClean = e.WasClean;
 
             var webSocketID = this.ID;
-            Console.WriteLine($"(OnClose) ID = {webSocketID} Code = {code}, Reason = {reason}, WasClean = {wasClean}");
+            CommandsServer.Logger.WriteLine($"(OnClose) ID = {webSocketID} Code = {code}, Reason = {reason}, WasClean = {wasClean}");
 
             ACUserManager.Instance.RemovePlayer(webSocketID);
+
+            EndpointOperations.OnClose(e);
         }
     }
 
@@ -113,9 +124,11 @@ public class DriftServerEndpoint : WebSocketBehavior
             var message = e.Message;
 
             var webSocketID = this.ID;
-            Console.WriteLine($"(OnError) ID = {webSocketID}, Message = {message}, Exception = {exception}");
+            CommandsServer.Logger.WriteLine($"(OnError) ID = {webSocketID}, Message = {message}, Exception = {exception}");
 
             ACUserManager.Instance.RemovePlayer(webSocketID);
+            
+            EndpointOperations.OnError(e);
         }
     }
 }

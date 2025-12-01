@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Drawing;
-using AC_HalFarDriftServer.EndPoints;
-using AC_HalFarDriftServer.ServerCommands;
+using AssettoCorsaCommandsServer;
+using DriftCommandServerLibrary;
+using DriftCommandServerLibrary.ServerCommands;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
@@ -9,8 +10,10 @@ namespace AC_HalFarDriftServer;
 
 public class Program
 {
+    
     public static void Main(string[] args)
     {
+        /*
         var serverProtocol = "ws";
         var serverAddress = "127.0.0.1";
         var serverEndpoint = DriftServerEndpoint.EndpointName;
@@ -39,6 +42,16 @@ public class Program
 
         // Wait for the server to starts
         serverTask.Wait();
+        */
+
+
+        var logger = new ConsoleLogger();
+        var serverAddress = "127.0.0.1";
+        // var commandsServer = new CommandsServer(logger, serverAddress);
+        // commandsServer.StartServer();
+
+        var driftCommandsServer = new DriftCommandsServer(logger);
+        driftCommandsServer.StartServer(serverAddress);
 
         // Run a console loop waiting for commands
         Console.WriteLine("Enter commands (type 'exit' to shut down):");
@@ -56,21 +69,23 @@ public class Program
                 case "exit":
                 {
                     Console.WriteLine("Stopping server...");
-                    wssv.Stop();
+                    // wssv.Stop();
+                    // commandsServer.StopServer();
+                    driftCommandsServer.StopServer();
                     goto afterInputLoop;
                 }
                 case "intro":
                 {
                     if (ACUserManager.Instance.TryGetFirstPlayerWebSocketID(out var firstWebSocketID))
                     {
-                        ServerCommandsManager.Instance.SendAsyncCommandToClient(firstWebSocketID, new ShowWelcomeMessageServerCommand("HALLO"));
+                        driftCommandsServer.SendAsyncCommandToClient(firstWebSocketID, new ShowWelcomeMessageServerCommand("HALLO"));
                     }
                 } break;
                 case "start":
                 {
                     if (ACUserManager.Instance.TryGetFirstPlayerWebSocketID(out var firstWebSocketID))
                     {
-                        ServerCommandsManager.Instance.SendAsyncCommandToClient(firstWebSocketID, new StartCountdownTimerServerCommand());
+                        driftCommandsServer.SendAsyncCommandToClient(firstWebSocketID, new StartCountdownTimerServerCommand());
                     }
                 } break;
                 default:
@@ -83,7 +98,7 @@ public class Program
         afterInputLoop:
 
         // make sure server task is complete before exiting
-        serverTask.Wait();
+        // serverTask.Wait();
         
         Console.WriteLine("Server stopped. Exiting.");
     }
