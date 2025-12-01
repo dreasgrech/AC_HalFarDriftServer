@@ -15,9 +15,14 @@ namespace HalFarDriftCommandsServerWinFormsApp
             CommandsServerUserManager = driftCommandsServer.CommandsServerUserManager;
         }
         
-        public static void StartServer(string serverHost)
+        public static bool StartServer(string serverHost)
         {
-            driftCommandsServer.StartServer(serverHost);
+            return driftCommandsServer.StartServer(serverHost);
+        }
+
+        public static bool StopServer()
+        {
+            return driftCommandsServer.StopServer();
         }
     }
 }

@@ -23,25 +23,25 @@ namespace AssettoCorsaCommandsServer
 
         public bool ServerRunning => wssv is { IsListening: true };
 
-        private readonly CancellationTokenSource tokenSource;
-        private readonly CancellationToken ct;
+        private CancellationTokenSource tokenSource;
+        private CancellationToken ct;
         
         public AssettoCorsaCommandsServer(ICommandsServerLogger logger)
         {
             Logger = logger;
             UserManager = new CommandsServerUserManager();
-            
-            tokenSource = new CancellationTokenSource();
-            ct = tokenSource.Token; 
         }
         
-        public void StartServer(string serverHost, ICommandsServerEndpointOperations operations)
+        public bool StartServer(string serverHost, ICommandsServerEndpointOperations operations)
         {
             if (ServerRunning)
             {
                 Logger.WriteLine("Server is already running, cannot start another instance.");
-                return;
+                return false;
             }
+
+            tokenSource = new CancellationTokenSource();
+            ct = tokenSource.Token; 
             
             var baseServerAddress = $"{ServerProtocol}://{serverHost}";
             
@@ -68,6 +68,8 @@ namespace AssettoCorsaCommandsServer
 
             // Wait for the server to starts
             serverTask.Wait(ct);
+
+            return true;
         }
     
         public bool SendCommandToClient(string webSocketID, ServerCommand command)
@@ -123,6 +125,8 @@ namespace AssettoCorsaCommandsServer
             
             // todo: check about if we need this
             serverTask.Wait(ct);
+
+            Logger.WriteLine("Server stopped succesfully.");
 
             return true;
         }

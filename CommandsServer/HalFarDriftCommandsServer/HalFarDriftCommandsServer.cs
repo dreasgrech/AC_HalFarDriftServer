@@ -18,6 +18,7 @@ public class HalFarDriftCommandsServer
     private readonly DriftServerEndpointImplementation endpointImplementation;
     
     public CommandsServerUserManager CommandsServerUserManager { get; }
+    public bool ServerRunning => assettoCorsaCommandsServer.ServerRunning;
 
     private readonly ICommandsServerLogger commandsServerLogger;
     
@@ -30,9 +31,9 @@ public class HalFarDriftCommandsServer
         CommandsServerUserManager = assettoCorsaCommandsServer.UserManager;
     }
     
-    public void StartServer(string serverHost)
+    public bool StartServer(string serverHost)
     {
-        assettoCorsaCommandsServer.StartServer(serverHost, endpointImplementation);
+        return assettoCorsaCommandsServer.StartServer(serverHost, endpointImplementation);
     }
 
     public bool SendAsyncCommandToClient(string webSocketID, ServerCommand command)

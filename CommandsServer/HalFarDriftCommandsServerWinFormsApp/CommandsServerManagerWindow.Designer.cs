@@ -33,15 +33,16 @@ namespace HalFarDriftCommandsServerWinFormsApp
         {
             this.ConnectedPlayersListView = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.LogTextBox = new System.Windows.Forms.TextBox();
             this.StartServerButton = new System.Windows.Forms.Button();
             this.ServerAddressTextBox = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.InitiateStartingLightsSequenceForAllButton = new System.Windows.Forms.Button();
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.serverStatusIndicatorControl = new HalFarDriftCommandsServerWinFormsApp.ServerStatusIndicatorControl();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -68,6 +69,20 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.columnHeader1.Text = "WS ID";
             this.columnHeader1.Width = 300;
             // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Name";
+            this.columnHeader4.Width = 200;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Session ID";
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Car";
+            this.columnHeader3.Width = 200;
+            // 
             // LogTextBox
             // 
             this.LogTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -82,7 +97,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             // 
             // StartServerButton
             // 
-            this.StartServerButton.Location = new System.Drawing.Point(210, 3);
+            this.StartServerButton.Location = new System.Drawing.Point(210, 6);
             this.StartServerButton.Name = "StartServerButton";
             this.StartServerButton.Size = new System.Drawing.Size(150, 20);
             this.StartServerButton.TabIndex = 4;
@@ -92,7 +107,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             // 
             // ServerAddressTextBox
             // 
-            this.ServerAddressTextBox.Location = new System.Drawing.Point(3, 3);
+            this.ServerAddressTextBox.Location = new System.Drawing.Point(3, 6);
             this.ServerAddressTextBox.Name = "ServerAddressTextBox";
             this.ServerAddressTextBox.Size = new System.Drawing.Size(201, 20);
             this.ServerAddressTextBox.TabIndex = 3;
@@ -101,11 +116,12 @@ namespace HalFarDriftCommandsServerWinFormsApp
             // panel1
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.serverStatusIndicatorControl);
             this.panel1.Controls.Add(this.ServerAddressTextBox);
             this.panel1.Controls.Add(this.StartServerButton);
-            this.panel1.Location = new System.Drawing.Point(637, 241);
+            this.panel1.Location = new System.Drawing.Point(601, 241);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(360, 29);
+            this.panel1.Size = new System.Drawing.Size(396, 29);
             this.panel1.TabIndex = 5;
             // 
             // groupBox1
@@ -131,19 +147,12 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.InitiateStartingLightsSequenceForAllButton.UseVisualStyleBackColor = true;
             this.InitiateStartingLightsSequenceForAllButton.Click += new System.EventHandler(this.InitiateStartingLightsSequenceForAllButton_Click);
             // 
-            // columnHeader2
+            // serverStatusIndicatorControl
             // 
-            this.columnHeader2.Text = "Session ID";
-            // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "Car";
-            this.columnHeader3.Width = 200;
-            // 
-            // columnHeader4
-            // 
-            this.columnHeader4.Text = "Name";
-            this.columnHeader4.Width = 200;
+            this.serverStatusIndicatorControl.Location = new System.Drawing.Point(366, 5);
+            this.serverStatusIndicatorControl.Name = "serverStatusIndicatorControl";
+            this.serverStatusIndicatorControl.Size = new System.Drawing.Size(18, 18);
+            this.serverStatusIndicatorControl.TabIndex = 1;
             // 
             // CommandsServerManagerWindow
             // 
@@ -181,5 +190,6 @@ namespace HalFarDriftCommandsServerWinFormsApp
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ColumnHeader columnHeader4;
+        private ServerStatusIndicatorControl serverStatusIndicatorControl;
     }
 }
