@@ -10,8 +10,6 @@ namespace AssettoCorsaCommandsServer
 {
     public class CommandsServer
     {
-        public string ServerHost;
-        
         public static ICommandServerLogger Logger { get; private set; }
 
         private const string ServerProtocol = "ws";
@@ -19,36 +17,23 @@ namespace AssettoCorsaCommandsServer
         private WebSocketServer wssv;
         private Task serverTask;
         
-        // private string serverEndpoint = DriftServerEndpoint.EndpointName;
-        // private string serverEndpoint;
-        // private ICommandsServerEndpointOperations endpointOperations;
-
         private readonly CancellationTokenSource tokenSource;
         private readonly CancellationToken ct;
         
-        // public CommandsServer(ICommandServerLogger logger, string serverHost, ICommandsServerEndpointOperations endpointOperations)
         public CommandsServer(ICommandServerLogger logger)
         {
             Logger = logger;
-            // this.ServerHost = serverHost;
-            // this.serverEndpoint = endpointOperations.EndpointName;
-            // this.endpointOperations = endpointOperations;
             
             tokenSource = new CancellationTokenSource();
             ct = tokenSource.Token; 
         }
         
-        // public void StartServer()
         public void StartServer(string serverHost, ICommandsServerEndpointOperations operations)
         {
-            ServerHost = serverHost;
-            // serverEndpoint = operations.EndpointName;
-            // this.endpointOperations = operations;
-            
             var acUserManager = new ACUserManager();
             ACUserManager.Instance = acUserManager;
             
-            var baseServerAddress = $"{ServerProtocol}://{ServerHost}";
+            var baseServerAddress = $"{ServerProtocol}://{serverHost}";
             
             wssv = new WebSocketServer(baseServerAddress);
             wssv.Log.Level = LogLevel.Trace;

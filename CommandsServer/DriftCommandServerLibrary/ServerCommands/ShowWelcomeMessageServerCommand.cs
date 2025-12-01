@@ -1,5 +1,4 @@
-﻿using AssettoCorsaCommandsServer;
-using AssettoCorsaCommandsServer.ServerCommands;
+﻿using AssettoCorsaCommandsServer.ServerCommands;
 using Newtonsoft.Json;
 
 namespace DriftCommandServerLibrary.ServerCommands;

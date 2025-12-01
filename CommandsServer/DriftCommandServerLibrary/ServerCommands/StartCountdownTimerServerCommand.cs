@@ -1,5 +1,4 @@
-﻿using AssettoCorsaCommandsServer;
-using AssettoCorsaCommandsServer.ServerCommands;
+﻿using AssettoCorsaCommandsServer.ServerCommands;
 
 namespace DriftCommandServerLibrary.ServerCommands;
 

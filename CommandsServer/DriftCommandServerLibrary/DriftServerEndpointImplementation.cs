@@ -17,7 +17,6 @@ public class DriftServerEndpointImplementation : ICommandsServerEndpointOperatio
 
     public void OnOpen(string newPlayerWebsocketServerID)
     {
-        // ServerCommandsManager.Instance.SendAsyncCommandToClient(newPlayerWebsocketServerID, new ShowWelcomeMessageServerCommand("This is my welcome message!  Fidelio**."));
         commandsServer.SendAsyncCommandToClient(newPlayerWebsocketServerID, new ShowWelcomeMessageServerCommand("This is my welcome message!  Fidelio**."));
     }
 
