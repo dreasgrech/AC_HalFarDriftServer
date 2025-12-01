@@ -18,9 +18,12 @@ public class HalFarDriftCommandsServer
     private readonly DriftServerEndpointImplementation endpointImplementation;
     
     public CommandsServerUserManager CommandsServerUserManager { get; }
+
+    private readonly ICommandsServerLogger commandsServerLogger;
     
     public HalFarDriftCommandsServer(ICommandsServerLogger commandsServerLogger)
     {
+        this.commandsServerLogger = commandsServerLogger;
         assettoCorsaCommandsServer = new AssettoCorsaCommandsServer.AssettoCorsaCommandsServer(commandsServerLogger);
         endpointImplementation = new DriftServerEndpointImplementation(assettoCorsaCommandsServer);
 
@@ -32,24 +35,37 @@ public class HalFarDriftCommandsServer
         assettoCorsaCommandsServer.StartServer(serverHost, endpointImplementation);
     }
 
-    public void SendAsyncCommandToClient(string webSocketID, ServerCommand command)
+    public bool SendAsyncCommandToClient(string webSocketID, ServerCommand command)
     {
-        assettoCorsaCommandsServer.SendAsyncCommandToClient(webSocketID, command);
+        return assettoCorsaCommandsServer.SendAsyncCommandToClient(webSocketID, command);
     }
 
     public void SendStartStartingLightsInitiationSequenceToAll()
     {
+        if (!assettoCorsaCommandsServer.ServerRunning)
+        {
+            commandsServerLogger.WriteLine("Cannot send StartStartingLightsInitiationSequence command - server is not running.");
+            return;
+        }
+        
         var playersEnumerator = CommandsServerUserManager.GetAllPlayersEnumerator();
         var command = new StartCountdownTimerServerCommand();
+        var sentToTotal = 0;
         while (playersEnumerator.MoveNext())
         {
             var playerID = playersEnumerator.Current;
-            assettoCorsaCommandsServer.SendAsyncCommandToClient(playerID, command);
+            var commandSent = assettoCorsaCommandsServer.SendAsyncCommandToClient(playerID, command);
+            if (commandSent)
+            {
+                sentToTotal++;
+            }
         }
+        
+        commandsServerLogger.WriteLine($"Sent StartStartingLightsInitiationSequence command to {sentToTotal} clients.");
     }
     
-    public void StopServer()
+    public bool StopServer()
     {
-        assettoCorsaCommandsServer.StopServer();
+        return assettoCorsaCommandsServer.StopServer();
     }
 }

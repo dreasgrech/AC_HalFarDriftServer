@@ -32,9 +32,13 @@ public class Program
                 case "exit":
                 {
                     Console.WriteLine("Stopping server...");
-                    driftCommandsServer.StopServer();
-                    goto afterInputLoop;
-                }
+                    var wasServerStopped = driftCommandsServer.StopServer();
+                    if (wasServerStopped)
+                    {
+                        Console.WriteLine("Server stopped successfully.");
+                        goto afterInputLoop;
+                    }
+                } break;
                 case "intro":
                 {
                     if (commandsServerUserManager.TryGetFirstPlayerWebSocketID(out var firstWebSocketID))

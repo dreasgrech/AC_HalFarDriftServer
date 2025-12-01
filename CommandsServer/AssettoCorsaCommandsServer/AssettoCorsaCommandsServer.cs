@@ -19,8 +19,10 @@ namespace AssettoCorsaCommandsServer
 
         private WebSocketServer wssv;
         private Task serverTask;
-        public CommandsServerUserManager UserManager { get; private set; }
-        
+        public CommandsServerUserManager UserManager { get; }
+
+        public bool ServerRunning => wssv is { IsListening: true };
+
         private readonly CancellationTokenSource tokenSource;
         private readonly CancellationToken ct;
         
@@ -35,6 +37,12 @@ namespace AssettoCorsaCommandsServer
         
         public void StartServer(string serverHost, ICommandsServerEndpointOperations operations)
         {
+            if (ServerRunning)
+            {
+                Logger.WriteLine("Server is already running, cannot start another instance.");
+                return;
+            }
+            
             var baseServerAddress = $"{ServerProtocol}://{serverHost}";
             
             wssv = new WebSocketServer(baseServerAddress);
@@ -62,30 +70,52 @@ namespace AssettoCorsaCommandsServer
             serverTask.Wait(ct);
         }
     
-        public void SendCommandToClient(string webSocketID, ServerCommand command)
+        public bool SendCommandToClient(string webSocketID, ServerCommand command)
         {
-            var serializedCommand = command.Serialize();
-        
-            if (UserManager.TryGetPlayerWebSocket(webSocketID, out var webSocket))
+            if (!ServerRunning)
             {
-                Logger.WriteLine($"Sending command to client {webSocketID}: {serializedCommand}");
-                webSocket.Send(serializedCommand);
+                Logger.WriteLine("Server is not running. Cannot send command.");
+                return false;
             }
+            
+            if (!UserManager.TryGetPlayerWebSocket(webSocketID, out var webSocket))
+            {
+                return false;
+            }
+            
+            var serializedCommand = command.Serialize();
+            Logger.WriteLine($"Sending command to client {webSocketID}: {serializedCommand}");
+            webSocket.Send(serializedCommand);
+            return true;
         }
     
-        public void SendAsyncCommandToClient(string webSocketID, ServerCommand command)
+        public bool SendAsyncCommandToClient(string webSocketID, ServerCommand command)
         {
-            var serializedCommand = command.Serialize();
-        
-            if (UserManager.TryGetPlayerWebSocket(webSocketID, out var webSocket))
+            if (!ServerRunning)
             {
-                Logger.WriteLine($"Sending command to client {webSocketID}: {serializedCommand}");
-                webSocket.SendAsync(serializedCommand, null);
+                Logger.WriteLine("Server is not running. Cannot send command.");
+                return false;
             }
+            
+            if (!UserManager.TryGetPlayerWebSocket(webSocketID, out var webSocket))
+            {
+                return false;
+            }
+            
+            var serializedCommand = command.Serialize();
+            Logger.WriteLine($"Sending command to client {webSocketID}: {serializedCommand}");
+            webSocket.SendAsync(serializedCommand, null);
+            return true;
         }
 
-        public void StopServer()
+        public bool StopServer()
         {
+            if (!ServerRunning)
+            {
+                Logger.WriteLine("Server is not running. Cannot stop server.");
+                return false;
+            }
+            
             wssv.Stop();
             
             // stop the task
@@ -93,6 +123,8 @@ namespace AssettoCorsaCommandsServer
             
             // todo: check about if we need this
             serverTask.Wait(ct);
+
+            return true;
         }
     }
 }
