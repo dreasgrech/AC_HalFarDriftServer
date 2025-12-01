@@ -46,16 +46,27 @@
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Form1.cs">
-            <SubType>Form</SubType>
+        <Compile Include="CommandsServerManagerWindow.cs">
+          <SubType>Form</SubType>
         </Compile>
-        <Compile Include="Form1.Designer.cs">
-            <DependentUpon>Form1.cs</DependentUpon>
+        <Compile Include="CommandsServerManagerWindow.Designer.cs">
+          <DependentUpon>CommandsServerManagerWindow.cs</DependentUpon>
         </Compile>
+        <Compile Include="ConnectToServerWindow.cs">
+          <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="ConnectToServerWindow.Designer.cs">
+          <DependentUpon>ConnectToServerWindow.cs</DependentUpon>
+        </Compile>
+        <Compile Include="HalFarDriftCommandsServerWinFormsLogger.cs" />
+        <Compile Include="HalFarDriftCommandsServerWinFormsManager.cs" />
         <Compile Include="Program.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
-        <EmbeddedResource Include="Form1.resx">
-          <DependentUpon>Form1.cs</DependentUpon>
+        <EmbeddedResource Include="CommandsServerManagerWindow.resx">
+          <DependentUpon>CommandsServerManagerWindow.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="ConnectToServerWindow.resx">
+          <DependentUpon>ConnectToServerWindow.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="Properties\Resources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
@@ -78,6 +89,16 @@
     </ItemGroup>
     <ItemGroup>
         <None Include="App.config"/>
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\AssettoCorsaCommandsServer\AssettoCorsaCommandsServer.csproj">
+        <Project>{f62d867b-f6b3-4848-a7b6-0c1a7dfc259f}</Project>
+        <Name>AssettoCorsaCommandsServer</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\HalFarDriftCommandsServer\HalFarDriftCommandsServer.csproj">
+        <Project>{0cf69295-0474-4622-82a2-8e166c714ae0}</Project>
+        <Name>HalFarDriftCommandsServer</Name>
+      </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
 </Project>
