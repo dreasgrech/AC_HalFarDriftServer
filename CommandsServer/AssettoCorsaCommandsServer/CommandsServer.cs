@@ -30,8 +30,8 @@ namespace AssettoCorsaCommandsServer
         
         public void StartServer(string serverHost, ICommandsServerEndpointOperations operations)
         {
-            var acUserManager = new ACUserManager();
-            ACUserManager.Instance = acUserManager;
+            var acUserManager = new CommandsServerUserManager();
+            CommandsServerUserManager.Instance = acUserManager;
             
             var baseServerAddress = $"{ServerProtocol}://{serverHost}";
             
@@ -62,7 +62,7 @@ namespace AssettoCorsaCommandsServer
         {
             var serializedCommand = command.Serialize();
         
-            var acUserManager = ACUserManager.Instance;
+            var acUserManager = CommandsServerUserManager.Instance;
             if (acUserManager.TryGetPlayerWebSocket(webSocketID, out var webSocket))
             {
                 Logger.WriteLine($"Sending command to client {webSocketID}: {serializedCommand}");
@@ -74,7 +74,7 @@ namespace AssettoCorsaCommandsServer
         {
             var serializedCommand = command.Serialize();
         
-            var acUserManager = ACUserManager.Instance;
+            var acUserManager = CommandsServerUserManager.Instance;
             if (acUserManager.TryGetPlayerWebSocket(webSocketID, out var webSocket))
             {
                 Logger.WriteLine($"Sending command to client {webSocketID}: {serializedCommand}");

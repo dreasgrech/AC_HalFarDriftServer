@@ -56,7 +56,7 @@ internal class CommandsServerEndpoint : WebSocketBehavior
             var playerName = currentQueryStringKeyValueCollection["DriverName"];
             var playerCarID = currentQueryStringKeyValueCollection["CarID"];
 
-            var acUserManager = ACUserManager.Instance;
+            var acUserManager = CommandsServerUserManager.Instance;
             var webSocketID = this.ID;
             var webSocket = Context.WebSocket;
             acUserManager.AddPlayer(webSocketID, webSocket, sessionID, playerName, playerCarID);
@@ -110,7 +110,7 @@ internal class CommandsServerEndpoint : WebSocketBehavior
             var webSocketID = this.ID;
             CommandsServer.Logger.WriteLine($"(OnClose) ID = {webSocketID} Code = {code}, Reason = {reason}, WasClean = {wasClean}");
 
-            ACUserManager.Instance.RemovePlayer(webSocketID);
+            CommandsServerUserManager.Instance.RemovePlayer(webSocketID);
 
             EndpointOperations.OnClose(e);
         }
@@ -126,7 +126,7 @@ internal class CommandsServerEndpoint : WebSocketBehavior
             var webSocketID = this.ID;
             CommandsServer.Logger.WriteLine($"(OnError) ID = {webSocketID}, Message = {message}, Exception = {exception}");
 
-            ACUserManager.Instance.RemovePlayer(webSocketID);
+            CommandsServerUserManager.Instance.RemovePlayer(webSocketID);
             
             EndpointOperations.OnError(e);
         }

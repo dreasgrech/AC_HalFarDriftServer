@@ -37,14 +37,14 @@ public class Program
                 }
                 case "intro":
                 {
-                    if (ACUserManager.Instance.TryGetFirstPlayerWebSocketID(out var firstWebSocketID))
+                    if (CommandsServerUserManager.Instance.TryGetFirstPlayerWebSocketID(out var firstWebSocketID))
                     {
                         driftCommandsServer.SendAsyncCommandToClient(firstWebSocketID, new ShowWelcomeMessageServerCommand("HALLO"));
                     }
                 } break;
                 case "start":
                 {
-                    if (ACUserManager.Instance.TryGetFirstPlayerWebSocketID(out var firstWebSocketID))
+                    if (CommandsServerUserManager.Instance.TryGetFirstPlayerWebSocketID(out var firstWebSocketID))
                     {
                         driftCommandsServer.SendAsyncCommandToClient(firstWebSocketID, new StartCountdownTimerServerCommand());
                     }

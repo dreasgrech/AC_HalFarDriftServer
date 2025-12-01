@@ -46,7 +46,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="ACUserManager.cs" />
+        <Compile Include="CommandsServerUserManager.cs" />
         <Compile Include="CommandsServer.cs" />
         <Compile Include="EndPoints\CommandsServerEndpoint.cs" />
         <Compile Include="ICommandsServerEndpointOperations.cs" />

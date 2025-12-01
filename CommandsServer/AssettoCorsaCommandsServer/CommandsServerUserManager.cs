@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace AssettoCorsaCommandsServer;
 
-public class ACUserManager
+public class CommandsServerUserManager
 {
-    public static ACUserManager Instance { get; set; }
+    public static CommandsServerUserManager Instance { get; set; }
 
     private readonly List<string> webSocketIDs;
     
@@ -16,7 +16,7 @@ public class ACUserManager
     
     private readonly object lockObject = new object();
     
-    public ACUserManager()
+    public CommandsServerUserManager()
     {
         webSocketIDs = new List<string>();
         
