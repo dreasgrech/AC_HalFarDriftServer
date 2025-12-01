@@ -11,6 +11,9 @@ namespace AssettoCorsaCommandsServer
     public class AssettoCorsaCommandsServer
     {
         public static ICommandsServerLogger Logger { get; private set; }
+        public static ICommandsServerEndpointOperations EndpointOperations { get; private set; }
+        public static CommandsServerUserManager CommandsServerUserManager { get; private set; }
+        
 
         private const string ServerProtocol = "ws";
 
@@ -37,8 +40,8 @@ namespace AssettoCorsaCommandsServer
             wssv = new WebSocketServer(baseServerAddress);
             wssv.Log.Level = LogLevel.Trace;
             
-            CommandsServerEndpoint.EndpointOperations = operations;
-            CommandsServerEndpoint.CommandsServerUserManager = UserManager;
+            EndpointOperations = operations;
+            CommandsServerUserManager = UserManager;
             
             var serverEndpoint = operations.EndpointName;
             wssv.AddWebSocketService<CommandsServerEndpoint>($"/{serverEndpoint}");

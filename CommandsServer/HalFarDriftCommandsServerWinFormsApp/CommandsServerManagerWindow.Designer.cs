@@ -39,6 +39,9 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.InitiateStartingLightsSequenceForAllButton = new System.Windows.Forms.Button();
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -48,11 +51,14 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.ConnectedPlayersListView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ConnectedPlayersListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
+            this.columnHeader1,
+            this.columnHeader4,
+            this.columnHeader2,
+            this.columnHeader3});
             this.ConnectedPlayersListView.HideSelection = false;
             this.ConnectedPlayersListView.Location = new System.Drawing.Point(12, 12);
             this.ConnectedPlayersListView.Name = "ConnectedPlayersListView";
-            this.ConnectedPlayersListView.Size = new System.Drawing.Size(888, 97);
+            this.ConnectedPlayersListView.Size = new System.Drawing.Size(985, 97);
             this.ConnectedPlayersListView.TabIndex = 1;
             this.ConnectedPlayersListView.UseCompatibleStateImageBehavior = false;
             this.ConnectedPlayersListView.View = System.Windows.Forms.View.Details;
@@ -60,17 +66,18 @@ namespace HalFarDriftCommandsServerWinFormsApp
             // columnHeader1
             // 
             this.columnHeader1.Text = "WS ID";
+            this.columnHeader1.Width = 300;
             // 
             // LogTextBox
             // 
             this.LogTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.LogTextBox.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.LogTextBox.Location = new System.Drawing.Point(12, 390);
+            this.LogTextBox.Location = new System.Drawing.Point(12, 276);
             this.LogTextBox.Multiline = true;
             this.LogTextBox.Name = "LogTextBox";
             this.LogTextBox.ReadOnly = true;
-            this.LogTextBox.Size = new System.Drawing.Size(888, 232);
+            this.LogTextBox.Size = new System.Drawing.Size(985, 232);
             this.LogTextBox.TabIndex = 2;
             // 
             // StartServerButton
@@ -96,19 +103,20 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.Controls.Add(this.ServerAddressTextBox);
             this.panel1.Controls.Add(this.StartServerButton);
-            this.panel1.Location = new System.Drawing.Point(540, 355);
+            this.panel1.Location = new System.Drawing.Point(637, 241);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(360, 29);
             this.panel1.TabIndex = 5;
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.InitiateStartingLightsSequenceForAllButton);
             this.groupBox1.Location = new System.Drawing.Point(12, 115);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(888, 143);
+            this.groupBox1.Size = new System.Drawing.Size(985, 120);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Operations";
@@ -123,17 +131,31 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.InitiateStartingLightsSequenceForAllButton.UseVisualStyleBackColor = true;
             this.InitiateStartingLightsSequenceForAllButton.Click += new System.EventHandler(this.InitiateStartingLightsSequenceForAllButton_Click);
             // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Session ID";
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Car";
+            this.columnHeader3.Width = 200;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Name";
+            this.columnHeader4.Width = 200;
+            // 
             // CommandsServerManagerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(912, 634);
+            this.ClientSize = new System.Drawing.Size(1009, 520);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.LogTextBox);
             this.Controls.Add(this.ConnectedPlayersListView);
             this.Name = "CommandsServerManagerWindow";
-            this.Text = "CommandsServerManagerWindow";
+            this.Text = "Hal Far Drift Server Commands Manager";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -156,5 +178,8 @@ namespace HalFarDriftCommandsServerWinFormsApp
         private System.Windows.Forms.ListView ConnectedPlayersListView;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button InitiateStartingLightsSequenceForAllButton;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
     }
 }

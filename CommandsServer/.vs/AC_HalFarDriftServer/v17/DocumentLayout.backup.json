@@ -3,12 +3,40 @@
   "WorkspaceRootPath": "C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3D202577-1B1C-4749-A57A-6929C35609F3}|HalFarDriftCommandsServerWinFormsApp\\HalFarDriftCommandsServerWinFormsApp.csproj|c:\\users\\filth\\riderprojects\\ac_halfardriftserver\\commandsserver\\halfardriftcommandsserverwinformsapp\\commandsservermanagerwindow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{3D202577-1B1C-4749-A57A-6929C35609F3}|HalFarDriftCommandsServerWinFormsApp\\HalFarDriftCommandsServerWinFormsApp.csproj|C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\halfardriftcommandsserverwinformsapp\\commandsservermanagerwindow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{3D202577-1B1C-4749-A57A-6929C35609F3}|HalFarDriftCommandsServerWinFormsApp\\HalFarDriftCommandsServerWinFormsApp.csproj|solutionrelative:halfardriftcommandsserverwinformsapp\\commandsservermanagerwindow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D202577-1B1C-4749-A57A-6929C35609F3}|HalFarDriftCommandsServerWinFormsApp\\HalFarDriftCommandsServerWinFormsApp.csproj|C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\halfardriftcommandsserverwinformsapp\\commandsservermanagerwindow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3D202577-1B1C-4749-A57A-6929C35609F3}|HalFarDriftCommandsServerWinFormsApp\\HalFarDriftCommandsServerWinFormsApp.csproj|solutionrelative:halfardriftcommandsserverwinformsapp\\commandsservermanagerwindow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3D202577-1B1C-4749-A57A-6929C35609F3}|HalFarDriftCommandsServerWinFormsApp\\HalFarDriftCommandsServerWinFormsApp.csproj|c:\\users\\filth\\riderprojects\\ac_halfardriftserver\\commandsserver\\halfardriftcommandsserverwinformsapp\\commandsservermanagerwindow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{3D202577-1B1C-4749-A57A-6929C35609F3}|HalFarDriftCommandsServerWinFormsApp\\HalFarDriftCommandsServerWinFormsApp.csproj|solutionrelative:halfardriftcommandsserverwinformsapp\\commandsservermanagerwindow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{3D202577-1B1C-4749-A57A-6929C35609F3}|HalFarDriftCommandsServerWinFormsApp\\HalFarDriftCommandsServerWinFormsApp.csproj|c:\\users\\filth\\riderprojects\\ac_halfardriftserver\\commandsserver\\halfardriftcommandsserverwinformsapp\\halfardriftcommandsserverwinformslogger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D202577-1B1C-4749-A57A-6929C35609F3}|HalFarDriftCommandsServerWinFormsApp\\HalFarDriftCommandsServerWinFormsApp.csproj|solutionrelative:halfardriftcommandsserverwinformsapp\\halfardriftcommandsserverwinformslogger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F62D867B-F6B3-4848-A7B6-0C1A7DFC259F}|AssettoCorsaCommandsServer\\AssettoCorsaCommandsServer.csproj|c:\\users\\filth\\riderprojects\\ac_halfardriftserver\\commandsserver\\assettocorsacommandsserver\\commandsserverusermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F62D867B-F6B3-4848-A7B6-0C1A7DFC259F}|AssettoCorsaCommandsServer\\AssettoCorsaCommandsServer.csproj|solutionrelative:assettocorsacommandsserver\\commandsserverusermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D202577-1B1C-4749-A57A-6929C35609F3}|HalFarDriftCommandsServerWinFormsApp\\HalFarDriftCommandsServerWinFormsApp.csproj|c:\\users\\filth\\riderprojects\\ac_halfardriftserver\\commandsserver\\halfardriftcommandsserverwinformsapp\\halfardriftcommandsserverwinformsmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D202577-1B1C-4749-A57A-6929C35609F3}|HalFarDriftCommandsServerWinFormsApp\\HalFarDriftCommandsServerWinFormsApp.csproj|solutionrelative:halfardriftcommandsserverwinformsapp\\halfardriftcommandsserverwinformsmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0CF69295-0474-4622-82A2-8E166C714AE0}|HalFarDriftCommandsServer\\HalFarDriftCommandsServer.csproj|c:\\users\\filth\\riderprojects\\ac_halfardriftserver\\commandsserver\\halfardriftcommandsserver\\halfardriftcommandsserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0CF69295-0474-4622-82A2-8E166C714AE0}|HalFarDriftCommandsServer\\HalFarDriftCommandsServer.csproj|solutionrelative:halfardriftcommandsserver\\halfardriftcommandsserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F62D867B-F6B3-4848-A7B6-0C1A7DFC259F}|AssettoCorsaCommandsServer\\AssettoCorsaCommandsServer.csproj|C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\assettocorsacommandsserver\\assettocorsacommandsserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F62D867B-F6B3-4848-A7B6-0C1A7DFC259F}|AssettoCorsaCommandsServer\\AssettoCorsaCommandsServer.csproj|solutionrelative:assettocorsacommandsserver\\assettocorsacommandsserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F62D867B-F6B3-4848-A7B6-0C1A7DFC259F}|AssettoCorsaCommandsServer\\AssettoCorsaCommandsServer.csproj|c:\\users\\filth\\riderprojects\\ac_halfardriftserver\\commandsserver\\assettocorsacommandsserver\\endpoints\\commandsserverendpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F62D867B-F6B3-4848-A7B6-0C1A7DFC259F}|AssettoCorsaCommandsServer\\AssettoCorsaCommandsServer.csproj|solutionrelative:assettocorsacommandsserver\\endpoints\\commandsserverendpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{649E9C9D-6607-43DD-AC4A-9C16B7F655B3}|HalFarDriftCommandsServerConsoleApp\\HalFarDriftCommandsServerConsoleApp.csproj|c:\\users\\filth\\riderprojects\\ac_halfardriftserver\\commandsserver\\halfardriftcommandsserverconsoleapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{649E9C9D-6607-43DD-AC4A-9C16B7F655B3}|HalFarDriftCommandsServerConsoleApp\\HalFarDriftCommandsServerConsoleApp.csproj|solutionrelative:halfardriftcommandsserverconsoleapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,24 +46,67 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 5,
           "Children": [
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
+              "Title": "CommandsServerUserManager.cs",
+              "DocumentMoniker": "C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\AssettoCorsaCommandsServer\\CommandsServerUserManager.cs",
+              "RelativeDocumentMoniker": "AssettoCorsaCommandsServer\\CommandsServerUserManager.cs",
+              "ToolTip": "C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\AssettoCorsaCommandsServer\\CommandsServerUserManager.cs",
+              "RelativeToolTip": "AssettoCorsaCommandsServer\\CommandsServerUserManager.cs",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAIwGoAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T18:32:08.338Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\HalFarDriftCommandsServerConsoleApp\\Program.cs",
+              "RelativeDocumentMoniker": "HalFarDriftCommandsServerConsoleApp\\Program.cs",
+              "ToolTip": "C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\HalFarDriftCommandsServerConsoleApp\\Program.cs",
+              "RelativeToolTip": "HalFarDriftCommandsServerConsoleApp\\Program.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAgwB8AAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T18:30:42.224Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "AssettoCorsaCommandsServer.cs",
+              "DocumentMoniker": "C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\AssettoCorsaCommandsServer\\AssettoCorsaCommandsServer.cs",
+              "RelativeDocumentMoniker": "AssettoCorsaCommandsServer\\AssettoCorsaCommandsServer.cs",
+              "ToolTip": "C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\AssettoCorsaCommandsServer\\AssettoCorsaCommandsServer.cs",
+              "RelativeToolTip": "AssettoCorsaCommandsServer\\AssettoCorsaCommandsServer.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwA4AAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T16:52:15.968Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "CommandsServerManagerWindow.cs",
               "DocumentMoniker": "C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\HalFarDriftCommandsServerWinFormsApp\\CommandsServerManagerWindow.cs",
               "RelativeDocumentMoniker": "HalFarDriftCommandsServerWinFormsApp\\CommandsServerManagerWindow.cs",
               "ToolTip": "C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\HalFarDriftCommandsServerWinFormsApp\\CommandsServerManagerWindow.cs",
               "RelativeToolTip": "HalFarDriftCommandsServerWinFormsApp\\CommandsServerManagerWindow.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-01T15:55:47.901Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "CommandsServerManagerWindow.cs [Design]",
               "DocumentMoniker": "C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\HalFarDriftCommandsServerWinFormsApp\\CommandsServerManagerWindow.cs",
               "RelativeDocumentMoniker": "HalFarDriftCommandsServerWinFormsApp\\CommandsServerManagerWindow.cs",
@@ -44,6 +115,58 @@
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-01T15:27:11.9Z",
               "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "HalFarDriftCommandsServerWinFormsManager.cs",
+              "DocumentMoniker": "C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\HalFarDriftCommandsServerWinFormsApp\\HalFarDriftCommandsServerWinFormsManager.cs",
+              "RelativeDocumentMoniker": "HalFarDriftCommandsServerWinFormsApp\\HalFarDriftCommandsServerWinFormsManager.cs",
+              "ToolTip": "C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\HalFarDriftCommandsServerWinFormsApp\\HalFarDriftCommandsServerWinFormsManager.cs",
+              "RelativeToolTip": "HalFarDriftCommandsServerWinFormsApp\\HalFarDriftCommandsServerWinFormsManager.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T18:30:52.311Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "HalFarDriftCommandsServer.cs",
+              "DocumentMoniker": "C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\HalFarDriftCommandsServer\\HalFarDriftCommandsServer.cs",
+              "RelativeDocumentMoniker": "HalFarDriftCommandsServer\\HalFarDriftCommandsServer.cs",
+              "ToolTip": "C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\HalFarDriftCommandsServer\\HalFarDriftCommandsServer.cs",
+              "RelativeToolTip": "HalFarDriftCommandsServer\\HalFarDriftCommandsServer.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwBMAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T18:29:34.57Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "HalFarDriftCommandsServerWinFormsLogger.cs",
+              "DocumentMoniker": "C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\HalFarDriftCommandsServerWinFormsApp\\HalFarDriftCommandsServerWinFormsLogger.cs",
+              "RelativeDocumentMoniker": "HalFarDriftCommandsServerWinFormsApp\\HalFarDriftCommandsServerWinFormsLogger.cs",
+              "ToolTip": "C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\HalFarDriftCommandsServerWinFormsApp\\HalFarDriftCommandsServerWinFormsLogger.cs",
+              "RelativeToolTip": "HalFarDriftCommandsServerWinFormsApp\\HalFarDriftCommandsServerWinFormsLogger.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T16:40:22.614Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CommandsServerEndpoint.cs",
+              "DocumentMoniker": "C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\AssettoCorsaCommandsServer\\EndPoints\\CommandsServerEndpoint.cs",
+              "RelativeDocumentMoniker": "AssettoCorsaCommandsServer\\EndPoints\\CommandsServerEndpoint.cs",
+              "ToolTip": "C:\\Users\\filth\\RiderProjects\\AC_HalFarDriftServer\\CommandsServer\\AssettoCorsaCommandsServer\\EndPoints\\CommandsServerEndpoint.cs",
+              "RelativeToolTip": "AssettoCorsaCommandsServer\\EndPoints\\CommandsServerEndpoint.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAQwDoAAABDAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T18:52:41.803Z",
+              "EditorCaption": ""
             }
           ]
         }

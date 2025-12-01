@@ -11,11 +11,8 @@ internal class CommandsServerEndpoint : WebSocketBehavior
 {
     // public static string EndpointName => "DriftServer";
     
-    public static ICommandsServerEndpointOperations EndpointOperations { get; set; }
-    public static CommandsServerUserManager CommandsServerUserManager { get; set; }
-    
     private static readonly object LockObject = new object();
-    
+
     protected override void OnOpen()
     {
         lock (LockObject)
@@ -36,7 +33,7 @@ internal class CommandsServerEndpoint : WebSocketBehavior
             }
 
             // build the querystring into one string
-            logger.WriteLine($"Client QueryString: {queryStringBuilder.ToString()}");
+            logger.WriteLine($"Client QueryString: {queryStringBuilder}");
 
 
             var sessions = Sessions.Sessions.ToArray();
@@ -59,7 +56,7 @@ internal class CommandsServerEndpoint : WebSocketBehavior
 
             var webSocketID = this.ID;
             var webSocket = Context.WebSocket;
-            CommandsServerUserManager.AddPlayer(webSocketID, webSocket, sessionID, playerName, playerCarID);
+            AssettoCorsaCommandsServer.CommandsServerUserManager.AddPlayer(webSocketID, webSocket, sessionID, playerName, playerCarID);
 
             // SendAsync($"ACUserManagerPlayerID={acUserManagerPlayerID}", b =>
             // {
@@ -70,7 +67,7 @@ internal class CommandsServerEndpoint : WebSocketBehavior
             
             // ServerCommandsManager.Instance.SendAsyncCommandToClient(webSocketID, new ShowWelcomeMessageServerCommand("This is my welcome message!  Fidelio**."));
             
-            EndpointOperations.OnOpen(webSocketID);
+            AssettoCorsaCommandsServer.EndpointOperations.OnOpen(webSocketID);
         }
     }
 
@@ -95,7 +92,7 @@ internal class CommandsServerEndpoint : WebSocketBehavior
 
             // Send("Message received, thank you!");
             
-            EndpointOperations.OnMessage(e);
+            AssettoCorsaCommandsServer.EndpointOperations.OnMessage(e);
         }
     }
 
@@ -110,9 +107,9 @@ internal class CommandsServerEndpoint : WebSocketBehavior
             var webSocketID = this.ID;
             AssettoCorsaCommandsServer.Logger.WriteLine($"(OnClose) ID = {webSocketID} Code = {code}, Reason = {reason}, WasClean = {wasClean}");
 
-            CommandsServerUserManager.RemovePlayer(webSocketID);
+            AssettoCorsaCommandsServer.CommandsServerUserManager.RemovePlayer(webSocketID);
 
-            EndpointOperations.OnClose(e);
+            AssettoCorsaCommandsServer.EndpointOperations.OnClose(e);
         }
     }
 
@@ -126,9 +123,9 @@ internal class CommandsServerEndpoint : WebSocketBehavior
             var webSocketID = this.ID;
             AssettoCorsaCommandsServer.Logger.WriteLine($"(OnError) ID = {webSocketID}, Message = {message}, Exception = {exception}");
 
-            CommandsServerUserManager.RemovePlayer(webSocketID);
+            AssettoCorsaCommandsServer.CommandsServerUserManager.RemovePlayer(webSocketID);
             
-            EndpointOperations.OnError(e);
+            AssettoCorsaCommandsServer.EndpointOperations.OnError(e);
         }
     }
 }

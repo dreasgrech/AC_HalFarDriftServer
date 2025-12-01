@@ -44,10 +44,11 @@ public class Program
                 } break;
                 case "start":
                 {
-                    if (commandsServerUserManager.TryGetFirstPlayerWebSocketID(out var firstWebSocketID))
-                    {
-                        driftCommandsServer.SendAsyncCommandToClient(firstWebSocketID, new StartCountdownTimerServerCommand());
-                    }
+                    // if (commandsServerUserManager.TryGetFirstPlayerWebSocketID(out var firstWebSocketID))
+                    // {
+                    //     driftCommandsServer.SendAsyncCommandToClient(firstWebSocketID, new StartCountdownTimerServerCommand());
+                    // }
+                        driftCommandsServer.SendStartStartingLightsInitiationSequenceToAll();
                 } break;
                 default:
                 {

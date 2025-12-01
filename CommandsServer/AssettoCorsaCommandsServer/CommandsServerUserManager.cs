@@ -3,6 +3,16 @@ using System.Collections.Generic;
 
 namespace AssettoCorsaCommandsServer;
 
+public class PlayerAddedEventArgs : EventArgs
+{
+    public string PlayerWebSocketID { get; set; }
+
+    public PlayerAddedEventArgs(string playerWebSocketID)
+    {
+        PlayerWebSocketID = playerWebSocketID;
+    }
+}
+
 public class CommandsServerUserManager
 {
     private readonly List<string> webSocketIDs;
@@ -12,7 +22,9 @@ public class CommandsServerUserManager
     private readonly Dictionary<string, int> playersSessionID;
     private readonly Dictionary<string, string> playersCarName;
     
-    private readonly object lockObject = new object();
+    private readonly object lockObject = new();
+
+    public event EventHandler<PlayerAddedEventArgs> OnPlayerAdded;
     
     public CommandsServerUserManager()
     {
@@ -42,6 +54,8 @@ public class CommandsServerUserManager
             playersCarName[webSocketID] = acPlayerCarName;
             
             Console.WriteLine($"Added player.  WebSocketID: {webSocketID}, SessionCarID: {acSessionCarID}, PlayerName: {acPlayerName}, PlayerCarName: {acPlayerCarName}");
+
+            OnPlayerAdded?.Invoke(this, new PlayerAddedEventArgs(webSocketID));
         }
     }
     
@@ -67,6 +81,30 @@ public class CommandsServerUserManager
         lock (lockObject)
         {
             return playersWebSocket.TryGetValue(webSocketID, out webSocket);
+        }
+    }
+
+    public bool TryGetPlayerSessionID(string webSocketID, out int sessionID)
+    {
+        lock (lockObject)
+        {
+            return playersSessionID.TryGetValue(webSocketID, out sessionID);
+        }
+    }
+
+    public bool TryGetPlayerName(string webSocketID, out string name)
+    {
+        lock (lockObject)
+        {
+            return playersName.TryGetValue(webSocketID, out name);
+        }
+    }
+
+    public bool TryGetPlayerCarName(string webSocketID, out string carName)
+    {
+        lock (lockObject)
+        {
+            return playersCarName.TryGetValue(webSocketID, out carName);
         }
     }
     
