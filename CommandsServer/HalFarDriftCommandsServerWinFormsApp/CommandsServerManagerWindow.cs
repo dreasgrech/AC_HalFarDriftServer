@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 namespace HalFarDriftCommandsServerWinFormsApp
 {
@@ -8,7 +9,13 @@ namespace HalFarDriftCommandsServerWinFormsApp
         {
             InitializeComponent();
             
-            // ConnectedPlayersListView.Column
+            HalFarDriftCommandsServerWinFormsManager.Initialize(LogTextBox);
+        }
+
+        private void StartServerButton_Click(object sender, EventArgs e)
+        {
+            var serverHost = ServerAddressTextBox.Text;
+            HalFarDriftCommandsServerWinFormsManager.StartServer(serverHost);
         }
     }
 }

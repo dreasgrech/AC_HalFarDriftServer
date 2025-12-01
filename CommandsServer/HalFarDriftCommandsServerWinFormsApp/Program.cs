@@ -16,7 +16,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ConnectToServerWindow());
+            Application.Run(new CommandsServerManagerWindow());
         }
     }
 }
