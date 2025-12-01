@@ -10,7 +10,7 @@ namespace AssettoCorsaCommandsServer
 {
     public class CommandsServer
     {
-        public static ICommandServerLogger Logger { get; private set; }
+        public static ICommandsServerLogger Logger { get; private set; }
 
         private const string ServerProtocol = "ws";
 
@@ -20,7 +20,7 @@ namespace AssettoCorsaCommandsServer
         private readonly CancellationTokenSource tokenSource;
         private readonly CancellationToken ct;
         
-        public CommandsServer(ICommandServerLogger logger)
+        public CommandsServer(ICommandsServerLogger logger)
         {
             Logger = logger;
             

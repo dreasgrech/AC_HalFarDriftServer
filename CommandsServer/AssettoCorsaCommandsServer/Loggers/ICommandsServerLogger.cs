@@ -1,6 +1,6 @@
 ﻿namespace AssettoCorsaCommandsServer.Loggers
 {
-    public interface ICommandServerLogger
+    public interface ICommandsServerLogger
     {
         void WriteLine(string line);
     }

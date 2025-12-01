@@ -8,7 +8,7 @@ public class ShowWelcomeMessageServerCommand : ServerCommand
     [JsonProperty(PropertyName = "M")]
     public string Message { get; set; }
 
-    public ShowWelcomeMessageServerCommand(string message) : base((int)ServerCommandType.ShowWelcomeMessage)
+    public ShowWelcomeMessageServerCommand(string message) : base((int)HalFarDriftServerCommandType.ShowWelcomeMessage)
     {
         Message = message;
     }

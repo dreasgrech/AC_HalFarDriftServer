@@ -2,7 +2,7 @@
 
 namespace AC_HalFarDriftServer;
 
-internal class ConsoleLogger : ICommandServerLogger
+internal class ConsoleLogger : ICommandsServerLogger
 {
     public void WriteLine(string line)
     {

@@ -4,7 +4,7 @@ using AssettoCorsaCommandsServer.ServerCommands;
 
 namespace HalFarDriftCommandsServer;
 
-public enum ServerCommandType
+public enum HalFarDriftServerCommandType
 {
     None = 0,
     ShowWelcomeMessage = 1,
@@ -16,9 +16,9 @@ public class HalFarDriftCommandsServer
     private readonly CommandsServer commandsServer;
     private readonly DriftServerEndpointImplementation endpointImplementation;
     
-    public HalFarDriftCommandsServer(ICommandServerLogger commandServerLogger)
+    public HalFarDriftCommandsServer(ICommandsServerLogger commandsServerLogger)
     {
-        commandsServer = new CommandsServer(commandServerLogger);
+        commandsServer = new CommandsServer(commandsServerLogger);
         endpointImplementation = new DriftServerEndpointImplementation(commandsServer);
     }
     
