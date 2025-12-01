@@ -12,6 +12,7 @@ internal class CommandsServerEndpoint : WebSocketBehavior
     // public static string EndpointName => "DriftServer";
     
     public static ICommandsServerEndpointOperations EndpointOperations { get; set; }
+    public static CommandsServerUserManager CommandsServerUserManager { get; set; }
     
     private static readonly object LockObject = new object();
     
@@ -19,7 +20,7 @@ internal class CommandsServerEndpoint : WebSocketBehavior
     {
         lock (LockObject)
         {
-            var logger = CommandsServer.Logger;
+            var logger = AssettoCorsaCommandsServer.Logger;
             
             logger.WriteLine("New client connected.");
 
@@ -56,10 +57,9 @@ internal class CommandsServerEndpoint : WebSocketBehavior
             var playerName = currentQueryStringKeyValueCollection["DriverName"];
             var playerCarID = currentQueryStringKeyValueCollection["CarID"];
 
-            var acUserManager = CommandsServerUserManager.Instance;
             var webSocketID = this.ID;
             var webSocket = Context.WebSocket;
-            acUserManager.AddPlayer(webSocketID, webSocket, sessionID, playerName, playerCarID);
+            CommandsServerUserManager.AddPlayer(webSocketID, webSocket, sessionID, playerName, playerCarID);
 
             // SendAsync($"ACUserManagerPlayerID={acUserManagerPlayerID}", b =>
             // {
@@ -91,7 +91,7 @@ internal class CommandsServerEndpoint : WebSocketBehavior
             var userEndPoint = currentWebSocketContext.UserEndPoint;
             var ipAddress = userEndPoint.Address.ToString();
 
-            CommandsServer.Logger.WriteLine($"Message received: ID = {this.ID}, IP = {ipAddress}, Data = {dataString}, Data Length = {dataString.Length}, IsBinary = {isBinary}, IsPing = {isPing}, IsText = {isText}, RawData Length = {rawData.Length}");
+            AssettoCorsaCommandsServer.Logger.WriteLine($"Message received: ID = {this.ID}, IP = {ipAddress}, Data = {dataString}, Data Length = {dataString.Length}, IsBinary = {isBinary}, IsPing = {isPing}, IsText = {isText}, RawData Length = {rawData.Length}");
 
             // Send("Message received, thank you!");
             
@@ -108,9 +108,9 @@ internal class CommandsServerEndpoint : WebSocketBehavior
             var wasClean = e.WasClean;
 
             var webSocketID = this.ID;
-            CommandsServer.Logger.WriteLine($"(OnClose) ID = {webSocketID} Code = {code}, Reason = {reason}, WasClean = {wasClean}");
+            AssettoCorsaCommandsServer.Logger.WriteLine($"(OnClose) ID = {webSocketID} Code = {code}, Reason = {reason}, WasClean = {wasClean}");
 
-            CommandsServerUserManager.Instance.RemovePlayer(webSocketID);
+            CommandsServerUserManager.RemovePlayer(webSocketID);
 
             EndpointOperations.OnClose(e);
         }
@@ -124,9 +124,9 @@ internal class CommandsServerEndpoint : WebSocketBehavior
             var message = e.Message;
 
             var webSocketID = this.ID;
-            CommandsServer.Logger.WriteLine($"(OnError) ID = {webSocketID}, Message = {message}, Exception = {exception}");
+            AssettoCorsaCommandsServer.Logger.WriteLine($"(OnError) ID = {webSocketID}, Message = {message}, Exception = {exception}");
 
-            CommandsServerUserManager.Instance.RemovePlayer(webSocketID);
+            CommandsServerUserManager.RemovePlayer(webSocketID);
             
             EndpointOperations.OnError(e);
         }

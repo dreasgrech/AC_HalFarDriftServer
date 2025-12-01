@@ -47,7 +47,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="CommandsServerUserManager.cs" />
-        <Compile Include="CommandsServer.cs" />
+        <Compile Include="AssettoCorsaCommandsServer.cs" />
         <Compile Include="EndPoints\CommandsServerEndpoint.cs" />
         <Compile Include="ICommandsServerEndpointOperations.cs" />
         <Compile Include="Loggers\ICommandsServerLogger.cs" />

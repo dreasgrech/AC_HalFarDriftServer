@@ -5,8 +5,6 @@ namespace AssettoCorsaCommandsServer;
 
 public class CommandsServerUserManager
 {
-    public static CommandsServerUserManager Instance { get; set; }
-
     private readonly List<string> webSocketIDs;
     
     private readonly Dictionary<string, WebSocketSharp.WebSocket> playersWebSocket;

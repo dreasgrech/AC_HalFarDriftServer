@@ -8,16 +8,16 @@ public class DriftServerEndpointImplementation : ICommandsServerEndpointOperatio
 {
     public string EndpointName => "DriftServer";
     
-    private readonly CommandsServer commandsServer;
+    private readonly AssettoCorsaCommandsServer.AssettoCorsaCommandsServer assettoCorsaCommandsServer;
 
-    public DriftServerEndpointImplementation(CommandsServer commandsServer)
+    public DriftServerEndpointImplementation(AssettoCorsaCommandsServer.AssettoCorsaCommandsServer assettoCorsaCommandsServer)
     {
-        this.commandsServer = commandsServer;
+        this.assettoCorsaCommandsServer = assettoCorsaCommandsServer;
     }
 
     public void OnOpen(string newPlayerWebsocketServerID)
     {
-        commandsServer.SendAsyncCommandToClient(newPlayerWebsocketServerID, new ShowWelcomeMessageServerCommand("This is my welcome message!  Fidelio**."));
+        assettoCorsaCommandsServer.SendAsyncCommandToClient(newPlayerWebsocketServerID, new ShowWelcomeMessageServerCommand("This is my welcome message!  Fidelio**."));
     }
 
     public void OnMessage(MessageEventArgs e)

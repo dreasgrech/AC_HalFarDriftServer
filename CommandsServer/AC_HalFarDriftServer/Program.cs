@@ -16,6 +16,8 @@ public class Program
         var driftCommandsServer = new HalFarDriftCommandsServer.HalFarDriftCommandsServer(logger);
         driftCommandsServer.StartServer(serverAddress);
 
+        var commandsServerUserManager = driftCommandsServer.CommandsServerUserManager;
+
         // Run a console loop waiting for commands
         Console.WriteLine("Enter commands (type 'exit' to shut down):");
         while (true)
@@ -37,14 +39,14 @@ public class Program
                 }
                 case "intro":
                 {
-                    if (CommandsServerUserManager.Instance.TryGetFirstPlayerWebSocketID(out var firstWebSocketID))
+                    if (commandsServerUserManager.TryGetFirstPlayerWebSocketID(out var firstWebSocketID))
                     {
                         driftCommandsServer.SendAsyncCommandToClient(firstWebSocketID, new ShowWelcomeMessageServerCommand("HALLO"));
                     }
                 } break;
                 case "start":
                 {
-                    if (CommandsServerUserManager.Instance.TryGetFirstPlayerWebSocketID(out var firstWebSocketID))
+                    if (commandsServerUserManager.TryGetFirstPlayerWebSocketID(out var firstWebSocketID))
                     {
                         driftCommandsServer.SendAsyncCommandToClient(firstWebSocketID, new StartCountdownTimerServerCommand());
                     }

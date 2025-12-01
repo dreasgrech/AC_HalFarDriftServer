@@ -13,27 +13,31 @@ public enum HalFarDriftServerCommandType
 
 public class HalFarDriftCommandsServer
 {
-    private readonly CommandsServer commandsServer;
+    private readonly AssettoCorsaCommandsServer.AssettoCorsaCommandsServer assettoCorsaCommandsServer;
     private readonly DriftServerEndpointImplementation endpointImplementation;
+    
+    public CommandsServerUserManager CommandsServerUserManager { get; }
     
     public HalFarDriftCommandsServer(ICommandsServerLogger commandsServerLogger)
     {
-        commandsServer = new CommandsServer(commandsServerLogger);
-        endpointImplementation = new DriftServerEndpointImplementation(commandsServer);
+        assettoCorsaCommandsServer = new AssettoCorsaCommandsServer.AssettoCorsaCommandsServer(commandsServerLogger);
+        endpointImplementation = new DriftServerEndpointImplementation(assettoCorsaCommandsServer);
+
+        CommandsServerUserManager = assettoCorsaCommandsServer.UserManager;
     }
     
     public void StartServer(string serverHost)
     {
-        commandsServer.StartServer(serverHost, endpointImplementation);
+        assettoCorsaCommandsServer.StartServer(serverHost, endpointImplementation);
     }
 
     public void SendAsyncCommandToClient(string webSocketID, ServerCommand command)
     {
-        commandsServer.SendAsyncCommandToClient(webSocketID, command);
+        assettoCorsaCommandsServer.SendAsyncCommandToClient(webSocketID, command);
     }
     
     public void StopServer()
     {
-        commandsServer.StopServer();
+        assettoCorsaCommandsServer.StopServer();
     }
 }

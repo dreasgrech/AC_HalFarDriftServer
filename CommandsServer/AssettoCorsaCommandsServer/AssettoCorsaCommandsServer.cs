@@ -8,7 +8,7 @@ using WebSocketSharp.Server;
 
 namespace AssettoCorsaCommandsServer
 {
-    public class CommandsServer
+    public class AssettoCorsaCommandsServer
     {
         public static ICommandsServerLogger Logger { get; private set; }
 
@@ -16,11 +16,12 @@ namespace AssettoCorsaCommandsServer
 
         private WebSocketServer wssv;
         private Task serverTask;
+        public CommandsServerUserManager UserManager { get; private set; }
         
         private readonly CancellationTokenSource tokenSource;
         private readonly CancellationToken ct;
         
-        public CommandsServer(ICommandsServerLogger logger)
+        public AssettoCorsaCommandsServer(ICommandsServerLogger logger)
         {
             Logger = logger;
             
@@ -30,8 +31,7 @@ namespace AssettoCorsaCommandsServer
         
         public void StartServer(string serverHost, ICommandsServerEndpointOperations operations)
         {
-            var acUserManager = new CommandsServerUserManager();
-            CommandsServerUserManager.Instance = acUserManager;
+            UserManager = new CommandsServerUserManager();
             
             var baseServerAddress = $"{ServerProtocol}://{serverHost}";
             
@@ -39,6 +39,8 @@ namespace AssettoCorsaCommandsServer
             wssv.Log.Level = LogLevel.Trace;
             
             CommandsServerEndpoint.EndpointOperations = operations;
+            CommandsServerEndpoint.CommandsServerUserManager = UserManager;
+            
             var serverEndpoint = operations.EndpointName;
             wssv.AddWebSocketService<CommandsServerEndpoint>($"/{serverEndpoint}");
             
@@ -62,8 +64,7 @@ namespace AssettoCorsaCommandsServer
         {
             var serializedCommand = command.Serialize();
         
-            var acUserManager = CommandsServerUserManager.Instance;
-            if (acUserManager.TryGetPlayerWebSocket(webSocketID, out var webSocket))
+            if (UserManager.TryGetPlayerWebSocket(webSocketID, out var webSocket))
             {
                 Logger.WriteLine($"Sending command to client {webSocketID}: {serializedCommand}");
                 webSocket.Send(serializedCommand);
@@ -74,8 +75,7 @@ namespace AssettoCorsaCommandsServer
         {
             var serializedCommand = command.Serialize();
         
-            var acUserManager = CommandsServerUserManager.Instance;
-            if (acUserManager.TryGetPlayerWebSocket(webSocketID, out var webSocket))
+            if (UserManager.TryGetPlayerWebSocket(webSocketID, out var webSocket))
             {
                 Logger.WriteLine($"Sending command to client {webSocketID}: {serializedCommand}");
                 webSocket.SendAsync(serializedCommand, null);
