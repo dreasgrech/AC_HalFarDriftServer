@@ -494,7 +494,11 @@ end
 
 ac.log("QueryString: " .. queryString)
 
-local url = string.format("ws://127.0.0.1/DriftServer?%s", queryString)
+local webSocketServerProtocol = "ws"
+-- local webSocketServerAddress = "127.0.0.1"
+local webSocketServerAddress = "5.135.137.227"
+
+local url = string.format("%s://%s/DriftServer?%s", webSocketServerProtocol, webSocketServerAddress, queryString)
 
 ---@type web.SocketParams
 local socketParams = {
