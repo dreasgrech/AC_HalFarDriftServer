@@ -2,6 +2,7 @@
 local WEBSOCKET_SERVER_PROTOCOL = "ws"
 local WEBSOCKET_SERVER_HOST = "127.0.0.1"
 --local WEBSOCKET_SERVER_HOST = "5.135.137.227"
+local WEBSOCKET_SERVER_ENDPOINT = "DriftServer"
 
 ---@enum SERVER_COMMAND_TYPE
 local SERVER_COMMAND_TYPE = {
@@ -286,10 +287,6 @@ end)()
 StartingLights.turnOff()
 -- StartingLights.startEffect(StartingLights.EFFECTS.StartCountdown)
 
-function script.update(dt)
-  StartingLights.update(dt)
-end
-
 local showIntro = function()
 	ui.modalDialog('From online script!', function()
     ui.textColored('This modal was created from a script downloaded from the server.', rgbm(1, 0, 0, 1))
@@ -374,7 +371,7 @@ end
 
 ac.log("QueryString: " .. queryString)
 
-local WEBSOCKET_SERVER_ADDRESS = string.format("%s://%s/DriftServer?%s", WEBSOCKET_SERVER_PROTOCOL, WEBSOCKET_SERVER_HOST, queryString)
+local WEBSOCKET_SERVER_ADDRESS = string.format("%s://%s/%s?%s", WEBSOCKET_SERVER_PROTOCOL, WEBSOCKET_SERVER_HOST, WEBSOCKET_SERVER_ENDPOINT, queryString)
 
 ---@type web.SocketParams
 local socketParams = {
@@ -395,3 +392,7 @@ local socketHeaders = nil
 local socket = web.socket(WEBSOCKET_SERVER_ADDRESS, socketHeaders, serverDataCallback, socketParams)
 
 socket("hello from the client")
+
+function script.update(dt)
+  StartingLights.update(dt)
+end
