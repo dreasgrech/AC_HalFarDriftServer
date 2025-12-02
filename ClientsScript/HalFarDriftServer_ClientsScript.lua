@@ -369,9 +369,11 @@ for paramName, paramValue in pairs(queryStringParams) do
   end
 end
 
-ac.log("QueryString: " .. queryString)
+-- ac.log("QueryString: " .. queryString)
 
 local WEBSOCKET_SERVER_ADDRESS = string.format("%s://%s/%s?%s", WEBSOCKET_SERVER_PROTOCOL, WEBSOCKET_SERVER_HOST, WEBSOCKET_SERVER_ENDPOINT, queryString)
+
+ac.log(string.format("Connecting to WebSocket URL: %s", WEBSOCKET_SERVER_ADDRESS))
 
 ---@type web.SocketParams
 local socketParams = {
@@ -385,14 +387,117 @@ local socketParams = {
     ac.log('Socket error: ' .. err)
   end
 }
-
-ac.log(string.format("Connecting to WebSocket URL: %s", WEBSOCKET_SERVER_ADDRESS))
-
 local socketHeaders = nil
 local socket = web.socket(WEBSOCKET_SERVER_ADDRESS, socketHeaders, serverDataCallback, socketParams)
 
 socket("hello from the client")
 
+local ParticleEffectsManager = (function()
+  local WINNING_SPARKS_COLOR = rgbm(0.5, 0.5, 0.5, 0.5)
+  local WINNING_SPARKS_LIFE = 4
+  local WINNING_SPARKS_SIZE = 0.2
+  local WINNING_SPARKS_DIRECTION_SPREAD = 1
+  local WINNING_SPARKS_POSITION_SPREAD = 0.2
+
+  local WINNING_SPARKS_VELOCITY = vec3(100, 100, 100)
+  local WINNING_SPARKS_AMOUNT = 500
+
+  local WINNING_SPARKS_POSITIONS = {
+    vec3(-21.8, 0.893, -17.3),
+    vec3(-21.69, 0.896, -14.17),
+    vec3(-21.9, 0.904, -8.63),
+    vec3(-21.9, 0.907, -5.81),
+    vec3(-22.1, 0.908, 1.27),
+    vec3(-22, 0.908, -2.78)
+  }
+
+  local WINNING_SPARKS_COLORS = {
+    rgbm(1, 0, 0, 0.5),
+    rgbm(0, 1, 0, 0.5),
+    rgbm(0, 0, 1, 0.5),
+    rgbm(1, 1, 0, 0.5),
+    rgbm(1, 0, 1, 0.5),
+    rgbm(0, 1, 1, 0.5)
+  }
+
+  -- ---@type ac.Particles.Sparks[]
+  -- ---@type ac.Particles.Flame[]
+  ---@type ac.Particles.Smoke[]
+  local winningSparks = {}
+  for i, pos in ipairs(WINNING_SPARKS_POSITIONS) do
+    -- winningSparks[i] = ac.Particles.Sparks( {
+    --     -- color = WINNING_SPARKS_COLOR,
+    --     color = WINNING_SPARKS_COLORS[i],
+    --     life = WINNING_SPARKS_LIFE,
+    --     size = WINNING_SPARKS_SIZE,
+    --     directionSpread = WINNING_SPARKS_DIRECTION_SPREAD,
+    --     positionSpread = WINNING_SPARKS_POSITION_SPREAD
+    -- })
+    -- winningSparks[i] = ac.Particles.Flame( {
+    --     color = WINNING_SPARKS_COLORS[i],
+    --     size = WINNING_SPARKS_SIZE,
+    --     temperatureMultiplier = 2.0,
+    --     flameIntensity = 5.0,
+    -- })
+    winningSparks[i] = ac.Particles.Smoke( {
+        color = WINNING_SPARKS_COLORS[i],
+        colorConsistency = 0.5,
+        thickness = 10.0,
+        life = 10.0,
+        size = WINNING_SPARKS_SIZE,
+        spreadK = 10,
+        growK = 10,
+        targetYVelocity = 50.0,
+    })
+  end
+
+  local winningSparksEffectsActive = false
+
+  local winningSparksCurrentVelocity = vec3(0, 100, 100)
+
+  local rotationSpeedDegreesPerSecond = 10.0
+
+  return {
+    update = function(dt)
+      if winningSparksEffectsActive then
+        for i, sparkEffect in ipairs(winningSparks) do
+
+          -- rotate the velocity vector around X and Z axes
+          local angleRadians = math.rad(rotationSpeedDegreesPerSecond * dt)
+          -- only use simple math, no helper functions
+          local cosAngle = math.cos(angleRadians)
+          local sinAngle = math.sin(angleRadians)
+          local v = winningSparksCurrentVelocity
+          -- rotate around X
+          local y1 = v.y * cosAngle - v.z * sinAngle
+          local z1 = v.y * sinAngle + v.z * cosAngle
+          v.y = y1
+          v.z = z1
+          -- rotate around Z
+          local x2 = v.x * cosAngle - v.y * sinAngle
+          local y2 = v.x * sinAngle + v.y * cosAngle
+          v.x = x2
+          v.y = y2  
+          winningSparksCurrentVelocity = v
+
+
+          -- sparkEffect:emit(WINNING_SPARKS_POSITIONS[i], WINNING_SPARKS_VELOCITY, WINNING_SPARKS_AMOUNT)
+          sparkEffect:emit(WINNING_SPARKS_POSITIONS[i], winningSparksCurrentVelocity, WINNING_SPARKS_AMOUNT)
+        end
+      end
+    end,
+    toggleWinningSparksEffect = function(start)
+      ac.log('Starting winning sparks effect')
+
+      winningSparksEffectsActive = start
+    end
+  }
+
+end)()
+
 function script.update(dt)
   StartingLights.update(dt)
+  ParticleEffectsManager.update(dt)
 end
+
+ParticleEffectsManager.toggleWinningSparksEffect(true)
