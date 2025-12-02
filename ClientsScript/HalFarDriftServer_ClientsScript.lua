@@ -6,6 +6,23 @@ local SERVER_COMMAND_TYPE = {
   StartCountdownTimer = 2
 }
 
+local ParticlesSparks = ac.Particles.Sparks( {
+    color = rgbm(0.5, 0.5, 0.5, 0.5),
+    life = 4,
+    size = 0.5,
+    directionSpread = 1,
+    positionSpread = 0.2
+})
+
+--[===[
+-- later in script.update() or something
+ParticlesSparks.life = 100
+--ParticlesSparks.size = 0.2
+--ParticlesSparks.directionSpread = 1
+--ParticlesSparks.positionSpread = 0.2
+ParticlesSparks:emit(car.position, velocitityVec3, amountF)
+--]===]
+
 
 -- local drawTimer = function ()
   -- ui.drawText('From script', vec2(400, 400), rgbm(1, 0, 0, 1))
@@ -64,6 +81,7 @@ local StartingLights = (function()
 
   local startlightsMeshes = ac.findMeshes('{ Cube.005_SUB1, Cube.006_SUB1, Cube.007_SUB1, Cube.008_SUB1 }')
   startlightsMeshes:setMaterialProperty('ksAlphaRef', -193) -- value from ext_config file
+-- startlightsMeshes:ensureUniqueMaterials()
 
   local setColor = function(color)
     currentColor = color
@@ -265,89 +283,7 @@ end)()
 StartingLights.turnOff()
 -- StartingLights.startEffect(StartingLights.EFFECTS.StartCountdown)
 
----@enum COUNTDOWN_TIMER_STATE
-local COUNTDOWN_TIMER_STATE = {
-  Inactive = 0,
-  Red = 1,
-  Yellow = 2,
-  Green = 3
-}
-
-local COUNTDOWN_TIMER_GAP_BETWEEN_STATES_SECONDS = 2.0
-local countdownTimerState = COUNTDOWN_TIMER_STATE.Inactive
-local countdownTimerStartTime = 0.0
-local countdownTimerCurrentStateEnterTimeSeconds = 0.0
-
---[===[
--- local startlightsMeshes = ac.findMeshes('material:fresnel4')
-local startlightsMeshes = ac.findMeshes('{ Cube.005_SUB1, Cube.006_SUB1, Cube.007_SUB1, Cube.008_SUB1 }')
-
--- make sure we don’t affect other things using the same material
--- startlightsMeshes:ensureUniqueMaterials()
-
--- values from config file:
-startlightsMeshes:setMaterialProperty('ksAlphaRef', -193)
-
-local beforeChange = startlightsMeshes:getMaterialPropertyValue('ksEmissive')
--- startlightsMeshes:setMaterialProperty('ksEmissive', rgbm(0, 0, 255, 0.5))
--- startlightsMeshes:setMaterialProperty('ksEmissive', vec3(255,192,203))
-startlightsMeshes:setMaterialProperty('ksEmissive', vec3(0,255,0))
-local afterChange = startlightsMeshes:getMaterialPropertyValue('ksEmissive')
-
-ac.log(string.format('Found %d startlight meshes. beforeChange: %s, afterChange: %s', #startlightsMeshes, tostring(beforeChange), tostring(afterChange)))
---]===]
-
----@type table<COUNTDOWN_TIMER_STATE, fun(currentTimeSeconds: number)>
-local countdownTimerStateMachine = {
-  [COUNTDOWN_TIMER_STATE.Inactive] = function(currentTimeSeconds)
-  end,
-  [COUNTDOWN_TIMER_STATE.Red] = function(currentTimeSeconds)
-    if currentTimeSeconds - countdownTimerCurrentStateEnterTimeSeconds >= COUNTDOWN_TIMER_GAP_BETWEEN_STATES_SECONDS then
-      ac.log(string.format('Countdown Timer State changing to Yellow. currentTimeSeconds: %f, stateEnterTime: %f', currentTimeSeconds, countdownTimerCurrentStateEnterTimeSeconds))
-      countdownTimerState = COUNTDOWN_TIMER_STATE.Yellow
-      countdownTimerCurrentStateEnterTimeSeconds = currentTimeSeconds
-    end
-  end,
-  [COUNTDOWN_TIMER_STATE.Yellow] = function(currentTimeSeconds)
-    if currentTimeSeconds - countdownTimerCurrentStateEnterTimeSeconds >= COUNTDOWN_TIMER_GAP_BETWEEN_STATES_SECONDS then
-      ac.log(string.format('Countdown Timer State changing to Green. currentTimeSeconds: %f, stateEnterTime: %f', currentTimeSeconds, countdownTimerCurrentStateEnterTimeSeconds))
-      countdownTimerState = COUNTDOWN_TIMER_STATE.Green
-      countdownTimerCurrentStateEnterTimeSeconds = currentTimeSeconds
-    end
-  end,
-  [COUNTDOWN_TIMER_STATE.Green] = function(currentTimeSeconds)
-    if currentTimeSeconds - countdownTimerCurrentStateEnterTimeSeconds >= COUNTDOWN_TIMER_GAP_BETWEEN_STATES_SECONDS then
-      ac.log(string.format('Countdown Timer State changing to Inactive. currentTimeSeconds: %f, stateEnterTime: %f', currentTimeSeconds, countdownTimerCurrentStateEnterTimeSeconds))
-      countdownTimerState = COUNTDOWN_TIMER_STATE.Inactive
-      countdownTimerCurrentStateEnterTimeSeconds = currentTimeSeconds
-    end
-  end
-}
-
----@type table<COUNTDOWN_TIMER_STATE, fun()>
-local countdownTimerStateMachine_UI = {
-  [COUNTDOWN_TIMER_STATE.Red] = function()
-    local windowSize = ui.windowSize()
-    ui.drawCircleFilled(vec2(windowSize.x*0.5, windowSize.y*0.25), 100, rgbm(1, 0, 0, 1), 24)
-  end,
-  [COUNTDOWN_TIMER_STATE.Yellow] = function()
-    local windowSize = ui.windowSize()
-    ui.drawCircleFilled(vec2(windowSize.x*0.5, windowSize.y*0.5), 100, rgbm(1, 1, 0, 1), 24)
-  end,
-  [COUNTDOWN_TIMER_STATE.Green] = function()
-    local windowSize = ui.windowSize()
-    ui.drawCircleFilled(vec2(windowSize.x*0.5, windowSize.y*0.75), 100, rgbm(0, 1, 0, 1), 24)
-  end
-}
-
 function script.update(dt)
-    -- ac.log('From script')
-  if countdownTimerState ~= COUNTDOWN_TIMER_STATE.Inactive then 
-    local currentTimeSeconds = ac.getSim().time * 0.001
-    local stateMachineFunction = countdownTimerStateMachine[countdownTimerState]
-    stateMachineFunction(currentTimeSeconds)
-  end
-
   StartingLights.update(dt)
 end
 
@@ -355,9 +291,6 @@ local showIntro = function()
 	ui.modalDialog('From online script!', function()
     ui.textColored('This modal was created from a script downloaded from the server.', rgbm(1, 0, 0, 1))
     ui.newLine()
---     if ui.modernButton('Copy', vec2(110, 40)) then
---       ac.setClipboardText('yes') 
---     end
     ui.sameLine()
     if ui.modernButton('Close', vec2(120, 40)) then
       return true
@@ -367,33 +300,10 @@ local showIntro = function()
   end, true)
 end
 
-local startCountdownTimer = function()
-  countdownTimerState = COUNTDOWN_TIMER_STATE.Red
-  local currentTimeSeconds = ac.getSim().time * 0.001
-
-  ac.log(string.format('Starting Countdown Timer at time: %f seconds', currentTimeSeconds))
-  countdownTimerCurrentStateEnterTimeSeconds = currentTimeSeconds
-  countdownTimerStartTime = currentTimeSeconds
-end
-
-local drawDreasTimer = function()
-  -- local windowSize = ui.windowSize()
-  -- ui.drawCircleFilled(vec2(windowSize.x*0.5, windowSize.y*0.25), 100, rgbm(1, 0, 0, 1), 24)
-  -- ui.drawCircleFilled(vec2(windowSize.x*0.5, windowSize.y*0.5), 100, rgbm(1, 1, 0, 1), 24)
-  -- ui.drawCircleFilled(vec2(windowSize.x*0.5, windowSize.y*0.75), 100, rgbm(0, 1, 0, 1), 24)
-
-    local stateMachineFunction_UI = countdownTimerStateMachine_UI[countdownTimerState]
-    if stateMachineFunction_UI then
-      stateMachineFunction_UI()
-    end
-end
-
+--[===[
 script.drawUI = function()
-  -- drawTimer()
-  drawDreasTimer()
 end
-
--- startCountdownTimer()
+--]===]
 
 local messageHandlers = {
   [SERVER_COMMAND_TYPE.ShowWelcomeMessage] = function(messageObject)
@@ -404,8 +314,14 @@ local messageHandlers = {
   [SERVER_COMMAND_TYPE.StartCountdownTimer] = function(messageObject)
     ac.log(string.format('Handling StartCountdownTimer command from server'))
 
-    -- startCountdownTimer()
     StartingLights.startEffect(StartingLights.EFFECTS.StartCountdown)
+
+
+    ParticlesSparks.life = 1000
+    --ParticlesSparks.size = 0.2
+    --ParticlesSparks.directionSpread = 1
+    --ParticlesSparks.positionSpread = 0.2
+    ParticlesSparks:emit(ac.getCar(0).position, vec3(100, 100, 100), 500)
   end
 }
 
@@ -428,44 +344,6 @@ local serverDataCallback = function(data)
   end
 end
 
---[===[
-SessionID: 0-based index of entry list used by the player;
-SteamID: player’s Steam ID;
-CarID: name of the user’s car folder;
-CarSkinID: name of the user’s skin folder;
-CSPBuildID: CSP build number;
-ServerIP: IP used to connect to the server;
-ServerName: server name;
-ServerHTTPPort: server HTTP port;
-ServerTCPPort: server TCP port;
-ServerUDPPort: server UDP port;
---]===]
-
---[===[
-local cspQueryStringParams = {
-  "SessionID",
-  "SteamID",
-  "CarID",
-  "CarSkinID",
-  "CSPBuildID",
-  "ServerIP",
-  "ServerName",
-  "ServerHTTPPort",
-  "ServerTCPPort",
-  "ServerUDPPort"
-}
-
--- build querystring
-local queryString = ""
-for i, paramName in ipairs(cspQueryStringParams) do
-  local keyValue = string.format("%s={%s}", paramName, paramName)
-  if queryString == "" then
-    queryString = "?" .. keyValue
-  else
-    queryString = string.format("%s&%s", queryString, keyValue)
-  end
-end
---]===]
 
 local playerCar = ac.getCar(0)
 local playerCarSessionID = playerCar.sessionID
@@ -491,12 +369,11 @@ for paramName, paramValue in pairs(queryStringParams) do
   end
 end
 
-
 ac.log("QueryString: " .. queryString)
 
 local webSocketServerProtocol = "ws"
--- local webSocketServerAddress = "127.0.0.1"
-local webSocketServerAddress = "5.135.137.227"
+local webSocketServerAddress = "127.0.0.1"
+--local webSocketServerAddress = "5.135.137.227"
 
 local url = string.format("%s://%s/DriftServer?%s", webSocketServerProtocol, webSocketServerAddress, queryString)
 
