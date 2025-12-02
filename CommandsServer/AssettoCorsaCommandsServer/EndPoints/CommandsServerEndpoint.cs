@@ -19,10 +19,11 @@ internal class CommandsServerEndpoint : WebSocketBehavior
         {
             var logger = AssettoCorsaCommandsServer.Logger;
             
-            logger.WriteLine("New client connected.");
+            // logger.WriteLine("New client connected.");
 
             var currentWebSocketContext = Context;
             var currentQueryStringKeyValueCollection = currentWebSocketContext.QueryString;
+            // build the querystring into one string
             var allKeys = currentQueryStringKeyValueCollection.AllKeys;
             var queryStringBuilder = new StringBuilder( /*capacity*/);
             foreach (var queryStringKey in allKeys)
@@ -32,10 +33,9 @@ internal class CommandsServerEndpoint : WebSocketBehavior
                 queryStringBuilder.Append($"{queryStringKey}={queryStringValue}&");
             }
 
-            // build the querystring into one string
-            logger.WriteLine($"Client QueryString: {queryStringBuilder}");
+            // logger.WriteLine($"Client QueryString: {queryStringBuilder}");
 
-
+            /*
             var sessions = Sessions.Sessions.ToArray();
             logger.WriteLine($"Current active sessions count: {sessions.Length}");
             foreach (var webSocketSession in sessions)
@@ -46,9 +46,9 @@ internal class CommandsServerEndpoint : WebSocketBehavior
                 var startTime = webSocketSession.StartTime;
                 var state = webSocketSession.State;
 
-                logger.WriteLine(
-                    $"Session Info: ID = {id}, Protocol = {protocol}, StartTime = {startTime}, State = {state}");
+                logger.WriteLine($"Session Info: ID = {id}, Protocol = {protocol}, StartTime = {startTime}, State = {state}");
             }
+            */
 
             var sessionID = Convert.ToInt16(currentQueryStringKeyValueCollection["SessionID"]);
             var playerName = currentQueryStringKeyValueCollection["DriverName"];
@@ -63,7 +63,7 @@ internal class CommandsServerEndpoint : WebSocketBehavior
             //     logger.WriteLine($"Sent async message, success: {b}");
             // });
 
-            logger.WriteLine($"(OnOpen) WebSocket Session ID: {webSocketID}");
+            logger.WriteLine($"(OnOpen) New client connected: ID = {webSocketID}, PlayerName = {playerName}, PlayerCarID = {playerCarID}, SessionID = {sessionID}.  QueryString: {queryStringBuilder}");
             
             // ServerCommandsManager.Instance.SendAsyncCommandToClient(webSocketID, new ShowWelcomeMessageServerCommand("This is my welcome message!  Fidelio**."));
             
@@ -75,6 +75,7 @@ internal class CommandsServerEndpoint : WebSocketBehavior
     {
         lock (LockObject)
         {
+            /*
             var dataString = e.Data;
             var isBinary = e.IsBinary;
             var isPing = e.IsPing;
@@ -84,13 +85,13 @@ internal class CommandsServerEndpoint : WebSocketBehavior
             var currentWebSocketContext = Context;
             //currentWebSocketContext.WebSocket.
             var currentWebSocketContextUser = currentWebSocketContext.User;
-            //currentWebSocketContextUser.
             var userEndPoint = currentWebSocketContext.UserEndPoint;
             var ipAddress = userEndPoint.Address.ToString();
 
-            AssettoCorsaCommandsServer.Logger.WriteLine($"Message received: ID = {this.ID}, IP = {ipAddress}, Data = {dataString}, Data Length = {dataString.Length}, IsBinary = {isBinary}, IsPing = {isPing}, IsText = {isText}, RawData Length = {rawData.Length}");
+            // AssettoCorsaCommandsServer.Logger.WriteLine($"Message received: ID = {this.ID}, IP = {ipAddress}, Data = {dataString}, Data Length = {dataString.Length}, IsBinary = {isBinary}, IsPing = {isPing}, IsText = {isText}, RawData Length = {rawData.Length}");
 
             // Send("Message received, thank you!");
+            */
             
             AssettoCorsaCommandsServer.EndpointOperations.OnMessage(e);
         }

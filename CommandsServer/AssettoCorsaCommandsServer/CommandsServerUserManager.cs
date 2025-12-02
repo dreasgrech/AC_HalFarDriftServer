@@ -69,7 +69,7 @@ public class CommandsServerUserManager
             playersName[webSocketID] = acPlayerName;
             playersCarName[webSocketID] = acPlayerCarName;
             
-            logger.WriteLine($"Added player.  WebSocketID: {webSocketID}, SessionCarID: {acSessionCarID}, PlayerName: {acPlayerName}, PlayerCarName: {acPlayerCarName}");
+            // logger.WriteLine($"Added player.  WebSocketID: {webSocketID}, SessionCarID: {acSessionCarID}, PlayerName: {acPlayerName}, PlayerCarName: {acPlayerCarName}");
 
             OnPlayerAdded?.Invoke(this, new PlayerAddedEventArgs(webSocketID));
         }
@@ -139,7 +139,7 @@ public class CommandsServerUserManager
             playersName.Remove(webSocketID);
             playersCarName.Remove(webSocketID);
             
-            logger.WriteLine($"Removed player.  WebSocketID: {webSocketID}");
+            // logger.WriteLine($"Removed player.  WebSocketID: {webSocketID}");
 
             OnPlayerRemoved?.Invoke(this, new PlayerRemovedEventArgs(webSocketID));
         }

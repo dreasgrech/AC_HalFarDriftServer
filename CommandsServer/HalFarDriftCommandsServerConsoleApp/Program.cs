@@ -1,4 +1,5 @@
 ﻿using HalFarDriftCommandsServer.ServerCommands;
+using WebSocketSharp;
 
 namespace HalFarDriftCommandsServerConsoleApp;
 
@@ -8,11 +9,12 @@ public class Program
     {
         var logger = new ConsoleLogger();
         var serverAddress = "127.0.0.1";
+        var logLevel = LogLevel.Debug;
         // var commandsServer = new CommandsServer(logger, serverAddress);
         // commandsServer.StartServer();
 
         var driftCommandsServer = new HalFarDriftCommandsServer.HalFarDriftCommandsServer(logger);
-        var serverStarted = driftCommandsServer.StartServer("ws", serverAddress);
+        var serverStarted = driftCommandsServer.StartServer("ws", serverAddress, logLevel);
 
         var commandsServerUserManager = driftCommandsServer.CommandsServerUserManager;
 

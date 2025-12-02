@@ -1,28 +1,39 @@
 ﻿using HalFarDriftCommandsServer;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
+using WebSocketSharp;
 
 namespace HalFarDriftCommandsServerWinFormsApp
 {
     public partial class CommandsServerManagerWindow : Form
     {
-        private System.Windows.Forms.Timer serverStatusTimer;
+        private readonly System.Windows.Forms.Timer serverStatusTimer;
 
-        HalFarDriftCommandsServer.HalFarDriftCommandsServer driftCommandsServer;
+        private readonly HalFarDriftCommandsServer.HalFarDriftCommandsServer driftCommandsServer;
+        private readonly HalFarDriftCommandsServerWinFormsManager halFarDriftCommandsServerWinFormsManager;
+        private readonly HalFarDriftCommandsServerWinFormsLogger logger;
+        
 
         private bool serverRunning;
 
         private readonly Dictionary<string, ListViewItem> connectedPlayersListViewItems = new Dictionary<string, ListViewItem>(EqualityComparer<string>.Default);
+
 
         public CommandsServerManagerWindow()
         {
             InitializeComponent();
 
             webSocketServerProtocolComboBox.SelectedIndex = 0;
+            var logLevelNames = Enum.GetNames(typeof(LogLevel)).ToArray();
+            webSocketServerLogLevel.Items.AddRange(logLevelNames);
+            webSocketServerLogLevel.SelectedIndex = (int)LogLevel.Error;
+            webSocketServerLogLevel.SelectedIndexChanged += webSocketServerLogLevel_SelectedIndexChanged; 
             
-            HalFarDriftCommandsServerWinFormsManager.Initialize(LogTextBox);
-            driftCommandsServer = HalFarDriftCommandsServerWinFormsManager.driftCommandsServer;
+            halFarDriftCommandsServerWinFormsManager = new HalFarDriftCommandsServerWinFormsManager(LogTextBox);
+            driftCommandsServer = halFarDriftCommandsServerWinFormsManager.driftCommandsServer;
+            logger = halFarDriftCommandsServerWinFormsManager.logger;
 
             var commandsServerUserManager = driftCommandsServer.CommandsServerUserManager;
             commandsServerUserManager.OnPlayerAdded += CommandsServerUserManager_OnPlayerAdded;
@@ -63,7 +74,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
         {
             var playerWebSocketID = e.PlayerWebSocketID;
 
-            var commandsServerUserManager = HalFarDriftCommandsServerWinFormsManager.CommandsServerUserManager;
+            var commandsServerUserManager = halFarDriftCommandsServerWinFormsManager.CommandsServerUserManager;
             var listViewItem = new ListViewItem(playerWebSocketID);
             commandsServerUserManager.TryGetPlayerName(playerWebSocketID, out var playerName);
             commandsServerUserManager.TryGetPlayerSessionID(playerWebSocketID, out var playerSessionID);
@@ -107,7 +118,11 @@ namespace HalFarDriftCommandsServerWinFormsApp
         {
             if (serverRunning)
             {
-                var serverStarted = HalFarDriftCommandsServerWinFormsManager.StopServer();
+                var wasServerStopped = halFarDriftCommandsServerWinFormsManager.StopServer();
+                if (!wasServerStopped)
+                {
+                    logger.WriteLine($"Unable to stop server.");
+                }
             }
             else
             {
@@ -127,16 +142,27 @@ namespace HalFarDriftCommandsServerWinFormsApp
                         }
                         break;
                 }
-                ;
 
-                var serverStarted = HalFarDriftCommandsServerWinFormsManager.StartServer(webServerProtocol, serverHost);
+                var logLevelIndex = webSocketServerLogLevel.SelectedIndex;
+                var logLevel = (LogLevel)logLevelIndex;
+                var serverStarted = halFarDriftCommandsServerWinFormsManager.StartServer(webServerProtocol, serverHost, logLevel);
+                if (!serverStarted)
+                {
+                    logger.WriteLine($"Unable to start server at address: {webServerProtocol}://{serverHost}/{driftCommandsServer.endpointImplementation.EndpointName}");
+                }
             }
         }
 
         private void InitiateStartingLightsSequenceForAllButton_Click(object sender, EventArgs e)
         {
-            var driftCommandsServer = HalFarDriftCommandsServerWinFormsManager.driftCommandsServer;
             driftCommandsServer.SendStartStartingLightsInitiationSequenceToAll();
+        }
+
+        private void webSocketServerLogLevel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var selectedLogLevelIndex = webSocketServerLogLevel.SelectedIndex;
+            var selectedLogLevel = (LogLevel)selectedLogLevelIndex;
+            halFarDriftCommandsServerWinFormsManager.SetLogLevel(selectedLogLevel);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace AssettoCorsaCommandsServer
             UserManager = new CommandsServerUserManager(logger);
         }
         
-        public bool StartServer(string webSocketProtocol, string serverHost, ICommandsServerEndpointOperations operations)
+        public bool StartServer(string webSocketProtocol, string serverHost, ICommandsServerEndpointOperations operations, LogLevel logLevel)
         {
             if (ServerRunning)
             {
@@ -47,7 +47,7 @@ namespace AssettoCorsaCommandsServer
             var baseServerAddress = $"{webSocketProtocol}://{serverHost}";
             
             wssv = new WebSocketServer(baseServerAddress);
-            wssv.Log.Level = LogLevel.Trace;
+            wssv.Log.Level = logLevel;
             
             EndpointOperations = operations;
             CommandsServerUserManager = UserManager;
@@ -88,7 +88,7 @@ namespace AssettoCorsaCommandsServer
             }
             
             var serializedCommand = command.Serialize();
-            Logger.WriteLine($"Sending command to client {webSocketID}: {serializedCommand}");
+            // Logger.WriteLine($"Sending command to client {webSocketID}: {serializedCommand}");
             webSocket.Send(serializedCommand);
             return true;
         }
@@ -107,9 +107,21 @@ namespace AssettoCorsaCommandsServer
             }
             
             var serializedCommand = command.Serialize();
-            Logger.WriteLine($"Sending command to client {webSocketID}: {serializedCommand}");
+            // Logger.WriteLine($"Sending command to client {webSocketID}: {serializedCommand}");
             webSocket.SendAsync(serializedCommand, null);
             return true;
+        }
+        
+        public void SetLogLevel(LogLevel logLevel)
+        {
+            if (!ServerRunning)
+            {
+                Logger.WriteLine("Server is not running. Cannot set log level.");
+                return;
+            }
+            
+            wssv.Log.Level = logLevel;
+            Logger.WriteLine($"Log level set to: {logLevel}");
         }
 
         public bool StopServer()

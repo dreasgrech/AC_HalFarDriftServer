@@ -2,25 +2,30 @@
 
 namespace HalFarDriftCommandsServerWinFormsApp
 {
-    public static class HalFarDriftCommandsServerWinFormsManager
+    public class HalFarDriftCommandsServerWinFormsManager
     {
-        private static HalFarDriftCommandsServerWinFormsLogger logger;
-        public static HalFarDriftCommandsServer.HalFarDriftCommandsServer driftCommandsServer { get; private set; }
-        public static CommandsServerUserManager CommandsServerUserManager { get; private set; }
+        public HalFarDriftCommandsServerWinFormsLogger logger;
+        public HalFarDriftCommandsServer.HalFarDriftCommandsServer driftCommandsServer { get; private set; }
+        public CommandsServerUserManager CommandsServerUserManager { get; private set; }
         
-        public static void Initialize(System.Windows.Forms.TextBox logTextBox)
+        public  HalFarDriftCommandsServerWinFormsManager(System.Windows.Forms.TextBox logTextBox)
         {
             logger = new HalFarDriftCommandsServerWinFormsLogger(logTextBox);
             driftCommandsServer = new HalFarDriftCommandsServer.HalFarDriftCommandsServer(logger);
             CommandsServerUserManager = driftCommandsServer.CommandsServerUserManager;
         }
         
-        public static bool StartServer(string webSocketProtocol, string serverHost)
+        public bool StartServer(string webSocketProtocol, string serverHost, WebSocketSharp.LogLevel logLevel)
         {
-            return driftCommandsServer.StartServer(webSocketProtocol, serverHost);
+            return driftCommandsServer.StartServer(webSocketProtocol, serverHost, logLevel);
+        }
+        
+        public void SetLogLevel(WebSocketSharp.LogLevel logLevel)
+        {
+            driftCommandsServer.SetLogLevel(logLevel);
         }
 
-        public static bool StopServer()
+        public bool StopServer()
         {
             return driftCommandsServer.StopServer();
         }

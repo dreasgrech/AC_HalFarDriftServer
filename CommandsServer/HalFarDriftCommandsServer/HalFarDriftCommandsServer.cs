@@ -2,6 +2,7 @@
 using AssettoCorsaCommandsServer.Loggers;
 using AssettoCorsaCommandsServer.ServerCommands;
 using HalFarDriftCommandsServer.ServerCommands;
+using WebSocketSharp;
 
 namespace HalFarDriftCommandsServer;
 
@@ -15,7 +16,7 @@ public enum HalFarDriftServerCommandType
 public class HalFarDriftCommandsServer
 {
     private readonly AssettoCorsaCommandsServer.AssettoCorsaCommandsServer assettoCorsaCommandsServer;
-    private readonly DriftServerEndpointImplementation endpointImplementation;
+    public readonly DriftServerEndpointImplementation endpointImplementation;
     
     public CommandsServerUserManager CommandsServerUserManager { get; }
     public bool ServerRunning => assettoCorsaCommandsServer.ServerRunning;
@@ -31,9 +32,9 @@ public class HalFarDriftCommandsServer
         CommandsServerUserManager = assettoCorsaCommandsServer.UserManager;
     }
     
-    public bool StartServer(string webSocketProtocol, string serverHost)
+    public bool StartServer(string webSocketProtocol, string serverHost, LogLevel logLevel)
     {
-        return assettoCorsaCommandsServer.StartServer(webSocketProtocol, serverHost, endpointImplementation);
+        return assettoCorsaCommandsServer.StartServer(webSocketProtocol, serverHost, endpointImplementation, logLevel);
     }
 
     public bool SendAsyncCommandToClient(string webSocketID, ServerCommand command)
@@ -63,6 +64,11 @@ public class HalFarDriftCommandsServer
         }
         
         commandsServerLogger.WriteLine($"Sent StartStartingLightsInitiationSequence command to {sentToTotal} clients.");
+    }
+    
+    public void SetLogLevel(LogLevel logLevel)
+    {
+        assettoCorsaCommandsServer.SetLogLevel(logLevel);
     }
     
     public bool StopServer()
