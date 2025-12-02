@@ -1,4 +1,8 @@
 
+local WEBSOCKET_SERVER_PROTOCOL = "ws"
+local WEBSOCKET_SERVER_HOST = "127.0.0.1"
+--local WEBSOCKET_SERVER_HOST = "5.135.137.227"
+
 ---@enum SERVER_COMMAND_TYPE
 local SERVER_COMMAND_TYPE = {
   None = 0,
@@ -52,7 +56,6 @@ local StartingLights = (function()
     -- Gradient RGB sweep 0..255..0
     GradientRGB = 3,
     StartCountdown = 4
-
   }
 
   local AVAILABLE_COLOR_TYPES = {
@@ -347,13 +350,13 @@ end
 
 local playerCar = ac.getCar(0)
 local playerCarSessionID = playerCar.sessionID
-local carID = ac.getCarID(0)
+local playerCarID = ac.getCarID(0)
 -- local driverName = playerCar:driverName()
 local playerDriverName = ac.getDriverName(0)
 
 local queryStringParams = {
   SessionID = playerCarSessionID,
-  CarID = carID,
+  CarID = playerCarID,
   DriverName = playerDriverName
 }
 
@@ -371,11 +374,7 @@ end
 
 ac.log("QueryString: " .. queryString)
 
-local webSocketServerProtocol = "ws"
-local webSocketServerAddress = "127.0.0.1"
---local webSocketServerAddress = "5.135.137.227"
-
-local url = string.format("%s://%s/DriftServer?%s", webSocketServerProtocol, webSocketServerAddress, queryString)
+local WEBSOCKET_SERVER_ADDRESS = string.format("%s://%s/DriftServer?%s", WEBSOCKET_SERVER_PROTOCOL, WEBSOCKET_SERVER_HOST, queryString)
 
 ---@type web.SocketParams
 local socketParams = {
@@ -390,8 +389,9 @@ local socketParams = {
   end
 }
 
+ac.log(string.format("Connecting to WebSocket URL: %s", WEBSOCKET_SERVER_ADDRESS))
+
 local socketHeaders = nil
-ac.log(string.format("Connecting to WebSocket URL: %s", url))
-local socket = web.socket(url, socketHeaders, serverDataCallback, socketParams)
+local socket = web.socket(WEBSOCKET_SERVER_ADDRESS, socketHeaders, serverDataCallback, socketParams)
 
 socket("hello from the client")
