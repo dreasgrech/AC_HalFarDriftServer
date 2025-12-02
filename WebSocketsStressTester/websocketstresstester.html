@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WebSocket Stress-Test</title>
+</head>
+<body>
+  <h1>WebSocket Stress Tester</h1>
+  <div>
+    <label>WebSocket URL: <input id="wsUrl" value="ws://localhost:8080"></label><br>
+    <label># of clients: <input id="numClients" type="number" value="50"></label><br>
+    <label>Messages per client: <input id="msgsPerClient" type="number" value="10"></label><br>
+    <label>Interval (ms): <input id="intervalMs" type="number" value="1000"></label><br>
+    <button id="startBtn">Start Test</button>
+  </div>
+
+  <pre id="log" style="background:#f0f0f0; padding:10px; height:300px; overflow:auto;"></pre>
+
+<script>
+document.getElementById('startBtn').onclick = () => {
+  const url = document.getElementById('wsUrl').value;
+  const numClients = parseInt(document.getElementById('numClients').value, 10);
+  const msgsPerClient = parseInt(document.getElementById('msgsPerClient').value, 10);
+  const intervalMs = parseInt(document.getElementById('intervalMs').value, 10);
+
+  const logEl = document.getElementById('log');
+  let connected = 0;
+  let failed = 0;
+
+  function log(msg) {
+    logEl.textContent += msg + "\n";
+  }
+
+  function createClient(id) {
+    try {
+      const ws = new WebSocket(url);
+
+      ws.onopen = () => {
+        connected++;
+        log(`Client ${id} connected. (${connected}/${numClients})`);
+        // send messages
+        for (let i = 0; i < msgsPerClient; i++) {
+          setTimeout(() => {
+            if (ws.readyState === WebSocket.OPEN) {
+              const payload = JSON.stringify({ clientId: id, msg: `hello ${i}` });
+              ws.send(payload);
+              log(`Client ${id} → sent message ${i}`);
+            }
+          }, i * intervalMs);
+        }
+      };
+
+      ws.onmessage = (event) => {
+        log(`Client ${id} ← msg: ${event.data}`);
+      };
+
+      ws.onerror = (err) => {
+        failed++;
+        log(`Client ${id} ERROR`);
+      };
+
+      ws.onclose = (e) => {
+        log(`Client ${id} closed: code=${e.code}`);
+      };
+    } catch (e) {
+      failed++;
+      log(`Client ${id} failed to create WS: ${e}`);
+    }
+  }
+
+  for (let i = 0; i < numClients; i++) {
+    createClient(i);
+  }
+
+  // status reporting every 5 seconds
+  setInterval(() => {
+    log(`----- STATUS: connected ${connected}/${numClients}, failures ${failed} -----`);
+  }, 5000);
+};
+</script>
+</body>
+</html>
+
