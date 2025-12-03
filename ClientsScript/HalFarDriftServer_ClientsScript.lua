@@ -287,6 +287,259 @@ end)()
 StartingLights.turnOff()
 -- StartingLights.startEffect(StartingLights.EFFECTS.StartCountdown)
 
+local PARTICLE_EFFECTS_SEQUENCES = {
+  Far_LongStretch_OneByOne = 1,
+  Far_LongStretch_Winners = 2
+}
+
+local ParticleEffectsManager = (function()
+
+  local Far_LongStretch_OneByOne = (function()
+    local TIME_BETWEEN_STARTS_SECONDS = 0.5 -- The time between each start emmission
+    local DURATION_FOR_EACH_EFFECT_SECONDS = 3.0 -- how long each effect runs for
+
+    local EFFECT_LIFE = 4
+    local EFFECT_SIZE = 0.2
+    local EFFECT_DIRECTION_SPREAD = 1
+    local EFFECT_POSITION_SPREAD = 0.2
+    local EFFECT_VELOCITY = vec3(0, 100, 0)
+    local EFFECT_AMOUNT = 100
+
+    local positions = {
+      vec3(-21.8, 0.893, -17.3),
+      vec3(-21.69, 0.896, -14.17),
+      vec3(-21.9, 0.904, -8.63),
+      vec3(-21.9, 0.907, -5.81),
+      vec3(-22, 0.908, -2.78),
+      vec3(-22.1, 0.908, 1.27),
+    }
+
+--     local colors = {
+--       rgbm(1, 0, 0, 0.5),
+--       rgbm(0, 1, 0, 0.5),
+--       rgbm(0, 0, 1, 0.5),
+--       rgbm(1, 1, 0, 0.5),
+--       rgbm(1, 0, 1, 0.5),
+--       rgbm(0, 1, 1, 0.5)
+--     }
+
+    local colors = {
+      rgbm(1, 0, 0, 1),
+      rgbm(1, 0, 0, 1),
+      rgbm(1, 0, 0, 1),
+      rgbm(1, 1, 1, 1),
+      rgbm(1, 1, 1, 1),
+      rgbm(1, 1, 1, 1),
+    }
+
+    return {
+      create = function()
+        return (function()
+          local active = false
+          local timeSinceSequenceStart = 0.0
+          local nextIndexToStart = 1
+          local timeSinceLastEffectStart = 0.0
+
+          ---@type ac.Particles.Sparks[]
+          local effects = {}
+          for i, _ in ipairs(positions) do
+            effects[i] = ac.Particles.Sparks( {
+                color = colors[i],
+                life = EFFECT_LIFE,
+                size = EFFECT_SIZE,
+                directionSpread = EFFECT_DIRECTION_SPREAD,
+                positionSpread = EFFECT_POSITION_SPREAD
+            })
+          end
+
+          return {
+            start = function()
+              ac.log('Starting Far_LongStretch_OneByOne particle effect sequence')
+              timeSinceSequenceStart = 0.0
+
+              nextIndexToStart = 1
+              timeSinceLastEffectStart = TIME_BETWEEN_STARTS_SECONDS -- so that first effect starts immediately
+              active = true
+            end,
+            update = function(dt)
+              if not active then
+                return
+              end
+              timeSinceSequenceStart = timeSinceSequenceStart + dt
+              timeSinceLastEffectStart = timeSinceLastEffectStart + dt
+
+              -- check if we need to start the next effect
+              if timeSinceLastEffectStart >= TIME_BETWEEN_STARTS_SECONDS and nextIndexToStart <= #positions then
+                ac.log(string.format('Starting effect at index %d', nextIndexToStart))
+                nextIndexToStart = nextIndexToStart + 1
+                timeSinceLastEffectStart = 0.0
+              end
+
+              -- emit particles for all started effects
+              for i = 1, nextIndexToStart - 1 do
+                -- using the time since sequence start, determine if this effect should still be active
+                local effectStartTime = (i - 1) * TIME_BETWEEN_STARTS_SECONDS
+                local effectActive = timeSinceSequenceStart - effectStartTime < DURATION_FOR_EACH_EFFECT_SECONDS
+                if effectActive then
+                  local position = positions[i]
+                  local sparkEffect = effects[i]
+                  sparkEffect:emit(position, EFFECT_VELOCITY, EFFECT_AMOUNT)
+                end
+              end
+
+              -- check if the entire sequence is done
+              if timeSinceSequenceStart >= (#positions * TIME_BETWEEN_STARTS_SECONDS) + DURATION_FOR_EACH_EFFECT_SECONDS then
+                ac.log('Far_LongStretch_OneByOne particle effect sequence completed')
+                active = false
+              end
+            end
+          }
+        end)()
+
+      end
+    }
+
+    -- return {
+    --   start = function()
+    --     ac.log('Starting Far_LongStretch_OneByOne particle effect sequence')
+    --   end,
+    --   update = function(dt)
+    --   end
+    -- }
+  end)()
+
+  -- local effect = Far_LongStretch_OneByOne.create()
+
+
+  --[===[
+  local WINNING_SPARKS_COLOR = rgbm(0.5, 0.5, 0.5, 0.5)
+  local WINNING_SPARKS_LIFE = 4
+  local WINNING_SPARKS_SIZE = 0.2
+  local WINNING_SPARKS_DIRECTION_SPREAD = 1
+  local WINNING_SPARKS_POSITION_SPREAD = 0.2
+
+  local WINNING_SPARKS_VELOCITY = vec3(100, 100, 100)
+  local WINNING_SPARKS_AMOUNT = 500
+
+  local WINNING_SPARKS_POSITIONS = {
+    vec3(-21.8, 0.893, -17.3),
+    vec3(-21.69, 0.896, -14.17),
+    vec3(-21.9, 0.904, -8.63),
+    vec3(-21.9, 0.907, -5.81),
+    vec3(-22.1, 0.908, 1.27),
+    vec3(-22, 0.908, -2.78)
+  }
+
+  local WINNING_SPARKS_COLORS = {
+    rgbm(1, 0, 0, 0.5),
+    rgbm(0, 1, 0, 0.5),
+    rgbm(0, 0, 1, 0.5),
+    rgbm(1, 1, 0, 0.5),
+    rgbm(1, 0, 1, 0.5),
+    rgbm(0, 1, 1, 0.5)
+  }
+
+  ---@type ac.Particles.Sparks[]
+  -- ---@type ac.Particles.Flame[]
+  -- ---@type ac.Particles.Smoke[]
+  local winningSparks = {}
+  for i, pos in ipairs(WINNING_SPARKS_POSITIONS) do
+    winningSparks[i] = ac.Particles.Sparks( {
+        -- color = WINNING_SPARKS_COLOR,
+        color = WINNING_SPARKS_COLORS[i],
+        life = WINNING_SPARKS_LIFE,
+        size = WINNING_SPARKS_SIZE,
+        directionSpread = WINNING_SPARKS_DIRECTION_SPREAD,
+        positionSpread = WINNING_SPARKS_POSITION_SPREAD
+    })
+
+    -- winningSparks[i] = ac.Particles.Flame( {
+    --     color = WINNING_SPARKS_COLORS[i],
+    --     size = WINNING_SPARKS_SIZE,
+    --     temperatureMultiplier = 2.0,
+    --     flameIntensity = 5.0,
+    -- })
+
+   --  winningSparks[i] = ac.Particles.Smoke( {
+   --      color = WINNING_SPARKS_COLORS[i],
+   --      colorConsistency = 0.5,
+   --      thickness = 10.0,
+   --      life = 10.0,
+   --      size = WINNING_SPARKS_SIZE,
+   --      spreadK = 10,
+   --      growK = 10,
+   --      targetYVelocity = 50.0,
+   --  })
+  end
+
+  local winningSparksEffectsActive = false
+  local winningSparksCurrentVelocity = vec3(0, 100, 100)
+  local rotationSpeedDegreesPerSecond = 10.0
+  --]===]
+
+  local SEQUENCES_DEFINNITIONS = {
+    [PARTICLE_EFFECTS_SEQUENCES.Far_LongStretch_OneByOne] = Far_LongStretch_OneByOne
+    -- [PARTICLE_EFFECTS_SEQUENCES.Far_LongStretch_Winners] = Far_LongStretch_Winners
+  }
+
+  local activeEffectSequences = {}
+
+  return {
+    update = function(dt)
+      -- update all active effect sequences
+      for i, effectInstance in ipairs(activeEffectSequences) do
+        effectInstance.update(dt)
+      end
+
+  --[===[
+      if winningSparksEffectsActive then
+        for i, sparkEffect in ipairs(winningSparks) do
+
+          -- rotate the velocity vector around X and Z axes
+          local angleRadians = math.rad(rotationSpeedDegreesPerSecond * dt)
+          -- only use simple math, no helper functions
+          local cosAngle = math.cos(angleRadians)
+          local sinAngle = math.sin(angleRadians)
+          local v = winningSparksCurrentVelocity
+          -- rotate around X
+          local y1 = v.y * cosAngle - v.z * sinAngle
+          local z1 = v.y * sinAngle + v.z * cosAngle
+          v.y = y1
+          v.z = z1
+          -- rotate around Z
+          local x2 = v.x * cosAngle - v.y * sinAngle
+          local y2 = v.x * sinAngle + v.y * cosAngle
+          v.x = x2
+          v.y = y2  
+          winningSparksCurrentVelocity = v
+
+
+          -- sparkEffect:emit(WINNING_SPARKS_POSITIONS[i], WINNING_SPARKS_VELOCITY, WINNING_SPARKS_AMOUNT)
+          sparkEffect:emit(WINNING_SPARKS_POSITIONS[i], winningSparksCurrentVelocity, WINNING_SPARKS_AMOUNT)
+        end
+      end
+  --]===]
+    end,
+  --[===[
+    toggleWinningSparksEffect = function(start)
+      ac.log('Starting winning sparks effect')
+
+      winningSparksEffectsActive = start
+    end,
+  --]===]
+    startEffect = function (effectSequence)
+      ac.log(string.format('Starting particle effect sequence: %d', effectSequence))
+
+      local effectSequenceDefinition = SEQUENCES_DEFINNITIONS[effectSequence]
+      local effectInstance = effectSequenceDefinition.create()
+      effectInstance.start()
+      table.insert(activeEffectSequences, effectInstance)
+    end
+  }
+
+end)()
+
+
 local showIntro = function()
 	ui.modalDialog('From online script!', function()
     ui.textColored('This modal was created from a script downloaded from the server.', rgbm(1, 0, 0, 1))
@@ -315,13 +568,7 @@ local messageHandlers = {
     ac.log(string.format('Handling StartCountdownTimer command from server'))
 
     StartingLights.startEffect(StartingLights.EFFECTS.StartCountdown)
-
-
-    ParticlesSparks.life = 1000
-    --ParticlesSparks.size = 0.2
-    --ParticlesSparks.directionSpread = 1
-    --ParticlesSparks.positionSpread = 0.2
-    ParticlesSparks:emit(ac.getCar(0).position, vec3(100, 100, 100), 500)
+    ParticleEffectsManager.startEffect(PARTICLE_EFFECTS_SEQUENCES.Far_LongStretch_OneByOne)
   end
 }
 
@@ -392,112 +639,9 @@ local socket = web.socket(WEBSOCKET_SERVER_ADDRESS, socketHeaders, serverDataCal
 
 socket("hello from the client")
 
-local ParticleEffectsManager = (function()
-  local WINNING_SPARKS_COLOR = rgbm(0.5, 0.5, 0.5, 0.5)
-  local WINNING_SPARKS_LIFE = 4
-  local WINNING_SPARKS_SIZE = 0.2
-  local WINNING_SPARKS_DIRECTION_SPREAD = 1
-  local WINNING_SPARKS_POSITION_SPREAD = 0.2
-
-  local WINNING_SPARKS_VELOCITY = vec3(100, 100, 100)
-  local WINNING_SPARKS_AMOUNT = 500
-
-  local WINNING_SPARKS_POSITIONS = {
-    vec3(-21.8, 0.893, -17.3),
-    vec3(-21.69, 0.896, -14.17),
-    vec3(-21.9, 0.904, -8.63),
-    vec3(-21.9, 0.907, -5.81),
-    vec3(-22.1, 0.908, 1.27),
-    vec3(-22, 0.908, -2.78)
-  }
-
-  local WINNING_SPARKS_COLORS = {
-    rgbm(1, 0, 0, 0.5),
-    rgbm(0, 1, 0, 0.5),
-    rgbm(0, 0, 1, 0.5),
-    rgbm(1, 1, 0, 0.5),
-    rgbm(1, 0, 1, 0.5),
-    rgbm(0, 1, 1, 0.5)
-  }
-
-  -- ---@type ac.Particles.Sparks[]
-  -- ---@type ac.Particles.Flame[]
-  ---@type ac.Particles.Smoke[]
-  local winningSparks = {}
-  for i, pos in ipairs(WINNING_SPARKS_POSITIONS) do
-    -- winningSparks[i] = ac.Particles.Sparks( {
-    --     -- color = WINNING_SPARKS_COLOR,
-    --     color = WINNING_SPARKS_COLORS[i],
-    --     life = WINNING_SPARKS_LIFE,
-    --     size = WINNING_SPARKS_SIZE,
-    --     directionSpread = WINNING_SPARKS_DIRECTION_SPREAD,
-    --     positionSpread = WINNING_SPARKS_POSITION_SPREAD
-    -- })
-    -- winningSparks[i] = ac.Particles.Flame( {
-    --     color = WINNING_SPARKS_COLORS[i],
-    --     size = WINNING_SPARKS_SIZE,
-    --     temperatureMultiplier = 2.0,
-    --     flameIntensity = 5.0,
-    -- })
-    winningSparks[i] = ac.Particles.Smoke( {
-        color = WINNING_SPARKS_COLORS[i],
-        colorConsistency = 0.5,
-        thickness = 10.0,
-        life = 10.0,
-        size = WINNING_SPARKS_SIZE,
-        spreadK = 10,
-        growK = 10,
-        targetYVelocity = 50.0,
-    })
-  end
-
-  local winningSparksEffectsActive = false
-
-  local winningSparksCurrentVelocity = vec3(0, 100, 100)
-
-  local rotationSpeedDegreesPerSecond = 10.0
-
-  return {
-    update = function(dt)
-      if winningSparksEffectsActive then
-        for i, sparkEffect in ipairs(winningSparks) do
-
-          -- rotate the velocity vector around X and Z axes
-          local angleRadians = math.rad(rotationSpeedDegreesPerSecond * dt)
-          -- only use simple math, no helper functions
-          local cosAngle = math.cos(angleRadians)
-          local sinAngle = math.sin(angleRadians)
-          local v = winningSparksCurrentVelocity
-          -- rotate around X
-          local y1 = v.y * cosAngle - v.z * sinAngle
-          local z1 = v.y * sinAngle + v.z * cosAngle
-          v.y = y1
-          v.z = z1
-          -- rotate around Z
-          local x2 = v.x * cosAngle - v.y * sinAngle
-          local y2 = v.x * sinAngle + v.y * cosAngle
-          v.x = x2
-          v.y = y2  
-          winningSparksCurrentVelocity = v
-
-
-          -- sparkEffect:emit(WINNING_SPARKS_POSITIONS[i], WINNING_SPARKS_VELOCITY, WINNING_SPARKS_AMOUNT)
-          sparkEffect:emit(WINNING_SPARKS_POSITIONS[i], winningSparksCurrentVelocity, WINNING_SPARKS_AMOUNT)
-        end
-      end
-    end,
-    toggleWinningSparksEffect = function(start)
-      ac.log('Starting winning sparks effect')
-
-      winningSparksEffectsActive = start
-    end
-  }
-
-end)()
-
 function script.update(dt)
   StartingLights.update(dt)
   ParticleEffectsManager.update(dt)
 end
 
-ParticleEffectsManager.toggleWinningSparksEffect(true)
+-- ParticleEffectsManager.toggleWinningSparksEffect(true)
