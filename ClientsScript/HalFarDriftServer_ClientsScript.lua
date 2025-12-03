@@ -563,14 +563,22 @@ end
 --]===]
 
 local TIME_BETWEEN_PINGS_SECONDS = 10.0
+local MAX_TIME_TO_WAIT_FOR_PONG_SECONDS = 10.0
 local awaitingPongResponse = false
 local timeSinceLastPingSeconds = 0.0
+
+local TIME_BETWEEN_WEBSOCKET_RECONNECT_ATTEMPTS_SECONDS = 10.0
+local timeSinceLastWebSocketConnectAttemptSeconds = 0.0
+
+local connectedToWebSocketServer = false
 
 local messageHandlers = {
   [SERVER_COMMAND_TYPE.ShowWelcomeMessage] = function(messageObject)
     if messageObject ~= nil then
       ac.log(string.format('Handling ShowWelcomeMessage command from server: %s', tostring(messageObject.M)))
     end
+
+    connectedToWebSocketServer = true
 
     showIntro()
   end,
@@ -664,7 +672,8 @@ ac.log(string.format("Connecting to WebSocket URL: %s", WEBSOCKET_SERVER_ADDRESS
 
 ---@type web.SocketParams
 local socketParams = {
-  reconnect = true,
+  -- reconnect = true,
+  reconnect = false, -- false because we now handle reconnects manually
   -- encoding = 'json',
   encoding = 'utf8',
   onClose = function(reason)
@@ -680,8 +689,14 @@ local socketParams = {
 
 local socket;
 local connectToSocketServer = function()
-  local socketHeaders = nil
+  timeSinceLastWebSocketConnectAttemptSeconds = 0.0
+  timeSinceLastPingSeconds = 0.0
+  awaitingPongResponse = false
+  connectedToWebSocketServer = false
+
   ac.log(string.format("Connecting to WebSocket server at %s", WEBSOCKET_SERVER_ADDRESS))
+
+  local socketHeaders = nil
   socket = web.socket(WEBSOCKET_SERVER_ADDRESS, socketHeaders, serverDataCallback, socketParams)
 end
 connectToSocketServer()
@@ -690,22 +705,39 @@ socket("hello from the client")
 
 function script.update(dt)
   timeSinceLastPingSeconds = timeSinceLastPingSeconds + dt
+  timeSinceLastWebSocketConnectAttemptSeconds = timeSinceLastWebSocketConnectAttemptSeconds + dt
 
   StartingLights.update(dt)
   ParticleEffectsManager.update(dt)
 
   -- check if it's time to send a ping
-  if timeSinceLastPingSeconds >= TIME_BETWEEN_PINGS_SECONDS then
-    if not awaitingPongResponse then
-      ac.log('Sending Ping to server')
-      socket("p")
+  if connectedToWebSocketServer then
+    -- since we're connected to the server, check if it's time to send a ping
+    if timeSinceLastPingSeconds >= TIME_BETWEEN_PINGS_SECONDS then
+      -- if we're still awaiting a response from the last ping, we need to check if we timed out
+      if awaitingPongResponse then
+        -- check if we timed out waiting for the pong response
+        if timeSinceLastPingSeconds >= MAX_TIME_TO_WAIT_FOR_PONG_SECONDS then
+          -- check if we can try reconnecting the socket
+          if timeSinceLastWebSocketConnectAttemptSeconds >= TIME_BETWEEN_WEBSOCKET_RECONNECT_ATTEMPTS_SECONDS then
+            ac.log('Did not receive Pong response from server in time, reconnecting socket')
+            connectToSocketServer()
+          end
+        end
+      else
+        -- since we're not awaiting a pong response, we can send a new ping
+        socket("p")
 
-      timeSinceLastPingSeconds = 0.0
-      awaitingPongResponse = true
-    else
-      ac.log('Awaiting Pong response from server, not sending another Ping')
+        timeSinceLastPingSeconds = 0.0
+        awaitingPongResponse = true
+      end
+    end
+  else
+    -- ac.log('Not connected to WebSocket server')
+    -- since we're not connected to the server, check if we can try reconnecting now if enough time has passed since our last connect attempt
+    if timeSinceLastWebSocketConnectAttemptSeconds >= TIME_BETWEEN_WEBSOCKET_RECONNECT_ATTEMPTS_SECONDS then
+      ac.log('Enought time passed since last WebSocket connect attempt, reconnecting socket')
+      connectToSocketServer()
     end
   end
 end
-
--- ParticleEffectsManager.toggleWinningSparksEffect(true)
