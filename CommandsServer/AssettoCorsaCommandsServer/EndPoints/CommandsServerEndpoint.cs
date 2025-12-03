@@ -53,10 +53,11 @@ internal class CommandsServerEndpoint : WebSocketBehavior
             var sessionID = Convert.ToInt16(currentQueryStringKeyValueCollection["SessionID"]);
             var playerName = currentQueryStringKeyValueCollection["DriverName"];
             var playerCarID = currentQueryStringKeyValueCollection["CarID"];
+            var playerCSPVersion = currentQueryStringKeyValueCollection["CSP"];
 
             var webSocketID = this.ID;
             var webSocket = Context.WebSocket;
-            AssettoCorsaCommandsServer.CommandsServerUserManager.AddPlayer(webSocketID, webSocket, sessionID, playerName, playerCarID);
+            AssettoCorsaCommandsServer.CommandsServerUserManager.AddPlayer(webSocketID, webSocket, sessionID, playerName, playerCarID, playerCSPVersion);
 
             // SendAsync($"ACUserManagerPlayerID={acUserManagerPlayerID}", b =>
             // {

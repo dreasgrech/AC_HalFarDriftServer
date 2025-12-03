@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using WebSocketSharp;
 
@@ -17,6 +18,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
         
 
         private bool serverRunning;
+        private int connectedPlayersInListView;
 
         private readonly Dictionary<string, ListViewItem> connectedPlayersListViewItems = new Dictionary<string, ListViewItem>(EqualityComparer<string>.Default);
 
@@ -46,6 +48,14 @@ namespace HalFarDriftCommandsServerWinFormsApp
 
             serverStatusTimer.Tick += ServerStatusTimer_Tick;
             serverStatusTimer.Start();
+            
+            
+            /*****************/
+            // for (int i = 0; i < 20; i++)
+            // {
+            //     AddListViewItem(new ListViewItem("asdadasd"));
+            // }
+            /*****************/
         }
 
         private void ServerStatusTimer_Tick(object sender, EventArgs e)
@@ -75,14 +85,16 @@ namespace HalFarDriftCommandsServerWinFormsApp
             var playerWebSocketID = e.PlayerWebSocketID;
 
             var commandsServerUserManager = halFarDriftCommandsServerWinFormsManager.CommandsServerUserManager;
-            var listViewItem = new ListViewItem(playerWebSocketID);
             commandsServerUserManager.TryGetPlayerName(playerWebSocketID, out var playerName);
             commandsServerUserManager.TryGetPlayerSessionID(playerWebSocketID, out var playerSessionID);
             commandsServerUserManager.TryGetPlayerCarName(playerWebSocketID, out var playerCarName);
+            commandsServerUserManager.TryGetPlayerCSPVersion(playerWebSocketID, out var playerCSPVersion);
 
+            var listViewItem = new ListViewItem(playerWebSocketID);
             listViewItem.SubItems.Add(playerName);
-            listViewItem.SubItems.Add(playerSessionID.ToString());
             listViewItem.SubItems.Add(playerCarName);
+            listViewItem.SubItems.Add(playerCSPVersion);
+            listViewItem.SubItems.Add(playerSessionID.ToString());
 
             connectedPlayersListViewItems.Add(playerWebSocketID, listViewItem);
 
@@ -107,11 +119,20 @@ namespace HalFarDriftCommandsServerWinFormsApp
         private void AddListViewItem(ListViewItem listViewItem)
         {
             ConnectedPlayersListView.Items.Add(listViewItem);
+            Interlocked.Increment(ref connectedPlayersInListView);
+            UpdateConnectedPlayersStatus();
         }
 
         private void RemoveListViewItem(ListViewItem listViewItem)
         {
             ConnectedPlayersListView.Items.Remove(listViewItem);
+            Interlocked.Decrement(ref connectedPlayersInListView);
+            UpdateConnectedPlayersStatus();
+        }
+
+        private void UpdateConnectedPlayersStatus()
+        {
+            ConnectedPlayersLabel.Text = $"Connected Players: {connectedPlayersInListView}";
         }
 
         private void StartServerButton_Click(object sender, EventArgs e)

@@ -1,7 +1,7 @@
 
 local WEBSOCKET_SERVER_PROTOCOL = "ws"
---local WEBSOCKET_SERVER_HOST = "127.0.0.1"
-local WEBSOCKET_SERVER_HOST = "5.135.137.227"
+local WEBSOCKET_SERVER_HOST = "127.0.0.1"
+-- local WEBSOCKET_SERVER_HOST = "5.135.137.227"
 local WEBSOCKET_SERVER_ENDPOINT = "DriftServer"
 
 ---@enum SERVER_COMMAND_TYPE
@@ -610,10 +610,15 @@ local playerCarID = ac.getCarID(0)
 -- local driverName = playerCar:driverName()
 local playerDriverName = ac.getDriverName(0)
 
+local patchVersion = ac.getPatchVersion()
+local patchVersionCode = ac.getPatchVersionCode()
+ac.log(string.format("Player Car SessionID: %s, CarID: %s, DriverName: %s, PatchVersion: %s, PatchVersionCode: %s", tostring(playerCarSessionID), tostring(playerCarID), tostring(playerDriverName), tostring(patchVersion), tostring(patchVersionCode)))
+
 local queryStringParams = {
   SessionID = playerCarSessionID,
   CarID = playerCarID,
-  DriverName = playerDriverName
+  DriverName = playerDriverName,
+  CSP = string.format("%s (%s)", tostring(patchVersion), tostring(patchVersionCode))
 }
 
 -- build querystring

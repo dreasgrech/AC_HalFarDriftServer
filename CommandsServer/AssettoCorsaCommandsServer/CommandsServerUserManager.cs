@@ -32,6 +32,7 @@ public class CommandsServerUserManager
     private readonly Dictionary<string, string> playersName;
     private readonly Dictionary<string, int> playersSessionID;
     private readonly Dictionary<string, string> playersCarName;
+    private readonly Dictionary<string, string> playersCSPVersion;
     
     private readonly object lockObject = new();
 
@@ -50,9 +51,10 @@ public class CommandsServerUserManager
         playersSessionID = new Dictionary<string, int>();
         playersName = new Dictionary<string, string>();
         playersCarName = new Dictionary<string, string>();
+        playersCSPVersion = new Dictionary<string, string>();
     }
 
-    public void AddPlayer(string webSocketID, WebSocketSharp.WebSocket webSocket, int acSessionCarID, string acPlayerName, string acPlayerCarName)
+    public void AddPlayer(string webSocketID, WebSocketSharp.WebSocket webSocket, int acSessionCarID, string acPlayerName, string acPlayerCarName, string cspVersion)
     {
         lock (lockObject)
         {
@@ -68,6 +70,8 @@ public class CommandsServerUserManager
             playersSessionID[webSocketID] = acSessionCarID;
             playersName[webSocketID] = acPlayerName;
             playersCarName[webSocketID] = acPlayerCarName;
+            playersCSPVersion[webSocketID] = cspVersion;
+            
             
             // logger.WriteLine($"Added player.  WebSocketID: {webSocketID}, SessionCarID: {acSessionCarID}, PlayerName: {acPlayerName}, PlayerCarName: {acPlayerCarName}");
 
@@ -124,6 +128,14 @@ public class CommandsServerUserManager
         }
     }
     
+    public bool TryGetPlayerCSPVersion(string webSocketID, out string cspVersion)
+    {
+        lock (lockObject)
+        {
+            return playersCSPVersion.TryGetValue(webSocketID, out cspVersion);
+        }
+    }
+    
     public void RemovePlayer(string webSocketID)
     {
         lock (lockObject)
@@ -138,6 +150,7 @@ public class CommandsServerUserManager
             playersSessionID.Remove(webSocketID);
             playersName.Remove(webSocketID);
             playersCarName.Remove(webSocketID);
+            playersCSPVersion.Remove(webSocketID);
             
             // logger.WriteLine($"Removed player.  WebSocketID: {webSocketID}");
 
