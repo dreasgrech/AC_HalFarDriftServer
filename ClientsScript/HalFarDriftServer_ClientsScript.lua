@@ -296,19 +296,19 @@ local ParticleEffectsManager = (function()
 
   local Far_LongStretch_OneByOne = (function()
     local TIME_BETWEEN_STARTS_SECONDS = 0.5 -- The time between each start emmission
-    local DURATION_FOR_EACH_EFFECT_SECONDS = 3.0 -- how long each effect runs for
+    local DURATION_FOR_EACH_EFFECT_SECONDS = 2.0 -- how long each effect runs for
 
     local EFFECT_LIFE = 4
     local EFFECT_SIZE = 0.2
     local EFFECT_DIRECTION_SPREAD = 1
     local EFFECT_POSITION_SPREAD = 0.2
-    local EFFECT_VELOCITY = vec3(0, 100, 0)
+    local EFFECT_VELOCITY = vec3(0, 40, 0)
     local EFFECT_AMOUNT = 100
 
     local positions = {
       vec3(-21.8, 0.893, -17.3),
       vec3(-21.69, 0.896, -14.17),
-      vec3(-21.9, 0.904, -8.63),
+      vec3(-21.75, 0.901, -10.86),
       vec3(-21.9, 0.907, -5.81),
       vec3(-22, 0.908, -2.78),
       vec3(-22.1, 0.908, 1.27),
