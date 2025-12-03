@@ -11,7 +11,8 @@ public enum HalFarDriftServerCommandType
     None = 0,
     ShowWelcomeMessage = 1,
     StartCountdownTimer = 2,
-    StartFarLongStretchOneByOneEffectSequence = 3
+    StartFarLongStretchOneByOneEffectSequence = 3,
+    Pong = 4
 }
 
 public class HalFarDriftCommandsServer

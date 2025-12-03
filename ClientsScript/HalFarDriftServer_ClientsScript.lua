@@ -9,7 +9,8 @@ local SERVER_COMMAND_TYPE = {
   None = 0,
   ShowWelcomeMessage = 1,
   StartCountdownTimer = 2,
-  StartFarLongStretchOneByOneEffectSequence = 3
+  StartFarLongStretchOneByOneEffectSequence = 3,
+  Pong = 4
 }
 
 local ParticlesSparks = ac.Particles.Sparks( {
@@ -92,7 +93,7 @@ local StartingLights = (function()
     currentColor = color
     local colorValue = COLOR_VALUES[color]
     startlightsMeshes:setMaterialProperty(ksEmissivePropertyName, colorValue)
-    ac.log(string.format('Set startlights color to R=%f, G=%f, B=%f', colorValue.x, colorValue.y, colorValue.z))
+    -- ac.log(string.format('Set startlights color to R=%f, G=%f, B=%f', colorValue.x, colorValue.y, colorValue.z))
   end
 
   local currentEffectStateTime = 0.0
@@ -182,7 +183,7 @@ local StartingLights = (function()
       StartCountdownState_stateStartTime = getTimeSeconds()
       StartCountdownState_timeInStateSeconds = 0
 
-      ac.log(string.format('StartCountdownState: Changing state from %d to %d.  Start time: %f', startCountdownState_currentState, newState, StartCountdownState_stateStartTime))
+      -- ac.log(string.format('StartCountdownState: Changing state from %d to %d.  Start time: %f', startCountdownState_currentState, newState, StartCountdownState_stateStartTime))
       startCountdownState_currentState = newState
 
       StartCountdownState_StateMachine[startCountdownState_currentState].start()
@@ -192,7 +193,7 @@ local StartingLights = (function()
       [StartCountdownState_States.None] = { start = function() end, update = function(dt) end },
       [StartCountdownState_States.ShowingRed] = {
         start = function()
-          ac.log('StartCountdownState: Showing Red')
+          -- ac.log('StartCountdownState: Showing Red')
           setColor(AVAILABLE_COLOR_TYPES.Red)
         end,
         update = function(dt)
@@ -203,7 +204,7 @@ local StartingLights = (function()
       },
       [StartCountdownState_States.ShowingYellow] = {
         start = function()
-          ac.log('StartCountdownState: Showing Yellow')
+          -- ac.log('StartCountdownState: Showing Yellow')
           setColor(AVAILABLE_COLOR_TYPES.Yellow)
         end,
         update = function(dt)
@@ -214,7 +215,7 @@ local StartingLights = (function()
       },
       [StartCountdownState_States.ShowingGreen] = {
         start = function()
-          ac.log('StartCountdownState: Showing Green')
+          -- ac.log('StartCountdownState: Showing Green')
           setColor(AVAILABLE_COLOR_TYPES.Green)
         end,
         update = function(dt)
@@ -561,6 +562,10 @@ script.drawUI = function()
 end
 --]===]
 
+local TIME_BETWEEN_PINGS_SECONDS = 10.0
+local awaitingPongResponse = false
+local timeSinceLastPingSeconds = 0.0
+
 local messageHandlers = {
   [SERVER_COMMAND_TYPE.ShowWelcomeMessage] = function(messageObject)
     if messageObject ~= nil then
@@ -578,6 +583,12 @@ local messageHandlers = {
     ac.log(string.format('Handling StartFarLongStretchOneByOneEffectSequence command from server'))
 
     ParticleEffectsManager.startEffect(PARTICLE_EFFECTS_SEQUENCES.Far_LongStretch_OneByOne)
+  end,
+  [SERVER_COMMAND_TYPE.Pong] = function(messageObject)
+    ac.log(string.format('Handling Pong command from server'))
+
+    -- TODO: continue here
+    awaitingPongResponse = false
   end
 }
 
@@ -585,6 +596,11 @@ local messageHandlers = {
 local serverDataCallback = function(data)
   if data == nil then
     ac.log('Data from server: nil data received')
+    return
+  end
+
+  if data == nil then
+    ac.log('Stopping callback processing: nil data')
     return
   end
 
@@ -601,7 +617,7 @@ local serverDataCallback = function(data)
     return
   end
 
-  local messageType = messageObject.X
+  local messageType = messageObject.X -- The .X here is the message type field which is set from the websocket server code
   local handlerFunction = messageHandlers[messageType]
   if handlerFunction ~= nil then
     handlerFunction(messageObject)
@@ -651,21 +667,45 @@ local socketParams = {
   reconnect = true,
   -- encoding = 'json',
   encoding = 'utf8',
-  onClose = function()
-    ac.log('Socket closed')
+  onClose = function(reason)
+    ac.log('Socket closed: ' .. tostring(reason))
   end,
   onError = function(err)
     ac.log('Socket error: ' .. err)
   end
 }
-local socketHeaders = nil
-local socket = web.socket(WEBSOCKET_SERVER_ADDRESS, socketHeaders, serverDataCallback, socketParams)
+
+-- local socketHeaders = nil
+-- local socket = web.socket(WEBSOCKET_SERVER_ADDRESS, socketHeaders, serverDataCallback, socketParams)
+
+local socket;
+local connectToSocketServer = function()
+  local socketHeaders = nil
+  ac.log(string.format("Connecting to WebSocket server at %s", WEBSOCKET_SERVER_ADDRESS))
+  socket = web.socket(WEBSOCKET_SERVER_ADDRESS, socketHeaders, serverDataCallback, socketParams)
+end
+connectToSocketServer()
 
 socket("hello from the client")
 
 function script.update(dt)
+  timeSinceLastPingSeconds = timeSinceLastPingSeconds + dt
+
   StartingLights.update(dt)
   ParticleEffectsManager.update(dt)
+
+  -- check if it's time to send a ping
+  if timeSinceLastPingSeconds >= TIME_BETWEEN_PINGS_SECONDS then
+    if not awaitingPongResponse then
+      ac.log('Sending Ping to server')
+      socket("p")
+
+      timeSinceLastPingSeconds = 0.0
+      awaitingPongResponse = true
+    else
+      ac.log('Awaiting Pong response from server, not sending another Ping')
+    end
+  end
 end
 
 -- ParticleEffectsManager.toggleWinningSparksEffect(true)

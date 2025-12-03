@@ -9,7 +9,7 @@ namespace AssettoCorsaCommandsServer.EndPoints;
 
 internal class CommandsServerEndpoint : WebSocketBehavior
 {
-    // public static string EndpointName => "DriftServer";
+    private string playerWebSocketID;
     
     private static readonly object LockObject = new object();
 
@@ -67,6 +67,8 @@ internal class CommandsServerEndpoint : WebSocketBehavior
             logger.WriteLine($"(OnOpen) New client connected: ID = {webSocketID}, PlayerName = {playerName}, PlayerCarID = {playerCarID}, SessionID = {sessionID}.  QueryString: {queryStringBuilder}");
             
             // ServerCommandsManager.Instance.SendAsyncCommandToClient(webSocketID, new ShowWelcomeMessageServerCommand("This is my welcome message!  Fidelio**."));
+
+            playerWebSocketID = webSocketID;
             
             AssettoCorsaCommandsServer.EndpointOperations.OnOpen(webSocketID);
         }
@@ -94,7 +96,7 @@ internal class CommandsServerEndpoint : WebSocketBehavior
             // Send("Message received, thank you!");
             */
             
-            AssettoCorsaCommandsServer.EndpointOperations.OnMessage(e);
+            AssettoCorsaCommandsServer.EndpointOperations.OnMessage(playerWebSocketID, e);
         }
     }
 

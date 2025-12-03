@@ -49,6 +49,7 @@
         <Compile Include="HalFarDriftCommandsServer.cs" />
         <Compile Include="DriftServerEndpointImplementation.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
+        <Compile Include="ServerCommands\PongServerCommand.cs" />
         <Compile Include="ServerCommands\ShowWelcomeMessageServerCommand.cs" />
         <Compile Include="ServerCommands\StartCountdownTimerServerCommand.cs" />
         <Compile Include="ServerCommands\StartFarLongStretchOneByOneEffectSequenceCommand.cs" />
