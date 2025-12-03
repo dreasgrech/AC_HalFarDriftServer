@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Windows.Forms;
-﻿using AssettoCorsaCommandsServer.Loggers;
+using AssettoCorsaCommandsServer.Loggers;
 
 public class HalFarDriftCommandsServerWinFormsLogger : ICommandsServerLogger, IDisposable
 {

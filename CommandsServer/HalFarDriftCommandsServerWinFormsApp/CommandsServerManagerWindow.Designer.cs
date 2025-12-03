@@ -31,7 +31,6 @@ namespace HalFarDriftCommandsServerWinFormsApp
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("ab574607ec9a4ad982c92c679dfb980f");
             this.ConnectedPlayersListView = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
@@ -68,7 +67,6 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.ConnectedPlayersListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { this.columnHeader1, this.columnHeader4, this.columnHeader3, this.columnHeader5, this.columnHeader2 });
             this.ConnectedPlayersListView.FullRowSelect = true;
             this.ConnectedPlayersListView.HideSelection = false;
-            this.ConnectedPlayersListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] { listViewItem1 });
             this.ConnectedPlayersListView.Location = new System.Drawing.Point(12, 12);
             this.ConnectedPlayersListView.Name = "ConnectedPlayersListView";
             this.ConnectedPlayersListView.Size = new System.Drawing.Size(995, 267);

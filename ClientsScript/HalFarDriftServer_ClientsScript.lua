@@ -583,10 +583,9 @@ local messageHandlers = {
 
     connectedToWebSocketServer = true
 
+    -- socket("hello from the client")
 
-    socket("hello from the client")
-
-    showIntro()
+    -- showIntro()
   end,
   [SERVER_COMMAND_TYPE.StartCountdownTimer] = function(messageObject)
     ac.log(string.format('Handling StartCountdownTimer command from server'))
@@ -601,7 +600,7 @@ local messageHandlers = {
   [SERVER_COMMAND_TYPE.Pong] = function(messageObject)
     ac.log(string.format('Handling Pong command from server'))
 
-    -- TODO: continue here
+    -- reset the ping/pong state since we received the pong from the server
     awaitingPongResponse = false
   end
 }
@@ -683,10 +682,10 @@ local socketParams = {
   -- encoding = 'json',
   encoding = 'utf8',
   onClose = function(reason)
-    ac.log('Socket closed: ' .. tostring(reason))
+    ac.log('Socket closed: ' .. (reason and tostring(reason) or 'nil reason'))
   end,
   onError = function(err)
-    ac.log('Socket error: ' .. err)
+    ac.log('Socket error: ' .. (err and tostring(err) or 'nil error'))
   end
 }
 
@@ -730,6 +729,9 @@ function script.update(dt)
           -- check if we can try reconnecting the socket
           if timeSinceLastWebSocketConnectAttemptSeconds >= TIME_BETWEEN_WEBSOCKET_RECONNECT_ATTEMPTS_SECONDS then
             ac.log('Did not receive Pong response from server in time, reconnecting socket')
+
+            -- since we haven't received a pong in time, consider ourselves disconnected and try reconnecting
+            connectedToWebSocketServer = false
             connectToSocketServer()
           end
         end
@@ -744,7 +746,7 @@ function script.update(dt)
   else
     -- since we're not connected to the server, check if we can try reconnecting now if enough time has passed since our last connect attempt
     if timeSinceLastWebSocketConnectAttemptSeconds >= TIME_BETWEEN_WEBSOCKET_RECONNECT_ATTEMPTS_SECONDS then
-      ac.log('Enought time passed since last WebSocket connect attempt, reconnecting socket')
+      ac.log('Enough time passed since last WebSocket connect attempt, reconnecting socket')
       connectToSocketServer()
     end
   end
