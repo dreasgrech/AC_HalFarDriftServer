@@ -1,7 +1,7 @@
 
 local WEBSOCKET_SERVER_PROTOCOL = "ws"
-local WEBSOCKET_SERVER_HOST = "127.0.0.1"
---local WEBSOCKET_SERVER_HOST = "5.135.137.227"
+--local WEBSOCKET_SERVER_HOST = "127.0.0.1"
+local WEBSOCKET_SERVER_HOST = "5.135.137.227"
 local WEBSOCKET_SERVER_ENDPOINT = "DriftServer"
 
 ---@enum SERVER_COMMAND_TYPE
@@ -583,7 +583,17 @@ local serverDataCallback = function(data)
 
   local dataString = tostring(data)
   ac.log('Data from server: ' .. dataString)
+  if dataString == '' then
+    ac.log('Stopping callback processing: empty data string')
+    return
+  end
+
   local messageObject = JSON.parse(dataString)
+  if messageObject == nil then
+    ac.log('Stopping callback processing: could not parse JSON data')
+    return
+  end
+
   local messageType = messageObject.X
   local handlerFunction = messageHandlers[messageType]
   if handlerFunction ~= nil then
