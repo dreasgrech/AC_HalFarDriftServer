@@ -11,7 +11,7 @@ public enum HalFarDriftServerCommandType
     None = 0,
     ShowWelcomeMessage = 1,
     StartCountdownTimer = 2,
-    StartFarLongStretchOneByOneEffectSequence = 3,
+    StartRightDriveByMaltaFlagEffectSequence = 3,
     Pong = 4
 }
 
@@ -44,15 +44,15 @@ public class HalFarDriftCommandsServer
         return assettoCorsaCommandsServer.SendAsyncCommandToClient(webSocketID, command);
     }
 
-    public void SendStartStartingLightsInitiationSequenceToAll()
+    public void SendStartStartingLightsInitiationSequenceCommandToAll()
     {
         var command = new StartCountdownTimerServerCommand();
         SendMessageToAll(command);
     }
     
-    public void SendFarLongStretchOneByOneEffectSequenceToAll()
+    public void SendStartRightDriveByMaltaFlagEffectSequenceCommandToAll()
     {
-        var command = new StartFarLongStretchOneByOneEffectSequenceCommand();
+        var command = new StartRightDriveByMaltaFlagEffectSequenceCommand();
         SendMessageToAll(command);
     }
     

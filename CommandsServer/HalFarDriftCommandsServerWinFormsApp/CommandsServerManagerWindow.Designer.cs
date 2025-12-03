@@ -47,7 +47,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.webSocketServerLogLevel = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.InitiateFarLongStrechOneByOneEffectButton = new System.Windows.Forms.Button();
+            this.StartRightDriveByMaltaFlagEffectSequenceButton = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.InitiateStartingLightsSequenceForAllButton = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -190,7 +190,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.InitiateFarLongStrechOneByOneEffectButton);
+            this.groupBox3.Controls.Add(this.StartRightDriveByMaltaFlagEffectSequenceButton);
             this.groupBox3.Location = new System.Drawing.Point(230, 19);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(325, 77);
@@ -198,15 +198,15 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Pyrotechnics";
             // 
-            // InitiateFarLongStrechOneByOneEffectButton
+            // StartRightDriveByMaltaFlagEffectSequenceButton
             // 
-            this.InitiateFarLongStrechOneByOneEffectButton.Location = new System.Drawing.Point(6, 19);
-            this.InitiateFarLongStrechOneByOneEffectButton.Name = "InitiateFarLongStrechOneByOneEffectButton";
-            this.InitiateFarLongStrechOneByOneEffectButton.Size = new System.Drawing.Size(196, 42);
-            this.InitiateFarLongStrechOneByOneEffectButton.TabIndex = 1;
-            this.InitiateFarLongStrechOneByOneEffectButton.Text = "Initiate Far One-by-One sequence";
-            this.InitiateFarLongStrechOneByOneEffectButton.UseVisualStyleBackColor = true;
-            this.InitiateFarLongStrechOneByOneEffectButton.Click += new System.EventHandler(this.InitiateFarLongStretchOneByOneEffectButton_Click);
+            this.StartRightDriveByMaltaFlagEffectSequenceButton.Location = new System.Drawing.Point(6, 19);
+            this.StartRightDriveByMaltaFlagEffectSequenceButton.Name = "StartRightDriveByMaltaFlagEffectSequenceButton";
+            this.StartRightDriveByMaltaFlagEffectSequenceButton.Size = new System.Drawing.Size(262, 42);
+            this.StartRightDriveByMaltaFlagEffectSequenceButton.TabIndex = 1;
+            this.StartRightDriveByMaltaFlagEffectSequenceButton.Text = "Initiate Right DriveBy Sparks Effect (MaltaFlag)";
+            this.StartRightDriveByMaltaFlagEffectSequenceButton.UseVisualStyleBackColor = true;
+            this.StartRightDriveByMaltaFlagEffectSequenceButton.Click += new System.EventHandler(this.InitiateRightDriveByMaltaFlagEffectSequenceButton_Click);
             // 
             // groupBox2
             // 
@@ -224,7 +224,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.InitiateStartingLightsSequenceForAllButton.Name = "InitiateStartingLightsSequenceForAllButton";
             this.InitiateStartingLightsSequenceForAllButton.Size = new System.Drawing.Size(196, 42);
             this.InitiateStartingLightsSequenceForAllButton.TabIndex = 0;
-            this.InitiateStartingLightsSequenceForAllButton.Text = "Initiate Starting Lights sequence";
+            this.InitiateStartingLightsSequenceForAllButton.Text = "Initiate Starting Lights";
             this.InitiateStartingLightsSequenceForAllButton.UseVisualStyleBackColor = true;
             this.InitiateStartingLightsSequenceForAllButton.Click += new System.EventHandler(this.InitiateStartingLightsSequenceForAllButton_Click);
             // 
@@ -284,7 +284,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label ConnectedPlayersLabel;
 
-        private System.Windows.Forms.Button InitiateFarLongStrechOneByOneEffectButton;
+        private System.Windows.Forms.Button StartRightDriveByMaltaFlagEffectSequenceButton;
 
         private System.Windows.Forms.GroupBox groupBox3;
 

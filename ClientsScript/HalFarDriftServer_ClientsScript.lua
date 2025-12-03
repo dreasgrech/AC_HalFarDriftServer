@@ -1,7 +1,7 @@
 
 local WEBSOCKET_SERVER_PROTOCOL = "ws"
--- local WEBSOCKET_SERVER_HOST = "127.0.0.1"
-local WEBSOCKET_SERVER_HOST = "5.135.137.227"
+local WEBSOCKET_SERVER_HOST = "127.0.0.1"
+-- local WEBSOCKET_SERVER_HOST = "5.135.137.227"
 local WEBSOCKET_SERVER_ENDPOINT = "DriftServer"
 
 ---@enum SERVER_COMMAND_TYPE
@@ -9,7 +9,7 @@ local SERVER_COMMAND_TYPE = {
   None = 0,
   ShowWelcomeMessage = 1,
   StartCountdownTimer = 2,
-  StartFarLongStretchOneByOneEffectSequence = 3,
+  StartRightDriveByMaltaFlagEffectSequence = 3,
   Pong = 4
 }
 
@@ -290,13 +290,13 @@ StartingLights.turnOff()
 -- StartingLights.startEffect(StartingLights.EFFECTS.StartCountdown)
 
 local PARTICLE_EFFECTS_SEQUENCES = {
-  Far_LongStretch_OneByOne = 1,
+  Right_DriveBy_MaltaFlag = 1,
   Far_LongStretch_Winners = 2
 }
 
 local ParticleEffectsManager = (function()
 
-  local Far_LongStretch_OneByOne = (function()
+  local RightDriveByEffect = (function()
     local TIME_BETWEEN_STARTS_SECONDS = 0.5 -- The time between each start emmission
     -- local DURATION_FOR_EACH_EFFECT_SECONDS = 2.0 -- how long each effect runs for
     local DURATION_FOR_EACH_EFFECT_SECONDS = 1.0 -- how long each effect runs for
@@ -326,17 +326,17 @@ local ParticleEffectsManager = (function()
 --       rgbm(0, 1, 1, 0.5)
 --     }
 
-    local colors = {
-      rgbm(1, 0, 0, 1),
-      rgbm(1, 0, 0, 1),
-      rgbm(1, 0, 0, 1),
-      rgbm(1, 1, 1, 1),
-      rgbm(1, 1, 1, 1),
-      rgbm(1, 1, 1, 1),
-    }
+    -- local colors = {
+    --   rgbm(1, 0, 0, 1),
+    --   rgbm(1, 0, 0, 1),
+    --   rgbm(1, 0, 0, 1),
+    --   rgbm(1, 1, 1, 1),
+    --   rgbm(1, 1, 1, 1),
+    --   rgbm(1, 1, 1, 1),
+    -- }
 
     return {
-      create = function()
+      create = function(colors)
         return (function()
           local active = false
           local timeSinceSequenceStart = 0.0
@@ -357,7 +357,7 @@ local ParticleEffectsManager = (function()
 
           return {
             start = function()
-              ac.log('Starting Far_LongStretch_OneByOne particle effect sequence')
+              ac.log('Starting RightDriveByEffect particle effect sequence')
               timeSinceSequenceStart = 0.0
 
               nextIndexToStart = 1
@@ -393,26 +393,16 @@ local ParticleEffectsManager = (function()
 
               -- check if the entire sequence is done
               if timeSinceSequenceStart >= (#positions * TIME_BETWEEN_STARTS_SECONDS) + DURATION_FOR_EACH_EFFECT_SECONDS then
-                -- ac.log('Far_LongStretch_OneByOne particle effect sequence completed')
+                -- ac.log('RightDriveByEffect particle effect sequence completed')
                 active = false
               end
             end
           }
         end)()
-
       end
     }
-
-    -- return {
-    --   start = function()
-    --     ac.log('Starting Far_LongStretch_OneByOne particle effect sequence')
-    --   end,
-    --   update = function(dt)
-    --   end
-    -- }
   end)()
 
-  -- local effect = Far_LongStretch_OneByOne.create()
 
 
   --[===[
@@ -482,8 +472,24 @@ local ParticleEffectsManager = (function()
   --]===]
 
   local SEQUENCES_DEFINNITIONS = {
-    [PARTICLE_EFFECTS_SEQUENCES.Far_LongStretch_OneByOne] = Far_LongStretch_OneByOne
-    -- [PARTICLE_EFFECTS_SEQUENCES.Far_LongStretch_Winners] = Far_LongStretch_Winners
+    -- [PARTICLE_EFFECTS_SEQUENCES.Right_DriveBy_MaltaFlag] = RightDriveByEffect
+    [PARTICLE_EFFECTS_SEQUENCES.Right_DriveBy_MaltaFlag] = (function ()
+      local maltaFlagColors = {
+        rgbm(1, 0, 0, 1),
+        rgbm(1, 0, 0, 1),
+        rgbm(1, 0, 0, 1),
+        rgbm(1, 1, 1, 1),
+        rgbm(1, 1, 1, 1),
+        rgbm(1, 1, 1, 1),
+      }
+
+      return {
+        create = function()
+          local maltaFlagFarRight = RightDriveByEffect.create(maltaFlagColors)
+          return maltaFlagFarRight
+        end
+      }
+    end)()
   }
 
   local activeEffectSequences = {}
@@ -592,10 +598,10 @@ local messageHandlers = {
 
     StartingLights.startEffect(StartingLights.EFFECTS.StartCountdown)
   end,
-  [SERVER_COMMAND_TYPE.StartFarLongStretchOneByOneEffectSequence] = function(messageObject)
-    ac.log(string.format('Handling StartFarLongStretchOneByOneEffectSequence command from server'))
+  [SERVER_COMMAND_TYPE.StartRightDriveByMaltaFlagEffectSequence] = function(messageObject)
+    ac.log(string.format('Handling StartRightDriveByMaltaFlagEffectSequence command from server'))
 
-    ParticleEffectsManager.startEffect(PARTICLE_EFFECTS_SEQUENCES.Far_LongStretch_OneByOne)
+    ParticleEffectsManager.startEffect(PARTICLE_EFFECTS_SEQUENCES.Right_DriveBy_MaltaFlag)
   end,
   [SERVER_COMMAND_TYPE.Pong] = function(messageObject)
     ac.log(string.format('Handling Pong command from server'))

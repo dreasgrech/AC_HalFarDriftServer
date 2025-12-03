@@ -54,7 +54,7 @@ public class Program
                     // {
                     //     driftCommandsServer.SendAsyncCommandToClient(firstWebSocketID, new StartCountdownTimerServerCommand());
                     // }
-                        driftCommandsServer.SendStartStartingLightsInitiationSequenceToAll();
+                        driftCommandsServer.SendStartStartingLightsInitiationSequenceCommandToAll();
                 } break;
                 default:
                 {

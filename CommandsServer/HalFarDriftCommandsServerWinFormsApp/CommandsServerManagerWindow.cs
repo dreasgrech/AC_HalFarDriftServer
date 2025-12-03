@@ -189,12 +189,12 @@ namespace HalFarDriftCommandsServerWinFormsApp
 
         private void InitiateStartingLightsSequenceForAllButton_Click(object sender, EventArgs e)
         {
-            driftCommandsServer.SendStartStartingLightsInitiationSequenceToAll();
+            driftCommandsServer.SendStartStartingLightsInitiationSequenceCommandToAll();
         }
 
-        private void InitiateFarLongStretchOneByOneEffectButton_Click(object sender, EventArgs e)
+        private void InitiateRightDriveByMaltaFlagEffectSequenceButton_Click(object sender, EventArgs e)
         {
-            driftCommandsServer.SendFarLongStretchOneByOneEffectSequenceToAll();
+            driftCommandsServer.SendStartRightDriveByMaltaFlagEffectSequenceCommandToAll();
         }
 
         private void ConnectedPlayersListView_ColumnClick(object sender, ColumnClickEventArgs e)
