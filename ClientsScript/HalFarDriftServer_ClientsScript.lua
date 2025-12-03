@@ -572,6 +572,9 @@ local timeSinceLastWebSocketConnectAttemptSeconds = 0.0
 
 local connectedToWebSocketServer = false
 
+---@type web.Socket
+local socket;
+
 local messageHandlers = {
   [SERVER_COMMAND_TYPE.ShowWelcomeMessage] = function(messageObject)
     if messageObject ~= nil then
@@ -579,6 +582,9 @@ local messageHandlers = {
     end
 
     connectedToWebSocketServer = true
+
+
+    socket("hello from the client")
 
     showIntro()
   end,
@@ -684,11 +690,11 @@ local socketParams = {
   end
 }
 
--- local socketHeaders = nil
--- local socket = web.socket(WEBSOCKET_SERVER_ADDRESS, socketHeaders, serverDataCallback, socketParams)
-
-local socket;
 local connectToSocketServer = function()
+  if connectedToWebSocketServer then
+    ac.log('WARNING: Already connected to WebSocket server but trying to reconnect again')
+  end
+
   timeSinceLastWebSocketConnectAttemptSeconds = 0.0
   timeSinceLastPingSeconds = 0.0
   awaitingPongResponse = false
@@ -696,12 +702,16 @@ local connectToSocketServer = function()
 
   ac.log(string.format("Connecting to WebSocket server at %s", WEBSOCKET_SERVER_ADDRESS))
 
+  -- close existing socket if any
+  if (socket ~= nil) then
+    socket:close()
+  end
+
+  -- connect to the socket server
   local socketHeaders = nil
   socket = web.socket(WEBSOCKET_SERVER_ADDRESS, socketHeaders, serverDataCallback, socketParams)
 end
 connectToSocketServer()
-
-socket("hello from the client")
 
 function script.update(dt)
   timeSinceLastPingSeconds = timeSinceLastPingSeconds + dt
@@ -710,7 +720,6 @@ function script.update(dt)
   StartingLights.update(dt)
   ParticleEffectsManager.update(dt)
 
-  -- check if it's time to send a ping
   if connectedToWebSocketServer then
     -- since we're connected to the server, check if it's time to send a ping
     if timeSinceLastPingSeconds >= TIME_BETWEEN_PINGS_SECONDS then
@@ -733,7 +742,6 @@ function script.update(dt)
       end
     end
   else
-    -- ac.log('Not connected to WebSocket server')
     -- since we're not connected to the server, check if we can try reconnecting now if enough time has passed since our last connect attempt
     if timeSinceLastWebSocketConnectAttemptSeconds >= TIME_BETWEEN_WEBSOCKET_RECONNECT_ATTEMPTS_SECONDS then
       ac.log('Enought time passed since last WebSocket connect attempt, reconnecting socket')
