@@ -21,6 +21,9 @@ namespace HalFarDriftCommandsServerWinFormsApp
         private int connectedPlayersInListView;
 
         private readonly Dictionary<string, ListViewItem> connectedPlayersListViewItems = new Dictionary<string, ListViewItem>(EqualityComparer<string>.Default);
+        
+        
+        private ListViewColumnSorter lvwColumnSorter;
 
 
         public CommandsServerManagerWindow()
@@ -28,7 +31,8 @@ namespace HalFarDriftCommandsServerWinFormsApp
             InitializeComponent();
 
             webSocketServerProtocolComboBox.SelectedIndex = 0;
-            var logLevelNames = Enum.GetNames(typeof(LogLevel)).ToArray();
+            
+            var logLevelNames = Enum.GetNames(typeof(LogLevel)).Cast<object>().ToArray();
             webSocketServerLogLevel.Items.AddRange(logLevelNames);
             webSocketServerLogLevel.SelectedIndex = (int)LogLevel.Error;
             webSocketServerLogLevel.SelectedIndexChanged += webSocketServerLogLevel_SelectedIndexChanged; 
@@ -49,6 +53,8 @@ namespace HalFarDriftCommandsServerWinFormsApp
             serverStatusTimer.Tick += ServerStatusTimer_Tick;
             serverStatusTimer.Start();
             
+            lvwColumnSorter = new ListViewColumnSorter();
+            ConnectedPlayersListView.ListViewItemSorter = lvwColumnSorter;
             
             /*****************/
             // for (int i = 0; i < 20; i++)
@@ -189,6 +195,32 @@ namespace HalFarDriftCommandsServerWinFormsApp
         private void InitiateFarLongStretchOneByOneEffectButton_Click(object sender, EventArgs e)
         {
             driftCommandsServer.SendFarLongStretchOneByOneEffectSequenceToAll();
+        }
+
+        private void ConnectedPlayersListView_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            // Determine if clicked column is already the column that is being sorted.
+            if (e.Column == lvwColumnSorter.SortColumn)
+            {
+                // Reverse the current sort direction for this column.
+                if (lvwColumnSorter.Order == SortOrder.Ascending)
+                {
+                    lvwColumnSorter.Order = SortOrder.Descending;
+                }
+                else
+                {
+                    lvwColumnSorter.Order = SortOrder.Ascending;
+                }
+            }
+            else
+            {
+                // Set the column number that is to be sorted; default to ascending.
+                lvwColumnSorter.SortColumn = e.Column;
+                lvwColumnSorter.Order = SortOrder.Ascending;
+            }
+
+            // Perform the sort with these new sort options.
+            ConnectedPlayersListView.Sort();
         }
     }
 }

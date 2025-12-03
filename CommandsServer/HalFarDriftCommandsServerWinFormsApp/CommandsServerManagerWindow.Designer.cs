@@ -31,6 +31,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("ab574607ec9a4ad982c92c679dfb980f");
             this.ConnectedPlayersListView = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
@@ -67,22 +68,24 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.ConnectedPlayersListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { this.columnHeader1, this.columnHeader4, this.columnHeader3, this.columnHeader5, this.columnHeader2 });
             this.ConnectedPlayersListView.FullRowSelect = true;
             this.ConnectedPlayersListView.HideSelection = false;
+            this.ConnectedPlayersListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] { listViewItem1 });
             this.ConnectedPlayersListView.Location = new System.Drawing.Point(12, 12);
             this.ConnectedPlayersListView.Name = "ConnectedPlayersListView";
-            this.ConnectedPlayersListView.Size = new System.Drawing.Size(1277, 267);
+            this.ConnectedPlayersListView.Size = new System.Drawing.Size(995, 267);
             this.ConnectedPlayersListView.TabIndex = 1;
             this.ConnectedPlayersListView.UseCompatibleStateImageBehavior = false;
             this.ConnectedPlayersListView.View = System.Windows.Forms.View.Details;
+            this.ConnectedPlayersListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.ConnectedPlayersListView_ColumnClick);
             // 
             // columnHeader1
             // 
             this.columnHeader1.Text = "WebSocket ID";
-            this.columnHeader1.Width = 300;
+            this.columnHeader1.Width = 222;
             // 
             // columnHeader4
             // 
             this.columnHeader4.Text = "Name";
-            this.columnHeader4.Width = 200;
+            this.columnHeader4.Width = 264;
             // 
             // columnHeader3
             // 
@@ -92,23 +95,23 @@ namespace HalFarDriftCommandsServerWinFormsApp
             // columnHeader5
             // 
             this.columnHeader5.Text = "CSP Version";
-            this.columnHeader5.Width = 100;
+            this.columnHeader5.Width = 124;
             // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "Session ID";
-            this.columnHeader2.Width = 100;
+            this.columnHeader2.Width = 66;
             // 
             // LogTextBox
             // 
             this.LogTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.LogTextBox.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.LogTextBox.Location = new System.Drawing.Point(12, 549);
+            this.LogTextBox.Location = new System.Drawing.Point(12, 517);
             this.LogTextBox.Multiline = true;
             this.LogTextBox.Name = "LogTextBox";
             this.LogTextBox.ReadOnly = true;
             this.LogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.LogTextBox.Size = new System.Drawing.Size(1277, 232);
+            this.LogTextBox.Size = new System.Drawing.Size(995, 232);
             this.LogTextBox.TabIndex = 2;
             // 
             // StartServerButton
@@ -136,7 +139,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.panel1.Controls.Add(this.serverStatusIndicatorControl);
             this.panel1.Controls.Add(this.ServerAddressTextBox);
             this.panel1.Controls.Add(this.StartServerButton);
-            this.panel1.Location = new System.Drawing.Point(825, 508);
+            this.panel1.Location = new System.Drawing.Point(543, 476);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(464, 35);
             this.panel1.TabIndex = 5;
@@ -182,7 +185,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Location = new System.Drawing.Point(12, 321);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1277, 149);
+            this.groupBox1.Size = new System.Drawing.Size(995, 117);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Operations";
@@ -232,7 +235,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.webSocketServerLogLevel);
-            this.panel2.Location = new System.Drawing.Point(12, 508);
+            this.panel2.Location = new System.Drawing.Point(12, 476);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(163, 35);
             this.panel2.TabIndex = 7;
@@ -257,13 +260,14 @@ namespace HalFarDriftCommandsServerWinFormsApp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1301, 793);
+            this.ClientSize = new System.Drawing.Size(1019, 761);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.LogTextBox);
             this.Controls.Add(this.ConnectedPlayersListView);
+            this.MinimumSize = new System.Drawing.Size(700, 800);
             this.Name = "CommandsServerManagerWindow";
             this.Text = "Hal Far Drift Server Commands Manager";
             this.panel1.ResumeLayout(false);
