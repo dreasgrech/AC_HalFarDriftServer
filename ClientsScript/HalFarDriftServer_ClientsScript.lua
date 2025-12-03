@@ -8,7 +8,8 @@ local WEBSOCKET_SERVER_ENDPOINT = "DriftServer"
 local SERVER_COMMAND_TYPE = {
   None = 0,
   ShowWelcomeMessage = 1,
-  StartCountdownTimer = 2
+  StartCountdownTimer = 2,
+  StartFarLongStretchOneByOneEffectSequence = 3
 }
 
 local ParticlesSparks = ac.Particles.Sparks( {
@@ -371,7 +372,7 @@ local ParticleEffectsManager = (function()
 
               -- check if we need to start the next effect
               if timeSinceLastEffectStart >= TIME_BETWEEN_STARTS_SECONDS and nextIndexToStart <= #positions then
-                ac.log(string.format('Starting effect at index %d', nextIndexToStart))
+                -- ac.log(string.format('Starting effect at index %d', nextIndexToStart))
                 nextIndexToStart = nextIndexToStart + 1
                 timeSinceLastEffectStart = 0.0
               end
@@ -391,7 +392,7 @@ local ParticleEffectsManager = (function()
 
               -- check if the entire sequence is done
               if timeSinceSequenceStart >= (#positions * TIME_BETWEEN_STARTS_SECONDS) + DURATION_FOR_EACH_EFFECT_SECONDS then
-                ac.log('Far_LongStretch_OneByOne particle effect sequence completed')
+                -- ac.log('Far_LongStretch_OneByOne particle effect sequence completed')
                 active = false
               end
             end
@@ -562,7 +563,9 @@ end
 
 local messageHandlers = {
   [SERVER_COMMAND_TYPE.ShowWelcomeMessage] = function(messageObject)
-    ac.log(string.format('Handling ShowWelcomeMessage command from server: %s', tostring(messageObject.M)))
+    if messageObject ~= nil then
+      ac.log(string.format('Handling ShowWelcomeMessage command from server: %s', tostring(messageObject.M)))
+    end
 
     showIntro()
   end,
@@ -570,6 +573,10 @@ local messageHandlers = {
     ac.log(string.format('Handling StartCountdownTimer command from server'))
 
     StartingLights.startEffect(StartingLights.EFFECTS.StartCountdown)
+  end,
+  [SERVER_COMMAND_TYPE.StartFarLongStretchOneByOneEffectSequence] = function(messageObject)
+    ac.log(string.format('Handling StartFarLongStretchOneByOneEffectSequence command from server'))
+
     ParticleEffectsManager.startEffect(PARTICLE_EFFECTS_SEQUENCES.Far_LongStretch_OneByOne)
   end
 }

@@ -47,7 +47,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.webSocketServerLogLevel = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.InitiateFarLongStrechOneByOneEffectButton = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.InitiateStartingLightsSequenceForAllButton = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -189,7 +189,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.button1);
+            this.groupBox3.Controls.Add(this.InitiateFarLongStrechOneByOneEffectButton);
             this.groupBox3.Location = new System.Drawing.Point(230, 19);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(325, 77);
@@ -197,14 +197,15 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Pyrotechnics";
             // 
-            // button1
+            // InitiateFarLongStrechOneByOneEffectButton
             // 
-            this.button1.Location = new System.Drawing.Point(6, 19);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(196, 42);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Initiate Far One-by-One sequence";
-            this.button1.UseVisualStyleBackColor = true;
+            this.InitiateFarLongStrechOneByOneEffectButton.Location = new System.Drawing.Point(6, 19);
+            this.InitiateFarLongStrechOneByOneEffectButton.Name = "InitiateFarLongStrechOneByOneEffectButton";
+            this.InitiateFarLongStrechOneByOneEffectButton.Size = new System.Drawing.Size(196, 42);
+            this.InitiateFarLongStrechOneByOneEffectButton.TabIndex = 1;
+            this.InitiateFarLongStrechOneByOneEffectButton.Text = "Initiate Far One-by-One sequence";
+            this.InitiateFarLongStrechOneByOneEffectButton.UseVisualStyleBackColor = true;
+            this.InitiateFarLongStrechOneByOneEffectButton.Click += new System.EventHandler(this.InitiateFarLongStretchOneByOneEffectButton_Click);
             // 
             // groupBox2
             // 
@@ -281,7 +282,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label ConnectedPlayersLabel;
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button InitiateFarLongStrechOneByOneEffectButton;
 
         private System.Windows.Forms.GroupBox groupBox3;
 

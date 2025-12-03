@@ -174,16 +174,21 @@ namespace HalFarDriftCommandsServerWinFormsApp
             }
         }
 
-        private void InitiateStartingLightsSequenceForAllButton_Click(object sender, EventArgs e)
-        {
-            driftCommandsServer.SendStartStartingLightsInitiationSequenceToAll();
-        }
-
         private void webSocketServerLogLevel_SelectedIndexChanged(object sender, EventArgs e)
         {
             var selectedLogLevelIndex = webSocketServerLogLevel.SelectedIndex;
             var selectedLogLevel = (LogLevel)selectedLogLevelIndex;
             halFarDriftCommandsServerWinFormsManager.SetLogLevel(selectedLogLevel);
+        }
+
+        private void InitiateStartingLightsSequenceForAllButton_Click(object sender, EventArgs e)
+        {
+            driftCommandsServer.SendStartStartingLightsInitiationSequenceToAll();
+        }
+
+        private void InitiateFarLongStretchOneByOneEffectButton_Click(object sender, EventArgs e)
+        {
+            driftCommandsServer.SendFarLongStretchOneByOneEffectSequenceToAll();
         }
     }
 }

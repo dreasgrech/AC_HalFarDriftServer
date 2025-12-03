@@ -10,7 +10,8 @@ public enum HalFarDriftServerCommandType
 {
     None = 0,
     ShowWelcomeMessage = 1,
-    StartCountdownTimer = 2
+    StartCountdownTimer = 2,
+    StartFarLongStretchOneByOneEffectSequence = 3
 }
 
 public class HalFarDriftCommandsServer
@@ -44,14 +45,25 @@ public class HalFarDriftCommandsServer
 
     public void SendStartStartingLightsInitiationSequenceToAll()
     {
+        var command = new StartCountdownTimerServerCommand();
+        SendMessageToAll(command);
+    }
+    
+    public void SendFarLongStretchOneByOneEffectSequenceToAll()
+    {
+        var command = new StartFarLongStretchOneByOneEffectSequenceCommand();
+        SendMessageToAll(command);
+    }
+    
+    private bool SendMessageToAll(ServerCommand command)
+    {
         if (!assettoCorsaCommandsServer.ServerRunning)
         {
-            commandsServerLogger.WriteLine("Cannot send StartStartingLightsInitiationSequence command - server is not running.");
-            return;
+            commandsServerLogger.WriteLine($"Cannot send command {command.GetType().Name} ({command.CommandType}) - server is not running.");
+            return false;
         }
         
         var playersEnumerator = CommandsServerUserManager.GetAllPlayersEnumerator();
-        var command = new StartCountdownTimerServerCommand();
         var sentToTotal = 0;
         while (playersEnumerator.MoveNext())
         {
@@ -63,7 +75,9 @@ public class HalFarDriftCommandsServer
             }
         }
         
-        commandsServerLogger.WriteLine($"Sent StartStartingLightsInitiationSequence command to {sentToTotal} clients.");
+        commandsServerLogger.WriteLine($"Sent {command.GetType().Name} ({command.CommandType}) command to {sentToTotal} clients.");
+
+        return true;
     }
     
     public void SetLogLevel(LogLevel logLevel)

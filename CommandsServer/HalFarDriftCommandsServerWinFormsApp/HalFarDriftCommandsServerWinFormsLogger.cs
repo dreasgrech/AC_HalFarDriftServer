@@ -5,68 +5,68 @@ using System.Windows.Forms;
 
 public class HalFarDriftCommandsServerWinFormsLogger : ICommandsServerLogger, IDisposable
 {
-    private readonly ConcurrentQueue<string> _logQueue = new ConcurrentQueue<string>();
-    private readonly TextBox _loggerTextBox;
-    private readonly System.Windows.Forms.Timer _uiTimer;
+    private readonly ConcurrentQueue<string> logQueue = new ConcurrentQueue<string>();
+    private readonly TextBox loggerTextBox;
+    private readonly System.Windows.Forms.Timer uiTimer;
 
-    private readonly int _maxLines = 2000;
+    private const int MAX_LINES = 2000;
 
     public HalFarDriftCommandsServerWinFormsLogger(TextBox textBox)
     {
-        _loggerTextBox = textBox;
+        loggerTextBox = textBox;
 
-        _uiTimer = new System.Windows.Forms.Timer
+        uiTimer = new System.Windows.Forms.Timer
         {
             Interval = 500 // flush every 500 ms
         };
-        _uiTimer.Tick += FlushToTextBox;
-        _uiTimer.Start();
+        uiTimer.Tick += FlushToTextBox;
+        uiTimer.Start();
     }
 
     public void WriteLine(string line)
     {
-        _logQueue.Enqueue(line);
+        logQueue.Enqueue(line);
     }
 
     private void FlushToTextBox(object sender, EventArgs e)
     {
-        if (_logQueue.IsEmpty) return;
+        if (logQueue.IsEmpty) return;
 
-        if (_loggerTextBox.IsDisposed) return;
+        if (loggerTextBox.IsDisposed) return;
 
-        _loggerTextBox.BeginInvoke(new Action(() =>
+        loggerTextBox.BeginInvoke(new Action(() =>
         {
             // Append all queued lines
-            while (_logQueue.TryDequeue(out var ln))
+            while (logQueue.TryDequeue(out var ln))
             {
-                _loggerTextBox.AppendText(ln + Environment.NewLine);
+                loggerTextBox.AppendText(ln + Environment.NewLine);
             }
 
             // Optionally trim lines to max scrollback
             TrimTextBox();
             
             // Scroll to bottom
-            _loggerTextBox.SelectionStart = _loggerTextBox.Text.Length;
-            _loggerTextBox.ScrollToCaret();
+            loggerTextBox.SelectionStart = loggerTextBox.Text.Length;
+            loggerTextBox.ScrollToCaret();
         }));
     }
 
     private void TrimTextBox()
     {
         // if too many lines, drop oldest.
-        var lines = _loggerTextBox.Lines;
-        if (lines.Length <= _maxLines) return;
+        var lines = loggerTextBox.Lines;
+        if (lines.Length <= MAX_LINES) return;
 
-        var start = lines.Length - _maxLines;
-        var trimmed = new string[_maxLines];
-        Array.Copy(lines, start, trimmed, 0, _maxLines);
-        _loggerTextBox.Lines = trimmed;
+        var start = lines.Length - MAX_LINES;
+        var trimmed = new string[MAX_LINES];
+        Array.Copy(lines, start, trimmed, 0, MAX_LINES);
+        loggerTextBox.Lines = trimmed;
     }
 
     public void Dispose()
     {
-        _uiTimer.Stop();
-        _uiTimer.Tick -= FlushToTextBox;
-        _uiTimer.Dispose();
+        uiTimer.Stop();
+        uiTimer.Tick -= FlushToTextBox;
+        uiTimer.Dispose();
     }
 }
