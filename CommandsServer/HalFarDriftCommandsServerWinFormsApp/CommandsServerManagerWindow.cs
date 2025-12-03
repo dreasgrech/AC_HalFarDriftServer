@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using HalFarDriftCommandsServer.ServerCommands;
 using WebSocketSharp;
 
 namespace HalFarDriftCommandsServerWinFormsApp
@@ -180,23 +181,6 @@ namespace HalFarDriftCommandsServerWinFormsApp
             }
         }
 
-        private void webSocketServerLogLevel_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var selectedLogLevelIndex = webSocketServerLogLevel.SelectedIndex;
-            var selectedLogLevel = (LogLevel)selectedLogLevelIndex;
-            halFarDriftCommandsServerWinFormsManager.SetLogLevel(selectedLogLevel);
-        }
-
-        private void InitiateStartingLightsSequenceForAllButton_Click(object sender, EventArgs e)
-        {
-            driftCommandsServer.SendStartStartingLightsInitiationSequenceCommandToAll();
-        }
-
-        private void InitiateRightDriveByMaltaFlagEffectSequenceButton_Click(object sender, EventArgs e)
-        {
-            driftCommandsServer.SendStartRightDriveByMaltaFlagEffectSequenceCommandToAll();
-        }
-
         private void ConnectedPlayersListView_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             // Determine if clicked column is already the column that is being sorted.
@@ -221,6 +205,30 @@ namespace HalFarDriftCommandsServerWinFormsApp
 
             // Perform the sort with these new sort options.
             ConnectedPlayersListView.Sort();
+        }
+
+        private void webSocketServerLogLevel_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var selectedLogLevelIndex = webSocketServerLogLevel.SelectedIndex;
+            var selectedLogLevel = (LogLevel)selectedLogLevelIndex;
+            halFarDriftCommandsServerWinFormsManager.SetLogLevel(selectedLogLevel);
+        }
+
+        private void InitiateStartingLightsSequenceForAllButton_Click(object sender, EventArgs e)
+        {
+            driftCommandsServer.SendStartStartingLightsInitiationSequenceCommandToAll();
+        }
+
+        private void InitiateRightDriveByMaltaFlagEffectSequenceButton_Click(object sender, EventArgs e)
+        {
+            var command = new StartRightDriveByMaltaFlagEffectSequenceCommand();
+            driftCommandsServer.SendAsyncMessageToAll(command);
+        }
+
+        private void StartRightDriveByDifferentColorsEffectSequenceButton_Click(object sender, EventArgs e)
+        {
+            var command = new StartRightDriveByDifferentColorsEffectSequenceCommand();
+            driftCommandsServer.SendAsyncMessageToAll(command);
         }
     }
 }

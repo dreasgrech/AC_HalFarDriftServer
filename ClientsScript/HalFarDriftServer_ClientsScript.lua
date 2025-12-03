@@ -10,26 +10,9 @@ local SERVER_COMMAND_TYPE = {
   ShowWelcomeMessage = 1,
   StartCountdownTimer = 2,
   StartRightDriveByMaltaFlagEffectSequence = 3,
-  Pong = 4
+  StartRightDriveByDifferentColorsEffectSequence = 4,
+  Pong = 5,
 }
-
-local ParticlesSparks = ac.Particles.Sparks( {
-    color = rgbm(0.5, 0.5, 0.5, 0.5),
-    life = 4,
-    size = 0.5,
-    directionSpread = 1,
-    positionSpread = 0.2
-})
-
---[===[
--- later in script.update() or something
-ParticlesSparks.life = 100
---ParticlesSparks.size = 0.2
---ParticlesSparks.directionSpread = 1
---ParticlesSparks.positionSpread = 0.2
-ParticlesSparks:emit(car.position, velocitityVec3, amountF)
---]===]
-
 
 -- local drawTimer = function ()
   -- ui.drawText('From script', vec2(400, 400), rgbm(1, 0, 0, 1))
@@ -224,7 +207,7 @@ local StartingLights = (function()
             -- changeStartCountdownState(StartCountdownState_States.ShowingRed)
 
             setColor(AVAILABLE_COLOR_TYPES.Black)
-            ac.log('StartCountdownState: Finished')
+            -- ac.log('StartCountdownState: Finished')
             return
           end
 
@@ -286,12 +269,13 @@ local StartingLights = (function()
   }
 end)()
 
+-- make sure the starting lights are off at the beginning
 StartingLights.turnOff()
--- StartingLights.startEffect(StartingLights.EFFECTS.StartCountdown)
 
 local PARTICLE_EFFECTS_SEQUENCES = {
   Right_DriveBy_MaltaFlag = 1,
-  Far_LongStretch_Winners = 2
+  Right_DriveBy_DifferentColors = 2,
+  Far_LongStretch_Winners = 3
 }
 
 local ParticleEffectsManager = (function()
@@ -317,24 +301,6 @@ local ParticleEffectsManager = (function()
       vec3(-22.1, 0.908, 1.27),
     }
 
---     local colors = {
---       rgbm(1, 0, 0, 0.5),
---       rgbm(0, 1, 0, 0.5),
---       rgbm(0, 0, 1, 0.5),
---       rgbm(1, 1, 0, 0.5),
---       rgbm(1, 0, 1, 0.5),
---       rgbm(0, 1, 1, 0.5)
---     }
-
-    -- local colors = {
-    --   rgbm(1, 0, 0, 1),
-    --   rgbm(1, 0, 0, 1),
-    --   rgbm(1, 0, 0, 1),
-    --   rgbm(1, 1, 1, 1),
-    --   rgbm(1, 1, 1, 1),
-    --   rgbm(1, 1, 1, 1),
-    -- }
-
     return {
       create = function(colors)
         return (function()
@@ -357,7 +323,7 @@ local ParticleEffectsManager = (function()
 
           return {
             start = function()
-              ac.log('Starting RightDriveByEffect particle effect sequence')
+              -- ac.log('Starting RightDriveByEffect particle effect sequence')
               timeSinceSequenceStart = 0.0
 
               nextIndexToStart = 1
@@ -489,6 +455,23 @@ local ParticleEffectsManager = (function()
           return maltaFlagFarRight
         end
       }
+    end)(),
+    [PARTICLE_EFFECTS_SEQUENCES.Right_DriveBy_DifferentColors] = (function ()
+      local differentColors = {
+        rgbm(1, 0, 0, 0.5),
+        rgbm(0, 1, 0, 0.5),
+        rgbm(0, 0, 1, 0.5),
+        rgbm(1, 1, 0, 0.5),
+        rgbm(1, 0, 1, 0.5),
+        rgbm(0, 1, 1, 0.5)
+      }
+
+      return {
+        create = function()
+          local differentColorsEffect = RightDriveByEffect.create(differentColors)
+          return differentColorsEffect
+        end
+      }
     end)()
   }
 
@@ -538,7 +521,7 @@ local ParticleEffectsManager = (function()
     end,
   --]===]
     startEffect = function (effectSequence)
-      ac.log(string.format('Starting particle effect sequence: %d', effectSequence))
+      -- ac.log(string.format('Starting particle effect sequence: %d', effectSequence))
 
       local effectSequenceDefinition = SEQUENCES_DEFINNITIONS[effectSequence]
       local effectInstance = effectSequenceDefinition.create()
@@ -583,28 +566,35 @@ local socket;
 
 local messageHandlers = {
   [SERVER_COMMAND_TYPE.ShowWelcomeMessage] = function(messageObject)
-    if messageObject ~= nil then
-      ac.log(string.format('Handling ShowWelcomeMessage command from server: %s', tostring(messageObject.M)))
-    end
+    -- if messageObject ~= nil then
+    --   ac.log(string.format('Handling ShowWelcomeMessage command from server: %s', tostring(messageObject.M)))
+    -- end
 
     connectedToWebSocketServer = true
 
     -- socket("hello from the client")
 
     -- showIntro()
+
+    ac.log('Connected to server because we received the welcome ack')
   end,
   [SERVER_COMMAND_TYPE.StartCountdownTimer] = function(messageObject)
-    ac.log(string.format('Handling StartCountdownTimer command from server'))
+    -- ac.log(string.format('Handling StartCountdownTimer command from server'))
 
     StartingLights.startEffect(StartingLights.EFFECTS.StartCountdown)
   end,
   [SERVER_COMMAND_TYPE.StartRightDriveByMaltaFlagEffectSequence] = function(messageObject)
-    ac.log(string.format('Handling StartRightDriveByMaltaFlagEffectSequence command from server'))
+    -- ac.log(string.format('Handling StartRightDriveByMaltaFlagEffectSequence command from server'))
 
     ParticleEffectsManager.startEffect(PARTICLE_EFFECTS_SEQUENCES.Right_DriveBy_MaltaFlag)
   end,
+  [SERVER_COMMAND_TYPE.StartRightDriveByDifferentColorsEffectSequence] = function(messageObject)
+    -- ac.log(string.format('Handling StartRightDriveByDifferentColorsEffectSequence command from server'))
+
+    ParticleEffectsManager.startEffect(PARTICLE_EFFECTS_SEQUENCES.Right_DriveBy_DifferentColors)
+  end,
   [SERVER_COMMAND_TYPE.Pong] = function(messageObject)
-    ac.log(string.format('Handling Pong command from server'))
+    -- ac.log(string.format('Handling Pong command from server'))
 
     -- reset the ping/pong state since we received the pong from the server
     awaitingPongResponse = false
@@ -624,7 +614,7 @@ local serverDataCallback = function(data)
   end
 
   local dataString = tostring(data)
-  ac.log('Data from server: ' .. dataString)
+  -- ac.log('Data from server: ' .. dataString)
   if dataString == '' then
     ac.log('Stopping callback processing: empty data string')
     return
@@ -654,7 +644,7 @@ local playerDriverName = ac.getDriverName(0)
 
 local patchVersion = ac.getPatchVersion()
 local patchVersionCode = ac.getPatchVersionCode()
-ac.log(string.format("Player Car SessionID: %s, CarID: %s, DriverName: %s, PatchVersion: %s, PatchVersionCode: %s", tostring(playerCarSessionID), tostring(playerCarID), tostring(playerDriverName), tostring(patchVersion), tostring(patchVersionCode)))
+-- ac.log(string.format("Player Car SessionID: %s, CarID: %s, DriverName: %s, PatchVersion: %s, PatchVersionCode: %s", tostring(playerCarSessionID), tostring(playerCarID), tostring(playerDriverName), tostring(patchVersion), tostring(patchVersionCode)))
 
 local queryStringParams = {
   SessionID = playerCarSessionID,
@@ -679,7 +669,7 @@ end
 
 local WEBSOCKET_SERVER_ADDRESS = string.format("%s://%s/%s?%s", WEBSOCKET_SERVER_PROTOCOL, WEBSOCKET_SERVER_HOST, WEBSOCKET_SERVER_ENDPOINT, queryString)
 
-ac.log(string.format("Connecting to WebSocket URL: %s", WEBSOCKET_SERVER_ADDRESS))
+-- ac.log(string.format("Connecting to WebSocket URL: %s", WEBSOCKET_SERVER_ADDRESS))
 
 ---@type web.SocketParams
 local socketParams = {

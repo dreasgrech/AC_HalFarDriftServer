@@ -6,13 +6,17 @@ using WebSocketSharp;
 
 namespace HalFarDriftCommandsServer;
 
+/// <summary>
+/// Note: these values are serialized and sent over the wire and must match the client-side enum values.
+/// </summary>
 public enum HalFarDriftServerCommandType
 {
     None = 0,
     ShowWelcomeMessage = 1,
     StartCountdownTimer = 2,
     StartRightDriveByMaltaFlagEffectSequence = 3,
-    Pong = 4
+    StartRightDriveByDifferentColorsEffectSequence = 4,
+    Pong = 5
 }
 
 public class HalFarDriftCommandsServer
@@ -47,16 +51,10 @@ public class HalFarDriftCommandsServer
     public void SendStartStartingLightsInitiationSequenceCommandToAll()
     {
         var command = new StartCountdownTimerServerCommand();
-        SendMessageToAll(command);
+        SendAsyncMessageToAll(command);
     }
     
-    public void SendStartRightDriveByMaltaFlagEffectSequenceCommandToAll()
-    {
-        var command = new StartRightDriveByMaltaFlagEffectSequenceCommand();
-        SendMessageToAll(command);
-    }
-    
-    private bool SendMessageToAll(ServerCommand command)
+    public bool SendAsyncMessageToAll(ServerCommand command)
     {
         if (!assettoCorsaCommandsServer.ServerRunning)
         {

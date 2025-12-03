@@ -47,6 +47,8 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.webSocketServerLogLevel = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.StartRightDriveByDifferentColorsEffectSequenceButton = new System.Windows.Forms.Button();
             this.StartRightDriveByMaltaFlagEffectSequenceButton = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.InitiateStartingLightsSequenceForAllButton = new System.Windows.Forms.Button();
@@ -56,6 +58,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -69,7 +72,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.ConnectedPlayersListView.HideSelection = false;
             this.ConnectedPlayersListView.Location = new System.Drawing.Point(12, 12);
             this.ConnectedPlayersListView.Name = "ConnectedPlayersListView";
-            this.ConnectedPlayersListView.Size = new System.Drawing.Size(995, 267);
+            this.ConnectedPlayersListView.Size = new System.Drawing.Size(1210, 267);
             this.ConnectedPlayersListView.TabIndex = 1;
             this.ConnectedPlayersListView.UseCompatibleStateImageBehavior = false;
             this.ConnectedPlayersListView.View = System.Windows.Forms.View.Details;
@@ -104,12 +107,12 @@ namespace HalFarDriftCommandsServerWinFormsApp
             // 
             this.LogTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.LogTextBox.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.LogTextBox.Location = new System.Drawing.Point(12, 517);
+            this.LogTextBox.Location = new System.Drawing.Point(12, 722);
             this.LogTextBox.Multiline = true;
             this.LogTextBox.Name = "LogTextBox";
             this.LogTextBox.ReadOnly = true;
             this.LogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.LogTextBox.Size = new System.Drawing.Size(995, 232);
+            this.LogTextBox.Size = new System.Drawing.Size(1210, 232);
             this.LogTextBox.TabIndex = 2;
             // 
             // StartServerButton
@@ -137,7 +140,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.panel1.Controls.Add(this.serverStatusIndicatorControl);
             this.panel1.Controls.Add(this.ServerAddressTextBox);
             this.panel1.Controls.Add(this.StartServerButton);
-            this.panel1.Location = new System.Drawing.Point(543, 476);
+            this.panel1.Location = new System.Drawing.Point(758, 681);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(464, 35);
             this.panel1.TabIndex = 5;
@@ -183,20 +186,41 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Location = new System.Drawing.Point(12, 321);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(995, 117);
+            this.groupBox1.Size = new System.Drawing.Size(1210, 322);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Operations";
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.StartRightDriveByMaltaFlagEffectSequenceButton);
+            this.groupBox3.Controls.Add(this.groupBox4);
             this.groupBox3.Location = new System.Drawing.Point(230, 19);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(325, 77);
+            this.groupBox3.Size = new System.Drawing.Size(571, 105);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Pyrotechnics";
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.StartRightDriveByDifferentColorsEffectSequenceButton);
+            this.groupBox4.Controls.Add(this.StartRightDriveByMaltaFlagEffectSequenceButton);
+            this.groupBox4.Location = new System.Drawing.Point(6, 19);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(550, 72);
+            this.groupBox4.TabIndex = 3;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Drive-By Effects";
+            // 
+            // StartRightDriveByDifferentColorsEffectSequenceButton
+            // 
+            this.StartRightDriveByDifferentColorsEffectSequenceButton.Location = new System.Drawing.Point(274, 19);
+            this.StartRightDriveByDifferentColorsEffectSequenceButton.Name = "StartRightDriveByDifferentColorsEffectSequenceButton";
+            this.StartRightDriveByDifferentColorsEffectSequenceButton.Size = new System.Drawing.Size(262, 42);
+            this.StartRightDriveByDifferentColorsEffectSequenceButton.TabIndex = 2;
+            this.StartRightDriveByDifferentColorsEffectSequenceButton.Text = "Initiate Right DriveBy Sparks Effect (MaltaFlag)";
+            this.StartRightDriveByDifferentColorsEffectSequenceButton.UseVisualStyleBackColor = true;
+            this.StartRightDriveByDifferentColorsEffectSequenceButton.Click += new System.EventHandler(this.StartRightDriveByDifferentColorsEffectSequenceButton_Click);
             // 
             // StartRightDriveByMaltaFlagEffectSequenceButton
             // 
@@ -233,7 +257,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.webSocketServerLogLevel);
-            this.panel2.Location = new System.Drawing.Point(12, 476);
+            this.panel2.Location = new System.Drawing.Point(12, 681);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(163, 35);
             this.panel2.TabIndex = 7;
@@ -258,7 +282,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1019, 761);
+            this.ClientSize = new System.Drawing.Size(1234, 966);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.groupBox1);
@@ -272,12 +296,16 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.panel1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Button StartRightDriveByDifferentColorsEffectSequenceButton;
 
         private System.Windows.Forms.ColumnHeader columnHeader5;
 

@@ -34,7 +34,7 @@ public class DriftServerEndpointImplementation : ICommandsServerEndpointOperatio
         var isPing = string.Equals(data, "p");
         if (isPing)
         {
-            logger.WriteLine($"Received Ping from Client ID = {playerWebSocketServerID}, sending Pong response.");
+            // logger.WriteLine($"Received Ping from Client ID = {playerWebSocketServerID}, sending Pong response.");
             assettoCorsaCommandsServer.SendAsyncCommandToClient(playerWebSocketServerID, new PongServerCommand());
         }
     }
