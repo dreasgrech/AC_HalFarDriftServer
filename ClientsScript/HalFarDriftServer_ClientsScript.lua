@@ -296,7 +296,8 @@ local ParticleEffectsManager = (function()
 
   local Far_LongStretch_OneByOne = (function()
     local TIME_BETWEEN_STARTS_SECONDS = 0.5 -- The time between each start emmission
-    local DURATION_FOR_EACH_EFFECT_SECONDS = 2.0 -- how long each effect runs for
+    -- local DURATION_FOR_EACH_EFFECT_SECONDS = 2.0 -- how long each effect runs for
+    local DURATION_FOR_EACH_EFFECT_SECONDS = 1.0 -- how long each effect runs for
 
     local EFFECT_LIFE = 4
     local EFFECT_SIZE = 0.2
@@ -379,7 +380,8 @@ local ParticleEffectsManager = (function()
               for i = 1, nextIndexToStart - 1 do
                 -- using the time since sequence start, determine if this effect should still be active
                 local effectStartTime = (i - 1) * TIME_BETWEEN_STARTS_SECONDS
-                local effectActive = timeSinceSequenceStart - effectStartTime < DURATION_FOR_EACH_EFFECT_SECONDS
+                -- local effectActive = timeSinceSequenceStart - effectStartTime < DURATION_FOR_EACH_EFFECT_SECONDS
+                local effectActive = true
                 if effectActive then
                   local position = positions[i]
                   local sparkEffect = effects[i]
