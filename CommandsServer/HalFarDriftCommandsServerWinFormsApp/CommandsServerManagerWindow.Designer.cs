@@ -218,7 +218,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.StartRightDriveByDifferentColorsEffectSequenceButton.Name = "StartRightDriveByDifferentColorsEffectSequenceButton";
             this.StartRightDriveByDifferentColorsEffectSequenceButton.Size = new System.Drawing.Size(262, 42);
             this.StartRightDriveByDifferentColorsEffectSequenceButton.TabIndex = 2;
-            this.StartRightDriveByDifferentColorsEffectSequenceButton.Text = "Initiate Right DriveBy Sparks Effect (MaltaFlag)";
+            this.StartRightDriveByDifferentColorsEffectSequenceButton.Text = "Initiate Right DriveBy Sparks Effect (Colours)";
             this.StartRightDriveByDifferentColorsEffectSequenceButton.UseVisualStyleBackColor = true;
             this.StartRightDriveByDifferentColorsEffectSequenceButton.Click += new System.EventHandler(this.StartRightDriveByDifferentColorsEffectSequenceButton_Click);
             // 
