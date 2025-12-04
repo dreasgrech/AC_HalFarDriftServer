@@ -16,7 +16,8 @@ public enum HalFarDriftServerCommandType
     StartCountdownTimer = 2,
     StartRightDriveByMaltaFlagEffectSequence = 3,
     StartRightDriveByDifferentColorsEffectSequence = 4,
-    Pong = 5
+    StartRightDriveByWhiteEffectSequence = 5,
+    Pong = 6
 }
 
 public class HalFarDriftCommandsServer

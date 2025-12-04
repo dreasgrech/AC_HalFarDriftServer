@@ -54,6 +54,7 @@
         <Compile Include="ServerCommands\StartCountdownTimerServerCommand.cs" />
         <Compile Include="ServerCommands\StartRightDriveByDifferentColorsEffectSequenceCommand.cs" />
         <Compile Include="ServerCommands\StartRightDriveByMaltaFlagEffectSequenceCommand.cs" />
+        <Compile Include="ServerCommands\StartRightDriveByWhiteEffectSequenceCommand.cs" />
     </ItemGroup>
     <ItemGroup>
       <None Include="packages.config" />

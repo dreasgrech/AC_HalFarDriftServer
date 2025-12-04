@@ -230,5 +230,11 @@ namespace HalFarDriftCommandsServerWinFormsApp
             var command = new StartRightDriveByDifferentColorsEffectSequenceCommand();
             driftCommandsServer.SendAsyncMessageToAll(command);
         }
+
+        private void StartRightDriveByWhiteEffectSequenceButton_Click(object sender, EventArgs e)
+        {
+            var command = new StartRightDriveByWhiteEffectSequenceCommand();
+            driftCommandsServer.SendAsyncMessageToAll(command);
+        }
     }
 }

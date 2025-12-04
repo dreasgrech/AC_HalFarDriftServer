@@ -11,7 +11,8 @@ local SERVER_COMMAND_TYPE = {
   StartCountdownTimer = 2,
   StartRightDriveByMaltaFlagEffectSequence = 3,
   StartRightDriveByDifferentColorsEffectSequence = 4,
-  Pong = 5,
+  StartRightDriveByWhiteEffectSequence = 5,
+  Pong = 6,
 }
 
 -- local drawTimer = function ()
@@ -275,7 +276,8 @@ StartingLights.turnOff()
 local PARTICLE_EFFECTS_SEQUENCES = {
   Right_DriveBy_MaltaFlag = 1,
   Right_DriveBy_DifferentColors = 2,
-  Far_LongStretch_Winners = 3
+  Right_DriveBy_White = 3,
+  Far_LongStretch_Winners = 4
 }
 
 local ParticleEffectsManager = (function()
@@ -472,6 +474,23 @@ local ParticleEffectsManager = (function()
           return differentColorsEffect
         end
       }
+    end)(),
+    [PARTICLE_EFFECTS_SEQUENCES.Right_DriveBy_White] = (function ()
+      local whiteColors = {
+        rgbm(1, 1, 1, 0.5),
+        rgbm(1, 1, 1, 0.5),
+        rgbm(1, 1, 1, 0.5),
+        rgbm(1, 1, 1, 0.5),
+        rgbm(1, 1, 1, 0.5),
+        rgbm(1, 1, 1, 0.5)
+      }
+
+      return {
+        create = function()
+          local whiteColorEffect = RightDriveByEffect.create(whiteColors)
+          return whiteColorEffect
+        end
+      }
     end)()
   }
 
@@ -592,6 +611,11 @@ local messageHandlers = {
     -- ac.log(string.format('Handling StartRightDriveByDifferentColorsEffectSequence command from server'))
 
     ParticleEffectsManager.startEffect(PARTICLE_EFFECTS_SEQUENCES.Right_DriveBy_DifferentColors)
+  end,
+  [SERVER_COMMAND_TYPE.StartRightDriveByWhiteEffectSequence] = function(messageObject)
+    -- ac.log(string.format('Handling StartRightDriveByWhiteEffectSequence command from server'))
+
+    ParticleEffectsManager.startEffect(PARTICLE_EFFECTS_SEQUENCES.Right_DriveBy_White)
   end,
   [SERVER_COMMAND_TYPE.Pong] = function(messageObject)
     -- ac.log(string.format('Handling Pong command from server'))

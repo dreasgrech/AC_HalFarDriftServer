@@ -55,6 +55,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.ConnectedPlayersLabel = new System.Windows.Forms.Label();
+            this.StartRightDriveByWhiteEffectSequenceButton = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -196,18 +197,19 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.groupBox3.Controls.Add(this.groupBox4);
             this.groupBox3.Location = new System.Drawing.Point(230, 19);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(571, 105);
+            this.groupBox3.Size = new System.Drawing.Size(571, 168);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Pyrotechnics";
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.StartRightDriveByWhiteEffectSequenceButton);
             this.groupBox4.Controls.Add(this.StartRightDriveByDifferentColorsEffectSequenceButton);
             this.groupBox4.Controls.Add(this.StartRightDriveByMaltaFlagEffectSequenceButton);
             this.groupBox4.Location = new System.Drawing.Point(6, 19);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(550, 72);
+            this.groupBox4.Size = new System.Drawing.Size(550, 134);
             this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Drive-By Effects";
@@ -224,7 +226,7 @@ namespace HalFarDriftCommandsServerWinFormsApp
             // 
             // StartRightDriveByMaltaFlagEffectSequenceButton
             // 
-            this.StartRightDriveByMaltaFlagEffectSequenceButton.Location = new System.Drawing.Point(6, 19);
+            this.StartRightDriveByMaltaFlagEffectSequenceButton.Location = new System.Drawing.Point(6, 77);
             this.StartRightDriveByMaltaFlagEffectSequenceButton.Name = "StartRightDriveByMaltaFlagEffectSequenceButton";
             this.StartRightDriveByMaltaFlagEffectSequenceButton.Size = new System.Drawing.Size(262, 42);
             this.StartRightDriveByMaltaFlagEffectSequenceButton.TabIndex = 1;
@@ -278,6 +280,16 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.ConnectedPlayersLabel.TabIndex = 0;
             this.ConnectedPlayersLabel.Text = "Connected Players: 0";
             // 
+            // StartRightDriveByWhiteEffectSequenceButton
+            // 
+            this.StartRightDriveByWhiteEffectSequenceButton.Location = new System.Drawing.Point(6, 19);
+            this.StartRightDriveByWhiteEffectSequenceButton.Name = "StartRightDriveByWhiteEffectSequenceButton";
+            this.StartRightDriveByWhiteEffectSequenceButton.Size = new System.Drawing.Size(262, 42);
+            this.StartRightDriveByWhiteEffectSequenceButton.TabIndex = 3;
+            this.StartRightDriveByWhiteEffectSequenceButton.Text = "Initiate Right DriveBy Sparks Effect (White)";
+            this.StartRightDriveByWhiteEffectSequenceButton.UseVisualStyleBackColor = true;
+            this.StartRightDriveByWhiteEffectSequenceButton.Click += new System.EventHandler(this.StartRightDriveByWhiteEffectSequenceButton_Click);
+            // 
             // CommandsServerManagerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -303,6 +315,8 @@ namespace HalFarDriftCommandsServerWinFormsApp
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+
+        private System.Windows.Forms.Button StartRightDriveByWhiteEffectSequenceButton;
 
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Button StartRightDriveByDifferentColorsEffectSequenceButton;
